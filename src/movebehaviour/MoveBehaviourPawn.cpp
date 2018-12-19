@@ -1,12 +1,7 @@
 #include "MoveBehaviourPawn.h"
+#include "BoardAnalyzer.h"
 
 using namespace simplechess;
-
-MoveBehaviourPawn::MoveBehaviourPawn()
-	: MoveBehaviour(TYPE_PAWN)
-{
-}
-
 
 std::unique_ptr<MoveBehaviour> MoveBehaviourPawn::clone() const
 {
@@ -16,8 +11,8 @@ std::unique_ptr<MoveBehaviour> MoveBehaviourPawn::clone() const
 
 std::vector<PossibleMove> MoveBehaviourPawn::possibleMoves(
 		const Square& srcSquare,
-		const BoardImpl& board,
-		const std::vector<Move>& moveHistory) const
+		const Board& board,
+		const MoveHistory& moveHistory) const
 {
 	// A pawn can make three possible moves:
 	// - Single forward (if no piece is occupying that square)
@@ -28,7 +23,7 @@ std::vector<PossibleMove> MoveBehaviourPawn::possibleMoves(
 	// Pawns get promoted if they reach the end of the board.
 	std::vector<PossibleMove> result = {};
 
-	const PieceColor color = moveHistory.size() % 2 == 0
+	const Color color = moveHistory.getAllMoves().size() % 2 == 0
 		? COLOR_WHITE : COLOR_BLACK;
 
 	// The last rank a pawn can be in before having to be promoted.
@@ -95,8 +90,8 @@ std::vector<PossibleMove> MoveBehaviourPawn::possibleMoves(
 
 bool MoveBehaviourPawn::isValidMove(
 		const Move& move,
-		const BoardImpl& board,
-		const std::vector<Move>& moveHistory) const
+		const Board& board,
+		const MoveHistory& moveHistory) const
 {
 	if (move.moveType() == MOVE_CASTLE_KING_SIDE
 			|| move.moveType() == MOVE_CASTLE_QUEEN_SIDE)
@@ -115,10 +110,10 @@ bool MoveBehaviourPawn::isValidMove(
 		return false;
 	}
 
-	const PieceColor color = moveHistory.size() % 2 == 0
+	const Color color = moveHistory.getAllMoves().size() % 2 == 0
 		? COLOR_WHITE : COLOR_BLACK;
 
-	const PieceColor rivalColor = color == COLOR_WHITE
+	const Color rivalColor = color == COLOR_WHITE
 		? COLOR_BLACK : COLOR_WHITE;
 
 	// The rank in which the pawn is at the beginning of the game
@@ -174,7 +169,7 @@ bool MoveBehaviourPawn::isValidMove(
 				dstSquare.rank() + rankForwardStep,
 				dstSquare.file());
 
-		if (!board.isEmpty(nextSquare))
+		if (!BoardAnalyzer::isEmpty(board, nextSquare))
 		{
 			// There can be no obstacles when moving two squares
 			return false;
@@ -183,7 +178,7 @@ bool MoveBehaviourPawn::isValidMove(
 
 	if (dstSquare.file() == srcSquare.file())
 	{
-		if (!board.isEmpty(dstSquare))
+		if (!BoardAnalyzer::isEmpty(board, dstSquare))
 		{
 			// If the pawn is moving in the same file, the final square must be
 			// empty
@@ -201,7 +196,7 @@ bool MoveBehaviourPawn::isValidMove(
 		// If the pawn is moving diagonally it must be capturing (either a
 		// regular capture or "en passant"), so the final square can only be
 		// empty if we capturing "en passant").
-		if (!board.isOccupiedByPieceOfColor(dstSquare, rivalColor))
+		if (!BoardAnalyzer::isOccupiedByPieceOfColor(board, dstSquare, rivalColor))
 		{
 			const Square adjacentSquare = Square::instantiateWithRankAndFile(
 					srcSquare.rank(), dstSquare.file());
@@ -209,9 +204,9 @@ bool MoveBehaviourPawn::isValidMove(
 			const Square pawnOriginSquare = Square::instantiateWithRankAndFile(
 					secondToLastRank, adjacentSquare.file());
 
-			const Move& lastMove = moveHistory.back();
+			const Move& lastMove = moveHistory.getAllMoves().back();
 
-			if (board.pieceAt(lastMove.finalSquare()).pieceType() != TYPE_PAWN
+			if (board.pieceAt(lastMove.finalSquare())->type() != TYPE_PAWN
 					|| lastMove.originSquare() != pawnOriginSquare
 					|| lastMove.finalSquare() != adjacentSquare
 					|| std::abs(lastMove.finalSquare().rank() - lastMove.originSquare().rank()) != 2)

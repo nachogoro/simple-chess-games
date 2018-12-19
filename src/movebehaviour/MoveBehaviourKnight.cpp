@@ -1,12 +1,7 @@
 #include "MoveBehaviourKnight.h"
+#include "BoardAnalyzer.h"
 
 using namespace simplechess;
-
-MoveBehaviourKnight::MoveBehaviourKnight()
-	: MoveBehaviour(TYPE_KNIGHT)
-{
-}
-
 
 std::unique_ptr<MoveBehaviour> MoveBehaviourKnight::clone() const
 {
@@ -16,16 +11,16 @@ std::unique_ptr<MoveBehaviour> MoveBehaviourKnight::clone() const
 
 std::vector<PossibleMove> MoveBehaviourKnight::possibleMoves(
 		const Square& srcSquare,
-		const BoardImpl& board,
-		const std::vector<Move>& moveHistory) const
+		const Board& board,
+		const MoveHistory& moveHistory) const
 {
 	// A knight can move in an L-shape, jumping over any piece, to any square
 	// which is empty or occupied by a rival piece.
 
-	const PieceColor color = moveHistory.size() % 2 == 0
+	const Color color = moveHistory.getAllMoves().size() % 2 == 0
 		? COLOR_WHITE : COLOR_BLACK;
 
-	const PieceColor rivalColor = color == COLOR_WHITE
+	const Color rivalColor = color == COLOR_WHITE
 		? COLOR_BLACK : COLOR_WHITE;
 
 	std::vector<PossibleMove> allMovesInEmptyBoard;
@@ -72,8 +67,8 @@ std::vector<PossibleMove> MoveBehaviourKnight::possibleMoves(
 
 bool MoveBehaviourKnight::isValidMove(
 		const Move& move,
-		const BoardImpl& board,
-		const std::vector<Move>& moveHistory) const
+		const Board& board,
+		const MoveHistory& moveHistory) const
 {
 	if (move.moveType() == MOVE_CASTLE_KING_SIDE
 			|| move.moveType() == MOVE_CASTLE_QUEEN_SIDE
@@ -92,10 +87,10 @@ bool MoveBehaviourKnight::isValidMove(
 		return false;
 	}
 
-	const PieceColor color = moveHistory.size() % 2 == 0
+	const Color color = moveHistory.getAllMoves().size() % 2 == 0
 		? COLOR_WHITE : COLOR_BLACK;
 
-	if (!board.isOccupiableBy(dstSquare, color))
+	if (!BoardAnalyzer::isOccupiableBy(board, dstSquare, color))
 	{
 		// The final square is occupied by a piece of our side
 		 return false;

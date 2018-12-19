@@ -12,15 +12,6 @@
 namespace simplechess
 {
 	/**
-	 * \brief The possible chess players.
-	 */
-	enum Player
-	{
-		PLAYER_WHITE,
-		PLAYER_BLACK
-	};
-
-	/**
 	 * \brief The possible endings of a chess game.
 	 */
 	enum GameEnding
@@ -75,14 +66,14 @@ namespace simplechess
 			boost::optional<GameEnding> gameWinner() const;
 
 			/**
-			 * \brief Returns the next player to make a move.
+			 * \brief Returns the next color to make a move.
 			 *
 			 * If the game is over, an empty optional is returned.
 			 *
-			 * \return The next player to make a move or an empty optional if
+			 * \return The next color to make a move or an empty optional if
 			 * the game is over.
 			 */
-			boost::optional<Player> nextPlayer() const;
+			boost::optional<Color> nextPlayer() const;
 
 			/**
 			 * \brief Returns all the moves made in the game.

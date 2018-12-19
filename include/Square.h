@@ -107,6 +107,8 @@ namespace simplechess
 			Square(uint8_t rank, char file);
 			uint8_t mRank;
 			char mFile;
+
+			friend class AlgebraicNotationParser;
 	};
 }
 

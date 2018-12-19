@@ -13,24 +13,26 @@ GameEngineImpl::GameEngineImpl()
 Game GameEngineImpl::createGameFromFile(const std::string& inputFile)
 {
 	const uint32_t gameId = mNextGameId++;
-	const std::shared_ptr<GameImpl> game
-		= GameImpl::parseFromFile(inputFile, gameId);
+	const std::shared_ptr<LockedGameImpl> game
+		= LockedGameImpl::parseFromFile(inputFile, gameId);
 
 	std::lock_guard<std::mutex> lock(mAdditionMutex);
-	mAllGames[gameId] = game;
+	mAllGames.insert(
+			{gameId,
+			std::shared_ptr<LockedGameImpl>(new LockedGameImpl(gameId))});
 	return game->toPublicGame();
 }
 
 Game GameEngineImpl::createNewGame()
 {
 	const uint32_t gameId = mNextGameId++;
-	const std::shared_ptr<GameImpl> game(new GameImpl(gameId));
+	const std::shared_ptr<LockedGameImpl> game(new LockedGameImpl(gameId));
 	std::lock_guard<std::mutex> lock(mAdditionMutex);
-	mAllGames[gameId] = game;
+	mAllGames.insert({gameId, game});
 	return game->toPublicGame();
 }
 
-Game GameEngineImpl::deleteGame(uint32_t id)
+void GameEngineImpl::deleteGame(uint32_t id)
 {
 	std::lock_guard<std::mutex> mapLock(mAdditionMutex);
 	if (mAllGames.count(id) == 0)
@@ -39,14 +41,12 @@ Game GameEngineImpl::deleteGame(uint32_t id)
 				"No game with id " + std::to_string(id) + " to be deleted");
 	}
 
-	const Game game = mAllGames.at(id)->toPublicGame();
 	mAllGames.erase(id);
-	return game;
 }
 
 void GameEngineImpl::exportGame(uint32_t id, const std::string& outFile) const
 {
-	std::shared_ptr<GameImpl> game;
+	std::shared_ptr<LockedGameImpl> game;
 	{
 		std::lock_guard<std::mutex> mapLock(mAdditionMutex);
 		if (mAllGames.count(id) == 0)
@@ -58,15 +58,13 @@ void GameEngineImpl::exportGame(uint32_t id, const std::string& outFile) const
 		game = mAllGames.at(id);
 	}
 
-	std::lock_guard<std::mutex> gameLock(game->mutex());
-
 	game->exportToFile(outFile);
 }
 
 std::vector<PossibleMove> GameEngineImpl::possibleMoves(
 		uint32_t id, const Square& srcSquare) const
 {
-	std::shared_ptr<GameImpl> game;
+	std::shared_ptr<LockedGameImpl> game;
 	{
 		std::lock_guard<std::mutex> mapLock(mAdditionMutex);
 		if (mAllGames.count(id) == 0)
@@ -78,14 +76,12 @@ std::vector<PossibleMove> GameEngineImpl::possibleMoves(
 		game = mAllGames.at(id);
 	}
 
-	std::lock_guard<std::mutex> gameLock(game->mutex());
-
 	return game->possibleMoves(srcSquare);
 }
 
 Game GameEngineImpl::makeMove(uint32_t id, const Move& move)
 {
-	std::shared_ptr<GameImpl> game;
+	std::shared_ptr<LockedGameImpl> game;
 	{
 		std::lock_guard<std::mutex> mapLock(mAdditionMutex);
 		if (mAllGames.count(id) == 0)
@@ -96,8 +92,6 @@ Game GameEngineImpl::makeMove(uint32_t id, const Move& move)
 		}
 		game = mAllGames.at(id);
 	}
-
-	std::lock_guard<std::mutex> gameLock(game->mutex());
 
 	return game->makeMove(move);
 }

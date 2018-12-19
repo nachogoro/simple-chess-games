@@ -18,7 +18,7 @@ namespace simplechess
 	/**
 	 * \brief The color of a chess piece.
 	 */
-	enum PieceColor {
+	enum Color {
 		COLOR_WHITE,
 		COLOR_BLACK
 	};
@@ -38,7 +38,7 @@ namespace simplechess
 			 * \param color The color of the \c Piece.
 			 * \param promoted Whether the \c Piece is a promoted pawn.
 			 */
-			Piece(PieceType type, PieceColor color, bool promoted);
+			Piece(PieceType type, Color color, bool promoted);
 
 			/**
 			 * \brief Returns the type of the \c Piece.
@@ -50,7 +50,7 @@ namespace simplechess
 			 * \brief Returns the color of the \c Piece.
 			 * \return The color of the \c Piece.
 			 */
-			PieceColor color() const;
+			Color color() const;
 
 			/**
 			 * \brief Whether the current piece is a promoted pawn or not.
@@ -59,7 +59,7 @@ namespace simplechess
 			bool promoted() const;
 
 		private:
-			PieceColor mColor;
+			Color mColor;
 			PieceType mType;
 			bool mPromoted;
 	};

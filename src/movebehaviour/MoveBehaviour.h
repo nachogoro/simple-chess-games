@@ -1,13 +1,15 @@
 #ifndef MOVE_BEHAVIOUR_H_F16F14B1_D93F_47CF_A8C1_BE16067526C5
 #define MOVE_BEHAVIOUR_H_F16F14B1_D93F_47CF_A8C1_BE16067526C5
 
-#include "BoardImpl.h"
+#include "MoveHistory.h"
 
-#include <Piece.h>
+#include <Board.h>
 #include <Move.h>
+#include <Piece.h>
 #include <PossibleMove.h>
 #include <Square.h>
 
+#include <memory>
 #include <vector>
 
 /**
@@ -19,9 +21,6 @@ namespace simplechess
 	class MoveBehaviour
 	{
 		public:
-			MoveBehaviour(PieceType type);
-			PieceType pieceType() const;
-
 			/**
 			 * \brief Returns a list of all possible moves for the piece in
 			 * srcSquare.
@@ -36,8 +35,8 @@ namespace simplechess
 			 */
 			virtual std::vector<PossibleMove> possibleMoves(
 					const Square& srcSquare,
-					const BoardImpl& board,
-					const std::vector<Move>& moveHistory) const = 0;
+					const Board& board,
+					const MoveHistory& moveHistory) const = 0;
 
 			/**
 			 * \brief Whether the specified \a move is valid.
@@ -55,8 +54,8 @@ namespace simplechess
 			 */
 			virtual bool isValidMove(
 					const Move& move,
-					const BoardImpl& board,
-					const std::vector<Move>& moveHistory) const = 0;
+					const Board& board,
+					const MoveHistory& moveHistory) const = 0;
 
 			/**
 			 * \brief Polymorphic clone method.
@@ -72,7 +71,7 @@ namespace simplechess
 			 * \brief Whether the specified \a possibleMove is valid.
 			 *
 			 * This method is simply an adaptor for
-			 * \ref isValidMove(const Move&, const BoardImpl&,
+			 * \ref isValidMove(const Move&, const Board&,
 			 * const std::vector<Move>&).
 			 *
 			 * \param move The move to be validated.
@@ -82,8 +81,8 @@ namespace simplechess
 			 */
 			virtual bool isValidPossibleMove(
 					const PossibleMove& possibleMove,
-					const BoardImpl& board,
-					const std::vector<Move>& moveHistory) const;
+					const Board& board,
+					const MoveHistory& moveHistory) const;
 
 		private:
 			PieceType mPieceType;

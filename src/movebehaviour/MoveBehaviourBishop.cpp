@@ -1,12 +1,7 @@
 #include "MoveBehaviourBishop.h"
+#include "BoardAnalyzer.h"
 
 using namespace simplechess;
-
-MoveBehaviourBishop::MoveBehaviourBishop()
-	: MoveBehaviour(TYPE_BISHOP)
-{
-}
-
 
 std::unique_ptr<MoveBehaviour> MoveBehaviourBishop::clone() const
 {
@@ -16,8 +11,8 @@ std::unique_ptr<MoveBehaviour> MoveBehaviourBishop::clone() const
 
 std::vector<PossibleMove> MoveBehaviourBishop::possibleMoves(
 		const Square& srcSquare,
-		const BoardImpl& board,
-		const std::vector<Move>& moveHistory) const
+		const Board& board,
+		const MoveHistory& moveHistory) const
 {
 	// A bishop can move diagonally until it encounters another piece or the
 	// end of the board
@@ -59,8 +54,8 @@ std::vector<PossibleMove> MoveBehaviourBishop::possibleMoves(
 
 bool MoveBehaviourBishop::isValidMove(
 		const Move& move,
-		const BoardImpl& board,
-		const std::vector<Move>& moveHistory) const
+		const Board& board,
+		const MoveHistory& moveHistory) const
 {
 	if (move.moveType() == MOVE_CASTLE_KING_SIDE
 			|| move.moveType() == MOVE_CASTLE_QUEEN_SIDE
@@ -79,22 +74,22 @@ bool MoveBehaviourBishop::isValidMove(
 		return false;
 	}
 
-	if (!board.isInDiagonal(srcSquare, dstSquare))
+	if (!BoardAnalyzer::isInDiagonal(srcSquare, dstSquare))
 	{
 		// A bishop can only move diagonally
 		return false;
 	}
 
-	if (!board.isReachable(srcSquare, dstSquare))
+	if (!BoardAnalyzer::isReachable(board, srcSquare, dstSquare))
 	{
 		// A bishop cannot jump over other pieces
 		return false;
 	}
 
-	const PieceColor color = moveHistory.size() % 2 == 0
+	const Color color = moveHistory.getAllMoves().size() % 2 == 0
 		? COLOR_WHITE : COLOR_BLACK;
 
-	if (!board.isOccupiableBy(dstSquare, color))
+	if (!BoardAnalyzer::isOccupiableBy(board, dstSquare, color))
 	{
 		// The final square is occupied by a piece of our side
 		 return false;

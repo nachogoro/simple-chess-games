@@ -1,7 +1,7 @@
 #ifndef BOARD_ANALYZER_H_9FC5BA38_BA75_4088_AB11_9AF9248ACD36
 #define BOARD_ANALYZER_H_9FC5BA38_BA75_4088_AB11_9AF9248ACD36
 
-//#include "MoveHistory.h"
+#include "MoveHistory.h"
 #include <Board.h>
 
 namespace simplechess
@@ -11,6 +11,7 @@ namespace simplechess
 	 */
 	class BoardAnalyzer
 	{
+		public:
 		/**
 		 * \brief Whether if \a square in \a board is threatened by any piece
 		 * of color \a color.
@@ -20,7 +21,8 @@ namespace simplechess
 		static bool isSquareThreatenedBy(
 				const Board& board,
 				const Square& square,
-				PieceColor color);
+				Color color,
+				const MoveHistory& moveHistory);
 
 		/**
 		 * Whether square is not occupied by any piece.
@@ -31,13 +33,13 @@ namespace simplechess
 		 * Whether a piece of color color could move into dstSquare.
 		 */
 		static bool isOccupiableBy(
-				const Board& board, const Square& dstSquare, PieceColor color);
+				const Board& board, const Square& dstSquare, Color color);
 
 		/**
 		 * Whether dstSquare is occupied by a piece of color color.
 		 */
 		static bool isOccupiedByPieceOfColor(
-				const Board& board, const Square& dstSquare, PieceColor color);
+				const Board& board, const Square& dstSquare, Color color);
 
 		/**
 		 * Whether both squares are in the same diagonal.
@@ -59,7 +61,7 @@ namespace simplechess
 		/**
 		 * Returns the position of the king of the specified color.
 		 */
-		static const Square& kingSquare(const Board& board, PieceColor color);
+		static const Square& kingSquare(const Board& board, Color color);
 	};
 }
 

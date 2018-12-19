@@ -1,12 +1,7 @@
 #include "MoveBehaviourRook.h"
+#include "BoardAnalyzer.h"
 
 using namespace simplechess;
-
-MoveBehaviourRook::MoveBehaviourRook()
-	: MoveBehaviour(TYPE_ROOK)
-{
-}
-
 
 std::unique_ptr<MoveBehaviour> MoveBehaviourRook::clone() const
 {
@@ -16,8 +11,8 @@ std::unique_ptr<MoveBehaviour> MoveBehaviourRook::clone() const
 
 std::vector<PossibleMove> MoveBehaviourRook::possibleMoves(
 		const Square& srcSquare,
-		const BoardImpl& board,
-		const std::vector<Move>& moveHistory) const
+		const Board& board,
+		const MoveHistory& moveHistory) const
 {
 	// A rook can move horizontally or vertically until it encounters another
 	// piece or the end of the board.
@@ -70,8 +65,8 @@ std::vector<PossibleMove> MoveBehaviourRook::possibleMoves(
 
 bool MoveBehaviourRook::isValidMove(
 		const Move& move,
-		const BoardImpl& board,
-		const std::vector<Move>& moveHistory) const
+		const Board& board,
+		const MoveHistory& moveHistory) const
 {
 	if (move.moveType() == MOVE_CASTLE_KING_SIDE
 			|| move.moveType() == MOVE_CASTLE_QUEEN_SIDE
@@ -91,21 +86,21 @@ bool MoveBehaviourRook::isValidMove(
 		return false;
 	}
 
-	if (!board.isInSameRankOrFile(srcSquare, dstSquare))
+	if (!BoardAnalyzer::isInSameRankOrFile(srcSquare, dstSquare))
 	{
 		// A rook can only move in the same rank or file
 	}
 
-	if (!board.isReachable(srcSquare, dstSquare))
+	if (!BoardAnalyzer::isReachable(board, srcSquare, dstSquare))
 	{
 		// A rook cannot jump over other pieces
 		return false;
 	}
 
-	const PieceColor color = moveHistory.size() % 2 == 0
+	const Color color = moveHistory.getAllMoves().size() % 2 == 0
 		? COLOR_WHITE : COLOR_BLACK;
 
-	if (!board.isOccupiableBy(dstSquare, color))
+	if (!BoardAnalyzer::isOccupiableBy(board, dstSquare, color))
 	{
 		// The final square is occupied by a piece of our side
 		 return false;

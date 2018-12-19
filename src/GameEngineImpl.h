@@ -6,7 +6,7 @@
 #include <PossibleMove.h>
 #include <Square.h>
 
-#include "GameImpl.h"
+#include "LockedGameImpl.h"
 
 #include <atomic>
 #include <cstdint>
@@ -26,7 +26,7 @@ namespace simplechess
 
 			Game createNewGame();
 
-			Game deleteGame(uint32_t id);
+			void deleteGame(uint32_t id);
 
 			void exportGame(uint32_t id, const std::string& outFile) const;
 
@@ -36,12 +36,13 @@ namespace simplechess
 			Game makeMove(uint32_t id, const Move& move);
 
 		private:
-			std::map<uint32_t, std::shared_ptr<GameImpl>> mAllGames;
+			std::map<uint32_t, std::shared_ptr<LockedGameImpl>> mAllGames;
 
 			// Mutex for when inserting a new game into mAllGames
 			mutable std::mutex mAdditionMutex;
 			static std::atomic<uint32_t> mNextGameId;
 	};
 };
+
 
 #endif

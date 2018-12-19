@@ -8,17 +8,15 @@ namespace simplechess
 	class MoveBehaviourPawn : public MoveBehaviour
 	{
 		public:
-			MoveBehaviourPawn();
-
 			virtual std::vector<PossibleMove> possibleMoves(
 					const Square& srcSquare,
-					const BoardImpl& board,
-					const std::vector<Move>& moveHistory) const;
+					const Board& board,
+					const MoveHistory& moveHistory) const;
 
 			virtual bool isValidMove(
 					const Move& move,
-					const BoardImpl& board,
-					const std::vector<Move>& moveHistory) const;
+					const Board& board,
+					const MoveHistory& moveHistory) const;
 
 			virtual std::unique_ptr<MoveBehaviour> clone() const;
 	};
