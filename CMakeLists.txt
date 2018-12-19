@@ -2,13 +2,22 @@ cmake_minimum_required(VERSION 3.9)
 project(simple-chess-games VERSION 0.0.1 DESCRIPTION "Simple library to play chess games")
 add_library(simple-chess-games SHARED
 	src/Board.cpp
+	src/BoardUtils.cpp
 	src/BoardAnalyzer.cpp
 	src/GameEngine.cpp
-	src/gameengine.cpp
 	src/GameEngineImpl.cpp
+	src/Game.cpp
 	src/GameImpl.cpp
-	src/PieceImpl.cpp
-	src/movebehaviour/MoveBehaviour.cpp)
+	src/MoveMap.cpp
+	src/MoveHistory.cpp
+	src/movebehaviour/MoveBehaviour.cpp
+	src/movebehaviour/MoveBehaviourPawn.cpp
+	src/movebehaviour/MoveBehaviourRook.cpp
+	src/movebehaviour/MoveBehaviourKnight.cpp
+	src/movebehaviour/MoveBehaviourBishop.cpp
+	src/movebehaviour/MoveBehaviourQueen.cpp
+	src/movebehaviour/MoveBehaviourKing.cpp
+	)
 
 set(COMMON_FLAGS -std=c++11 -Wall -Wextra -Wpedantic -Werror)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

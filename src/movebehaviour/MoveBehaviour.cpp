@@ -3,20 +3,10 @@
 
 using namespace simplechess;
 
-MoveBehaviour::MoveBehaviour(PieceType type)
-	: mPieceType(type)
-{
-}
-
-PieceType MoveBehaviour::pieceType() const
-{
-	return mPieceType;
-}
-
 bool MoveBehaviour::isValidPossibleMove(
 		const PossibleMove& possibleMove,
-		const BoardImpl& board,
-		const std::vector<Move>& moveHistory) const
+		const Board& board,
+		const MoveHistory& moveHistory) const
 {
 	switch (possibleMove.moveType())
 	{

@@ -1,4 +1,5 @@
 #include "BoardAnalyzer.h"
+#include "MoveMap.h"
 
 #include <Exception.h>
 
@@ -10,10 +11,32 @@ using namespace simplechess;
 bool BoardAnalyzer::isSquareThreatenedBy(
 		const Board& board,
 		const Square& square,
-		PieceColor color)
+		Color color,
+		const MoveHistory& moveHistory)
 {
-	//TODO
-	return true;
+	for (const auto& squarePiece : board.mPiecePositions)
+	{
+		const Square& srcSquare = squarePiece.first;
+		const Piece& piece = squarePiece.second;
+
+		if (piece.color() != color)
+		{
+			continue;
+		}
+
+		const std::vector<PossibleMove> possibleMoves
+			= MoveMap::getBehaviourForPiece(
+					piece.type()).possibleMoves(srcSquare, board, moveHistory);
+
+		for (const auto& move : possibleMoves)
+		{
+			if (move.finalSquare() == square) {
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
 
 bool BoardAnalyzer::isEmpty(const Board& board, const Square& square)
@@ -22,7 +45,7 @@ bool BoardAnalyzer::isEmpty(const Board& board, const Square& square)
 }
 
 bool BoardAnalyzer::isOccupiableBy(
-		const Board& board, const Square& dstSquare, PieceColor color)
+		const Board& board, const Square& dstSquare, Color color)
 {
 	// A piece of a given color can move into a square if it is free or
 	// occupied by a piece of the other color
@@ -31,7 +54,7 @@ bool BoardAnalyzer::isOccupiableBy(
 }
 
 bool BoardAnalyzer::isOccupiedByPieceOfColor(
-		const Board& board, const Square& dstSquare, PieceColor color)
+		const Board& board, const Square& dstSquare, Color color)
 {
 	return isEmpty(board, dstSquare) != 0
 		&& board.pieceAt(dstSquare)->color() == color;
@@ -122,7 +145,7 @@ bool BoardAnalyzer::isReachable(
 	return false;
 }
 
-const Square& BoardAnalyzer::kingSquare(const Board& board, PieceColor color)
+const Square& BoardAnalyzer::kingSquare(const Board& board, Color color)
 {
 	for (const auto& entry : board.mPiecePositions)
 	{

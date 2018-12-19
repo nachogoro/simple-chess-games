@@ -5,35 +5,36 @@
 using namespace simplechess;
 
 GameEngine::GameEngine()
-	: mInternalGameEngine(new GameEngineImpl())
+	: mImpl(new GameEngineImpl())
 { }
 
 Game GameEngine::createGameFromFile(const std::string& inputFile)
 {
-	return mInternalGameEngine->createGameFromFile(inputFile);
+	return mImpl->createGameFromFile(inputFile);
 }
 
 Game GameEngine::createNewGame()
 {
-	return mInternalGameEngine->createNewGame();
+	return mImpl->createNewGame();
 }
 
-Game GameEngine::deleteGame(uint32_t id)
+void GameEngine::deleteGame(uint32_t id)
 {
-	return mInternalGameEngine->deleteGame(id);
+	mImpl->deleteGame(id);
+}
 
-void GameEngine::exportGame(uint32_t id, const std::string& outFile)
+void GameEngine::exportGame(uint32_t id, const std::string& outFile) const
 {
-	mInternalGameEngine->exportGame(id, outFile);
+	mImpl->exportGame(id, outFile);
 }
 
 std::vector<PossibleMove> GameEngine::possibleMoves(
-		uint32_t id, const Square& srcSquare)
+		uint32_t id, const Square& srcSquare) const
 {
-	return mInternalGameEngine->possibleMoves(id, srcSquare);
+	return mImpl->possibleMoves(id, srcSquare);
 }
 
 Game GameEngine::makeMove(uint32_t id, const Move& move)
 {
-	return mInternalGameEngine->makeMove(id, move);
+	return mImpl->makeMove(id, move);
 }

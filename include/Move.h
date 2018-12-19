@@ -28,7 +28,9 @@ namespace simplechess
 		MOVE_REGULAR,
 		MOVE_PAWN_PROMOTION,
 		MOVE_CASTLE_KING_SIDE,
-		MOVE_CASTLE_QUEEN_SIDE
+		MOVE_CASTLE_QUEEN_SIDE,
+		RESIGN,
+		ACCEPT_DRAW
 	};
 
 	/**
@@ -46,11 +48,14 @@ namespace simplechess
 			 * \param srcSquare The \ref Square in which the piece is
 			 * originally.
 			 * \param dstSquare The \ref Square to which the piece is moving.
+			 * \param drawOffered Whether a draw is being offered to the
+			 * oponent.
 			 * \return The constructed \c Move.
 			 */
 			static Move regularMove(
 					const Square& srcSquare,
-					const Square& dstSquare);
+					const Square& dstSquare,
+					bool drawOffered);
 
 			/**
 			 * \brief Factory method to create a pawn-promotion \c Move.
@@ -59,12 +64,15 @@ namespace simplechess
 			 * originally.
 			 * \param dstSquare The \ref Square to which the piece is moving.
 			 * \param promotedType The new type of the promoted pawn.
+			 * \param drawOffered Whether a draw is being offered to the
+			 * oponent.
 			 * \return The constructed \c Move.
 			 */
 			static Move pawnPromotion(
 					const Square& srcSquare,
 					const Square& dstSquare,
-					PieceType promotedType);
+					PieceType promotedType,
+					bool drawOffered);
 
 			/**
 			 * \brief Factory method to create a castling \c Move.
@@ -72,11 +80,31 @@ namespace simplechess
 			 * \param srcSquare The \ref Square in which the piece is
 			 * originally.
 			 * \param castlingSide The side for the castling.
+			 * \param drawOffered Whether a draw is being offered to the
+			 * oponent.
 			 * \return The constructed \c Move.
 			 */
 			static Move castle(
 					const Square& srcSquare,
-					CastlingSide castlingSide);
+					CastlingSide castlingSide,
+					bool drawOffered);
+
+			/**
+			 * \brief Factory method to accept an oponent's draw.
+			 *
+			 * This move can only be played if the oponent has offered a draw
+			 * in his last move.
+			 *
+			 * \return The constructed \c Move representing the draw.
+			 */
+			static Move acceptDraw();
+
+			/**
+			 * \brief Factory method to resign from the game.
+			 *
+			 * \return The constructed \c Move representing the resignation.
+			 */
+			static Move resign();
 
 			/**
 			 * \brief Factory method to create a \c Move from its string
@@ -112,15 +140,15 @@ namespace simplechess
 			MoveType moveType() const;
 
 			/**
-			 * \brief Returns the original \ref Square of the moved piece.
+			 * \brief Returns the original \ref Square of the moved piece, if
+			 * any piece is moved.
 			 *
 			 * In the case of castling, this is the original square of the
 			 * king.
 			 *
-			 * \return The original \c Square of the moved piece, if any piece
-			 * is moved.
+			 * \return The original \c Square of the moved piece.
 			 */
-			const Square& originSquare() const;
+			const boost::optional<Square>& originSquare() const;
 
 			/**
 			 * \brief Returns the final \ref Square of the moved piece, if
@@ -128,10 +156,9 @@ namespace simplechess
 			 *
 			 * In the case of castling, this is the final square of the king.
 			 *
-			 * \return The final \c Square of the moved piece, if any piece is
-			 * moved.
+			 * \return The final \c Square of the moved piece.
 			 */
-			const Square& finalSquare() const;
+			const boost::optional<Square>& finalSquare() const;
 
 			/**
 			 * \brief Returns the piece to which the pawn being moved is
@@ -145,17 +172,29 @@ namespace simplechess
 			 */
 			const boost::optional<PieceType>& promoted() const;
 
+			/**
+			 * \brief Whether the player offers a draw with this move.
+			 *
+			 * If a draw is offered, the oponent is allowed to make an
+			 * ACCEPT_DRAW move in the immediately next turn.
+			 *
+			 * \return \c true if a draw is being offered, \c false otherwise.
+			 */
+			bool isDrawOffered() const;
+
 		private:
 			Move(
 					MoveType type,
 					const boost::optional<Square>& srcSquare,
 					const boost::optional<Square>& dstSquare,
-					const boost::optional<PieceType>& promoted);
+					const boost::optional<PieceType>& promoted,
+					bool drawOffered);
 
 			MoveType mType;
 			boost::optional<Square> mSrcSquare;
 			boost::optional<Square> mDstSquare;
 			boost::optional<PieceType> mPromoted;
+			bool mDrawOffered;
 			std::string mAlgebraicNotation;
 	};
 }

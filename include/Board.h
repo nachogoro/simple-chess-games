@@ -10,8 +10,6 @@
 
 namespace simplechess
 {
-	class BoardAnalyzer;
-
 	/**
 	 * \brief A representation of a chess board.
 	 */
@@ -40,6 +38,7 @@ namespace simplechess
 		private:
 			std::map<Square, Piece> mPiecePositions;
 			friend class BoardAnalyzer;
+			friend class BoardUtils;
 	};
 }
 

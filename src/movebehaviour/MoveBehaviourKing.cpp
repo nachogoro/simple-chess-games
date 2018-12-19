@@ -1,12 +1,7 @@
 #include "MoveBehaviourKing.h"
+#include "BoardAnalyzer.h"
 
 using namespace simplechess;
-
-MoveBehaviourKing::MoveBehaviourKing()
-	: MoveBehaviour(TYPE_KING)
-{
-}
-
 
 std::unique_ptr<MoveBehaviour> MoveBehaviourKing::clone() const
 {
@@ -16,8 +11,8 @@ std::unique_ptr<MoveBehaviour> MoveBehaviourKing::clone() const
 
 std::vector<PossibleMove> MoveBehaviourKing::possibleMoves(
 		const Square& srcSquare,
-		const BoardImpl& board,
-		const std::vector<Move>& moveHistory) const
+		const Board& board,
+		const MoveHistory& moveHistory) const
 {
 	// A king can move one square in any direction.
 	// It can also castle with a rook if:
@@ -50,11 +45,11 @@ std::vector<PossibleMove> MoveBehaviourKing::possibleMoves(
 		}
 	}
 
-	const PieceColor color = moveHistory.size() % 2 == 0
+	const Color color = moveHistory.getAllMoves().size() % 2 == 0
 		? COLOR_WHITE : COLOR_BLACK;
 
 	// Add castling
-	if (!board.pieceAt(srcSquare).hasEverMoved())
+	if (!moveHistory.hasEverMoved(srcSquare))
 	{
 		allMovesInEmptyBoard.push_back(
 				PossibleMove::castle(srcSquare, CASTLING_QUEEN_SIDE));
@@ -77,8 +72,8 @@ std::vector<PossibleMove> MoveBehaviourKing::possibleMoves(
 
 bool MoveBehaviourKing::isValidMove(
 		const Move& move,
-		const BoardImpl& board,
-		const std::vector<Move>& moveHistory) const
+		const Board& board,
+		const MoveHistory& moveHistory) const
 {
 	if (move.moveType() == MOVE_PAWN_PROMOTION)
 	{
@@ -95,16 +90,16 @@ bool MoveBehaviourKing::isValidMove(
 		return false;
 	}
 
-	const PieceColor color = moveHistory.size() % 2 == 0
+	const Color color = moveHistory.getAllMoves().size() % 2 == 0
 		? COLOR_WHITE : COLOR_BLACK;
 
-	const PieceColor rivalColor = color == COLOR_WHITE
+	const Color rivalColor = color == COLOR_WHITE
 		? COLOR_BLACK : COLOR_WHITE;
 
 
 	if (move.moveType() == MOVE_REGULAR)
 	{
-		if (board.isThreatenedBy(dstSquare, rivalColor)
+		if (BoardAnalyzer::isSquareThreatenedBy(board, dstSquare, rivalColor, moveHistory)
 				|| std::abs(srcSquare.rank() - dstSquare.rank()) > 1
 				|| std::abs(srcSquare.file() - dstSquare.file()) > 1)
 		{
@@ -119,7 +114,7 @@ bool MoveBehaviourKing::isValidMove(
 	}
 
 	// At this point we are dealing with castling
-	if (board.pieceAt(srcSquare).hasEverMoved())
+	if (moveHistory.hasEverMoved(srcSquare))
 	{
 		// The king cannot have moved for castling
 		return false;
@@ -149,16 +144,16 @@ bool MoveBehaviourKing::isValidMove(
 		}
 	}
 
-	if (board.isEmpty(rookSquare)
-			|| board.pieceAt(rookSquare).hasEverMoved()
-			|| board.pieceAt(rookSquare).pieceType() != TYPE_ROOK
-			|| board.pieceAt(rookSquare).pieceColor() != color)
+	if (BoardAnalyzer::isEmpty(board, rookSquare)
+			|| board.pieceAt(rookSquare)->type() != TYPE_ROOK
+			|| board.pieceAt(rookSquare)->color() != color
+			|| moveHistory.hasEverMoved(rookSquare))
 	{
 		// The rook cannot have moved from its original position
 		return false;
 	}
 
-	if (!board.isReachable(srcSquare, rookSquare))
+	if (!BoardAnalyzer::isReachable(board, srcSquare, rookSquare))
 	{
 		// There can be no pieces between the rook and the king for castling
 		return false;
@@ -169,12 +164,16 @@ bool MoveBehaviourKing::isValidMove(
 	char file = srcSquare.file() + fileStep;
 	while(file != dstSquare.file())
 	{
-		if (board.isThreatenedBy(
+		if (BoardAnalyzer::isSquareThreatenedBy(
+					board,
 					Square::instantiateWithRankAndFile(srcSquare.rank(), file),
-					rivalColor))
+					rivalColor,
+					moveHistory))
 		{
 			return false;
 		}
+
+		file += fileStep;
 	}
 
 	return true;
