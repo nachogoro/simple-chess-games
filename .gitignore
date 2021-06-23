@@ -26,6 +26,7 @@ bin/
 
 # Compiled Dynamic libraries
 *.so
+*.so.*
 *.dylib
 *.dll
 
@@ -43,3 +44,19 @@ bin/
 *.exe
 *.out
 *.app
+run_tests
+
+# CMake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+*_include.cmake
+*_tests.cmake
