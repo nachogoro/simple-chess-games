@@ -20,8 +20,8 @@ namespace simplechess
 			 *
 			 * The method is case insensitive.
 			 *
-			 * \throws Exception if the rank or the file are out of their valid
-			 * range.
+			 * \throws \ref std::invalid_argument if the rank or the file are
+			 * outside of their valid range.
 			 *
 			 * \param rank The rank of the square (a number between 1 and 8).
 			 * \param file The file of the square (a letter between a and h,
@@ -38,8 +38,8 @@ namespace simplechess
 			 *
 			 * The method is case insensitive.
 			 *
-			 * \throws Exception if the rank or the file are out of their valid
-			 * range.
+			 * \throws \ref std::invalid_argument if \p algebraicSquare does
+			 * not represent a valid square in algebraic notation.
 			 *
 			 * \param algebraicSquare A string representing a square in
 			 * algebraic notation.
@@ -52,7 +52,7 @@ namespace simplechess
 			 * \brief Whether the given rank and file are inside the valid
 			 * range.
 			 * \param rank The rank of the square (a number between 1 and 8).
-			 * \param file The file of the square (a letter between a and h).
+			 * \param file The file of the square (a letter between 'a' and 'h').
 			 * \return \c true if it is inside the boundaries of the board, \c
 			 * false otherwise.
 			 */

@@ -1,6 +1,7 @@
 #ifndef BOARD_H_060630C0_3ADF_4CCD_B96C_1728BF67C017
 #define BOARD_H_060630C0_3ADF_4CCD_B96C_1728BF67C017
 
+#include "Move.h"
 #include "Piece.h"
 #include "Square.h"
 
@@ -16,6 +17,17 @@ namespace simplechess
 	class Board
 	{
 		public:
+			/**
+			 * Returns the board represented by the Forsyth-Edwards
+			 * Notation string provided.
+			 *
+			 * \param fen The representation of the board in Forsyth-Edwards
+			 * Notation.
+			 * \return A \c Board equivalent to the provided \p fen
+			 * description.
+			 */
+			static Board fromFen(const std::string& fen);
+
 			/**
 			 * \brief Constructor.
 			 *
@@ -35,10 +47,15 @@ namespace simplechess
 			 */
 			boost::optional<Piece> pieceAt(const Square& square) const;
 
+			/**
+			 * \brief Returns the description of the state of the board in
+			 * Forsyth-Edwards Notation.
+			 * \return The description of the state of the board in FEN format.
+			 */
+			std::string fen() const;
+
 		private:
 			std::map<Square, Piece> mPiecePositions;
-			friend class BoardAnalyzer;
-			friend class BoardUtils;
 	};
 }
 

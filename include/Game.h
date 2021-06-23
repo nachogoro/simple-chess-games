@@ -11,88 +11,94 @@
 
 namespace simplechess
 {
-	/**
-	 * \brief The possible endings of a chess game.
-	 */
-	enum GameEnding
+	enum GameState
 	{
-		ENDING_WHITE_WINS,
-		ENDING_BLACK_WINS,
-		ENDING_DRAW
+		GAME_STATE_PLAYING,
+		GAME_STATE_DRAWN,
+		GAME_STATE_WHITE_WON,
+		GAME_STATE_BLACK_WON
 	};
 
 	/**
-	 * \brief A representation of a chess game at a given moment.
+	 * \brief A representation of a game of chess at a given point.
 	 */
 	class Game
 	{
 		public:
 			/**
-			 * \brief Constructor.
+			 * \brief Factory method to create a new game from the standard
+			 * starting position.
 			 *
-			 * \param id A unique ID for the \c Game.
-			 * \param board The current state of the board.
-			 * \param moveHistory All the moves made in the game until now.
-			 * \param capturedPieces All the captured pieces in the game.
+			 * \return The constructed Game.
 			 */
-			Game(
-					const uint32_t id,
-					const Board& board,
-					const std::vector<Move>& moveHistory,
-					const std::vector<Piece>& capturedPieces);
+			static Game createNewGame();
 
 			/**
-			 * \brief Returns the ID of the \c Game, which identifies it before
-			 * \ref GameEngine.
+			 * \brief Factory method to create a new game from a given board
+			 * position.
 			 *
-			 * \return The ID of the \c Game.
+			 * The original position of the board is given as a string in
+			 * Forsyth-Edwards Notation.
+			 *
+			 * \note FEN descriptions only give limited information about the
+			 * history of the game. In particular, one cannot enforce certain
+			 * drawing rules (50-move rule or the triplefold repetition), nor
+			 * can it be inferred which pieces have been captured through the
+			 * game. Hence, the history of the resulting \ref Game will not
+			 * necessarily be of much use.
+			 *
+			 * \return The constructed Game.
 			 */
-			uint32_t id() const;
+			static Game createGameFromStartingFen();
 
 			/**
-			 * \brief Returns the current state of the \ref Board.
-			 * \return The current state of the \c Board.
+			 * \brief Returns the current state of the game.
+			 *
+			 * \return The current state of the game.
 			 */
-			const Board& board() const;
+			GameState gameState() const;
 
 			/**
-			 * \brief Returns the winner of the game.
+			 * Returns the latest board position of the game.
 			 *
-			 * If the game is not over, an empty optional is returned.
-			 *
-			 * \return The winner of the fame or an empty optional if the game
-			 * is not over.
+			 * \return The latest board position of the game.
 			 */
-			boost::optional<GameEnding> gameWinner() const;
+			const Board& currentPosition() const;
 
 			/**
-			 * \brief Returns the next color to make a move.
+			 * \brief Returns the \ref Color of the player whose turn it is to
+			 * play.
 			 *
-			 * If the game is over, an empty optional is returned.
+			 * \throws IllegalStateException if the game is finished.
 			 *
-			 * \return The next color to make a move or an empty optional if
-			 * the game is over.
+			 * \return The player whose it is to play.
 			 */
-			boost::optional<Color> nextPlayer() const;
+			Color currentPlayer() const;
 
 			/**
-			 * \brief Returns all the moves made in the game.
-			 * \return All the moves made in the game.
+			 * \brief Returns all the possible \c Move for a given piece in the
+			 * board.
+			 *
+			 * If the square is empty or does not contain a piece of the player
+			 * whose turn it is to play, an empty set is returned.
+			 *
+			 * \note Castling is considered a King's move, so it's only listed
+			 * as such.
+			 *
+			 * \param square The \ref Square whose piece is being queried.
+			 * \return All the possible moves for the piece.
 			 */
-			const std::vector<Move>& moveHistory() const;
+			std::set<Move> availableMovesForPiece(const Square& square) const;
 
 			/**
-			 * \brief Returns all the captured pieces in the game.
-			 * \return All the captured pieces in the game.
+			 * \brief Returns all available moves for the player whose turn it
+			 * is to play.
+			 *
+			 * \return All the possible moves for the current player.
 			 */
-			const std::vector<Piece>& capturedPieces() const;
+			std::set<Move> allAvailableMoves() const;
 
-		private:
-			uint32_t mId;
-			Board mBoard;
-			std::vector<Move> mMoveHistory;
-			std::vector<Piece> mCapturedPieces;
-	};
-};
+	}
+}
 
 #endif
