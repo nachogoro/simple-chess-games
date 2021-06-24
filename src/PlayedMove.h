@@ -5,10 +5,14 @@
 #include "PieceMove.h"
 #include "Square.h"
 
+#include <boost/optional.hpp>
+
 #include <string>
 
 namespace simplechess
 {
+
+	class PlayedMoveFactory;
 
 	/**
 	 * The different types of check which can be caused by a move.
@@ -36,9 +40,10 @@ namespace simplechess
 	 * \brief Describes a move that has been played in a game of chess.
 	 *
 	 * A played move is defined both by the "abstract" piece movement
-	 * information (e.g. "The bishop on b5 moved to c6") as well as the context
-	 * of the game when it was played (e.g. "The bishop captured a rook", "The
-	 * move included a draw offer", "The move resulted in checkmate", etc.).
+	 * information (e.g. "The bishop on b5 moved to c6") as well as context
+	 * of the situation when it was played (e.g. "The bishop captured a rook",
+	 * "The move included a draw offer", "The move resulted in checkmate",
+	 * etc.).
 	 */
 	class PlayedMove
 	{
@@ -99,15 +104,7 @@ namespace simplechess
 					CheckType checkType,
 					const std::string& algebraicNotation);
 
-			friend PlayedMove instantiateMoveFromAlgebraicNotation(
-					const Board& board,
-					const std::string& algebraicNotation);
-
-			friend PlayedMove instantiateMove(
-					const PieceMove& pieceMove,
-					const boost::optional<Piece>& capturedPiece,
-					bool drawOffered,
-					CheckType checkType);
+			friend class PlayedMoveFactory;
 
 			const PieceMove mPieceMove;
 			const boost::optional<Piece> mCapturedPiece;

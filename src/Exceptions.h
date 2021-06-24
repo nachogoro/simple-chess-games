@@ -2,6 +2,7 @@
 #define EXCEPTION_H_797BE592_5F71_439B_A718_D0FDD651FED7
 
 #include <string>
+#include <stdexcept>
 
 namespace simplechess
 {

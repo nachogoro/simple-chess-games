@@ -7,11 +7,15 @@
 #include <boost/optional.hpp>
 
 #include <map>
+#include <vector>
 
 namespace simplechess
 {
 	/**
 	 * \brief A representation of a chess board.
+	 *
+	 * This representation is absent of any context beyond the position of the
+	 * pieces on the board.
 	 */
 	class Board
 	{
@@ -34,6 +38,17 @@ namespace simplechess
 			 * optional if the square is empty.
 			 */
 			boost::optional<Piece> pieceAt(const Square& square) const;
+
+			/**
+			 * \brief Returns an ordered collection of all occupied squares.
+			 *
+			 * The order is defined similar to the one used for Forsyth-Edwards
+			 * Notation (in descending order of ranks, and inside a rank in
+			 * ascending order of file).
+			 *
+			 * \return An ordered collection of all occupied squares.
+			 */
+			std::vector<Square> occupiedSquares() const;
 
 		private:
 			std::map<Square, Piece> mPiecePositions;

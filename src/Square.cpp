@@ -1,5 +1,6 @@
 #include <Square.h>
-#include <Exception.h>
+
+#include <stdexcept>
 #include <cctype>
 
 using namespace simplechess;
@@ -8,7 +9,7 @@ Square Square::instantiateWithRankAndFile(uint8_t rank, char file)
 {
 	if (!isInsideBoundaries(rank, file))
 	{
-		throw Exception("Square is outside the boundaries: "
+		throw std::invalid_argument("Square is outside the boundaries: "
 				+ std::to_string(rank) + std::to_string(file));
 	}
 
@@ -17,8 +18,16 @@ Square Square::instantiateWithRankAndFile(uint8_t rank, char file)
 
 Square Square::instantiateFromString(const std::string& algebraicSquare)
 {
-	// TODO
-	return Square(1, 'a');
+	if (algebraicSquare.size() != 2
+			|| !std::isalpha(algebraicSquare[0])
+			|| !std::isdigit(algebraicSquare[1]))
+	{
+		throw std::invalid_argument(algebraicSquare + " is not a valid square");
+	}
+
+	return instantiateWithRankAndFile(
+			algebraicSquare[0],
+			static_cast<uint8_t>(algebraicSquare[1] - '0'));
 }
 
 bool Square::isInsideBoundaries(int rank, char file)
@@ -39,13 +48,14 @@ bool Square::operator!=(const Square& rhs) const
 
 bool Square::operator<(const Square& rhs) const
 {
-	if (rank() < rhs.rank())
+	if (rank() > rhs.rank())
+	{
 		return true;
+	} else if (rank() < rhs.rank()) {
+		return false;
+	}
 
-	if (file() < rhs.file())
-		return true;
-
-	return false;
+	return file() < rhs.file();
 }
 
 uint8_t Square::rank() const
@@ -60,6 +70,5 @@ char Square::file() const
 
 std::string Square::toString() const
 {
-	// TODO
-	return "1a";
+	return std::to_string(file()) + std::to_string(rank());
 }

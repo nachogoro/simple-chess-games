@@ -76,8 +76,12 @@ namespace simplechess
 			/**
 			 * \brief Less-than comparison operator.
 			 *
-			 * It does not represent any meaningful comparison, but is needed
-			 * to use \ref Square as the key of a map.
+			 * For the purpose of this library, \ref Square objects are ordered
+			 * using a criterion similar to that of Forsyth-Edwards Notation:
+			 * - The primary criterion is the rank: the higher the rank, the
+			 *   smaller the \c Square.
+			 * - The secondary criterion is the file: the smaller the file, the
+			 *   smaller the \c Square.
 			 *
 			 * \param rhs The \c Square to be compared against.
 			 * \return \c true if this \c Square compares to less-than \a rhs,
@@ -107,8 +111,6 @@ namespace simplechess
 			Square(uint8_t rank, char file);
 			uint8_t mRank;
 			char mFile;
-
-			friend class AlgebraicNotationParser;
 	};
 }
 

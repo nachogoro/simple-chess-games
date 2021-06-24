@@ -83,7 +83,7 @@ namespace simplechess
 			 * \param promotedType The new type of the promoted pawn.
 			 * \return The constructed \c PieceMove.
 			 */
-			static Move pawnPromotion(
+			static PieceMove pawnPromotion(
 					const Piece& piece,
 					const Square& src,
 					const Square& dst,
@@ -127,6 +127,12 @@ namespace simplechess
 			const boost::optional<PieceType>& promoted() const;
 
 		private:
+			PieceMove(
+					const Piece& piece,
+					const Square& src,
+					const Square& dst,
+					const boost::optional<PieceType>& promotedType);
+
 			const Piece mPiece;
 			const Square mSrc;
 			const Square mDst;

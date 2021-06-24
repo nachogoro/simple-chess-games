@@ -13,14 +13,14 @@ namespace simplechess
 	};
 
 	/**
-	 * \brief A step in the development of a game of chess.
+	 * \brief A stage in the development of a game of chess.
 	 *
-	 * This step is defined as the position of the pieces on the board, plus
+	 * This stage is defined as the position of the pieces on the board, plus
 	 * additional context from the game which cannot be inferred from it (which
 	 * color plays the next move, what castling rights remain, etc.), along
-	 * with the move which was last played to achieve the stage.
+	 * with the move which was last played to achieve the position.
 	 */
-	class Step
+	class GameStage
 	{
 		public:
 			/**
@@ -37,7 +37,7 @@ namespace simplechess
 			 * \param move The latest move played to reach this point. Should
 			 * be empty if no move has been played yet.
 			 */
-			Step(const Board& board,
+			GameStage(const Board& board,
 					Color toPlay,
 					uint8_t castlingRights,
 					uint16_t halfmoveClock,
@@ -87,12 +87,15 @@ namespace simplechess
 			const std::string& fen() const;
 
 		private:
+			std::string generateFen() const;
+
 			const Board mBoard;
 			const Color mActiveColor;
 			const uint8_t mCastlingRights;
 			const uint16_t mHalfmoveClock;
 			const uint16_t mFullmoveClock;
 			const boost::optional<PlayedMove> mMove;
+			const std::string mFen;
 	};
 }
 

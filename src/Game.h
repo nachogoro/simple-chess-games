@@ -187,8 +187,7 @@ namespace simplechess
 
 		private:
 			const GameState mGameState;
-			const std::vector<Step> mHistory;
-
+			const std::vector<GameStage> mHistory;
 	}
 }
 
