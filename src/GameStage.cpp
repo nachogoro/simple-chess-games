@@ -140,20 +140,73 @@ std::string GameStage::generateFen() const
 
 		ss << "/";
 	}
+
 	// 2. Active color. "w" means White moves next, "b" means Black moves next.
+	ss << " ";
+	ss << (activeColor() == COLOR_WHITE)
+		? "w"
+		: "b";
+
 	// 3. Castling availability. If neither side can castle, this is "-".
 	// Otherwise, this has one or more letters: "K" (White can castle
 	// kingside), "Q" (White can castle queenside), "k" (Black can castle
 	// kingside), and/or "q" (Black can castle queenside). A move that
 	// temporarily prevents castling does not negate this notation.
+	ss << " ";
+	if (castlingRights() == 0)
+	{
+		ss << "-";
+	}
+	else
+	{
+		if (castlingRights() & CASTLING_RIGHT_WHITE_KINGSIDE != 0)
+		{
+			ss << "K";
+		}
+
+		if (castlingRights() & CASTLING_RIGHT_WHITE_QUEENSIDE != 0)
+		{
+			ss << "Q";
+		}
+
+		if (castlingRights() & CASTLING_RIGHT_BLACK_KINGSIDE != 0)
+		{
+			ss << "k";
+		}
+
+		if (castlingRights() & CASTLING_RIGHT_BLACK_QUEENSIDE != 0)
+		{
+			ss << "q";
+		}
+	}
 	// 4. En passant target square in algebraic notation. If there's no en
 	// passant target square, this is "-". If a pawn has just made a two-square
 	// move, this is the position "behind" the pawn. This is recorded
 	// regardless of whether there is a pawn in position to make an en passant
 	// capture.
+	ss << " ";
+	if (move()
+			&& move()->pieceMove() == TYPE_PAWN
+			&& abs(move->pieceMove().dst().rank()
+					- move->pieceMove().src().rank()) == 2)
+	{
+		ss << move()->pieceMove().dst().file()
+			<< (move()->pieceMove()->piece()->color() == COLOR_WHITE)
+				? 3
+				: 6;
+	}
+	else
+	{
+		ss << "-";
+	}
+
 	// 5. Halfmove clock: The number of halfmoves since the last capture or
 	// pawn advance, used for the fifty-move rule.
+	ss << " " << halfMovesSinceLastCaptureOrPawnAdvance();
+
 	// 6. Fullmove number: The number of the full move. It starts at 1, and is
 	// incremented after Black's move.
+	ss << " " << mFullmoveClock;
 
+	return ss.str();
 }

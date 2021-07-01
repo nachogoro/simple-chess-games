@@ -79,8 +79,6 @@ namespace simplechess
 			 * \brief Returns the \ref Color of the player whose turn it is to
 			 * play.
 			 *
-			 * \throws IllegalStateException if the game is finished.
-			 *
 			 * \return The player whose turn it is to play.
 			 */
 			Color currentPlayer() const;
