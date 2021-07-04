@@ -80,6 +80,11 @@ uint16_t GameStage::halfMovesSinceLastCaptureOrPawnAdvance() const
 	return mHalfmoveClock;
 }
 
+uint16_t GameStage::fullMoveCounter() const
+{
+	return mFullmoveClock;
+}
+
 const std::string& GameStage::fen() const
 {
 	return mFen;

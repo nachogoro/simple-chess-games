@@ -20,6 +20,17 @@ namespace simplechess
 		GAME_STATE_BLACK_WON
 	};
 
+	enum DrawReason
+	{
+		DRAW_REASON_STALEMATE
+		DRAW_REASON_INSUFFICIENT_MATERIAL,
+		DRAW_REASON_OFFERED_AND_ACCEPTED,
+		DRAW_REASON_THREE_FOLD_REPETITION,
+		DRAW_REASON_FIVE_FOLD_REPETITION,
+		DRAW_REASON_50_MOVE_RULE,
+		DRAW_REASON_75_MOVE_RULE,
+	};
+
 	/**
 	 * \brief A representation of a game of chess at a given point.
 	 *
@@ -46,10 +57,12 @@ namespace simplechess
 			 *
 			 * \note FEN descriptions only give limited information about the
 			 * history of the game. In particular, one cannot enforce certain
-			 * drawing rules (50-move rule or the triplefold repetition), nor
-			 * can it be inferred which pieces have been captured through the
-			 * game. Hence, the history of the resulting \ref Game will not
-			 * necessarily be of much use.
+			 * drawing rules (triplefold repetition). Hence, the
+			 * history of the resulting \ref Game will not necessarily be of
+			 * much use.
+			 *
+			 * \throws std::invalid_argument if \p fen is not a valid FEN
+			 * string.
 			 *
 			 * \param fen The representation of the initial position in
 			 * Forsyth-Edwards Notation.
@@ -64,6 +77,17 @@ namespace simplechess
 			 * \return The current state of the game.
 			 */
 			GameState gameState() const;
+
+			/**
+			 * \brief Returns the reason why the game ended in a draw.
+			 *
+			 * \throws IllegalStateException in the following circumstances:
+			 * - The Game has not been drawn (its state is not
+			 *   GAME_STATE_DRAWN).
+			 *
+			 * \return The reason why the game was drawn.
+			 */
+			DrawReason drawReason() const;
 
 			/**
 			 * Returns the history of the game as a sequence of \ref GameStage.
@@ -126,8 +150,9 @@ namespace simplechess
 					bool offerDraw=false) const;
 
 			/**
-			 * \brief Whether the player whose turn it is to play can claim a
-			 * draw.
+			 * \brief Returns an optional value containing the reason under
+			 * which the current player can claim a draw.  If a draw cannot be
+			 * claimed, the optional value is empty.
 			 *
 			 * A draw can be claimed under the following circumstances:
 			 * - If the opponent offered a draw in its immediately previous
@@ -140,7 +165,6 @@ namespace simplechess
 			 *   appears for the third time or when it has just appeared.
 			 * - If no captures or pawn moves have occurred in the last fifty
 			 *   moves.
-			 * - If there is insufficient material for any side to checkmate.
 			 *
 			 * \note The game automatically ends in a draw, without any player
 			 * having to claim it in the following circumstances:
@@ -151,11 +175,12 @@ namespace simplechess
 			 * - If no captures or pawn moves have occurred in the last
 			 *   seventy-five moves (unless the last move results in
 			 *   checkmate).
+			 * - If there is insufficient material for any side to checkmate.
 			 *
 			 * \return \c true if the current player can claim a draw, \c false
 			 * otherwise.
 			 */
-			bool canClaimDraw() const;
+			boost::optional<DrawReason> reasonToClaimDraw() const;
 
 			/**
 			 * \brief Claim a draw.
@@ -163,8 +188,8 @@ namespace simplechess
 			 * \throws IllegalStateException in the following circumstances:
 			 * - The Game has already concluded (its state is not
 			 *   GAME_STATE_PLAYING).
-			 * - The current player cannot claim a draw (\ref canClaimDraw() is
-			 *   \c false)
+			 * - The current player cannot claim a draw (\ref
+			 *   reasonToClaimDraw() is empty)
 			 *
 			 * \return A new copy of the Game, identical to the current one but
 			 * finished as a draw.
@@ -184,6 +209,11 @@ namespace simplechess
 			Game resign(Color resigningPlayer) const;
 
 		private:
+			Game(
+					GameState gameState,
+					boost::optional<DrawReason> drawReason,
+					const GameStage& position);
+
 			const GameState mGameState;
 			const std::vector<GameStage> mHistory;
 	}

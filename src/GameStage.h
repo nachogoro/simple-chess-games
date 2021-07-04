@@ -1,9 +1,16 @@
 #ifndef GAME_STAGE_H_3064169C_7DBE_4CB3_91C2_EFE730CF43BB
 #define GAME_STAGE_H_3064169C_7DBE_4CB3_91C2_EFE730CF43BB
 
+#include <Board.h>
+#include <Piece.h>
+#include <PlayedMove.h>
+
+#include <boost/optional.hpp>
+
+#include <string>
+
 namespace simplechess
 {
-
 	enum CastlingRight
 	{
 		CASTLING_RIGHT_WHITE_KINGSIDE  = (1 << 0),
@@ -78,6 +85,13 @@ namespace simplechess
 			 * advance.
 			 */
 			uint16_t halfMovesSinceLastCaptureOrPawnAdvance() const;
+
+			/** \brief Returns the number of half-moves since the last capture
+			 * or pawn advance.
+			 * \return The number of half-moves since the last capture or pawn
+			 * advance.
+			 */
+			uint16_t fullMoveCounter() const;
 
 			/**
 			 * \brief Returns the description of the state of the board in

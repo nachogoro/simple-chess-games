@@ -68,6 +68,17 @@ char Square::file() const
 	return mFile;
 }
 
+Color Square::color() const
+{
+	// If we 1-index the files, all the squares in which both file and rank are
+	// even or odd are black
+	uint8_t fileIndex = file() - 'a' + 1;
+
+	return ((fileIndex % 2) == (rank() % 2))
+		? COLOR_BLACK
+		: COLOR_WHITE;
+}
+
 std::string Square::toString() const
 {
 	return std::to_string(file()) + std::to_string(rank());

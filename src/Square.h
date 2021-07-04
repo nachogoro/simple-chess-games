@@ -102,6 +102,12 @@ namespace simplechess
 			char file() const;
 
 			/**
+			 * \brief Returns the color of the \c Square.
+			 * \return The color of the \c Square.
+			 */
+			Color color() const;
+
+			/**
 			 * \brief Returns a string representation of the \c Square.
 			 * \return A string representation of the \c Square.
 			 */

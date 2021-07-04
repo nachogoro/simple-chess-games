@@ -45,7 +45,7 @@ Move AlgebraicNotationParser::parseMove(
 	//      - The rank of departure (if files are equal but rank differ, e.g.
 	//        N5f3);
 	//      - Both file and rank of departure (if neither alone is enough to
-	//        identify a piece unambiguously, e.g. Nd7e5)
+	//        identify a piece unambiguously, e.g. Qa1b2)
 	// 7. When a pawn is promoted, the piece to which it promotes is indicated
 	//    at the end of the move (e.g. e8Q)
 	// 8. Castling is indicated with "0-0" for kingside castling and "0-0-0"
