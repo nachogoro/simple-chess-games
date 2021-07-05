@@ -1,7 +1,6 @@
 #include "BoardAnalyzer.h"
-#include "MoveMap.h"
 
-#include <Exception.h>
+#include <Exceptions.h>
 
 #include <algorithm>
 #include <cstdlib>
@@ -10,29 +9,27 @@ using namespace simplechess;
 
 bool BoardAnalyzer::isSquareThreatenedBy(
 		const Board& board,
+		const boost::optional<Square>& enPassantTarget,
+		uint8_t castlingRights,
 		const Square& square,
-		Color color,
-		const MoveHistory& moveHistory)
+		Color color)
 {
-	for (const auto& squarePiece : board.mPiecePositions)
+	if (!isOccupiableBy(board, square, color))
 	{
-		const Square& srcSquare = squarePiece.first;
-		const Piece& piece = squarePiece.second;
+		return false;
+	}
 
-		if (piece.color() != color)
+	const std::set<PieceMove> availableMoves = MoveValidator::allValidMoves(
+			board,
+			enPassantTarget,
+			castlingRights,
+			color);
+
+	for (const auto& move : availableMoves)
+	{
+		if (move.dst() == square)
 		{
-			continue;
-		}
-
-		const std::vector<PossibleMove> possibleMoves
-			= MoveMap::getBehaviourForPiece(
-					piece.type()).possibleMoves(srcSquare, board, moveHistory);
-
-		for (const auto& move : possibleMoves)
-		{
-			if (move.finalSquare() == square) {
-				return true;
-			}
+			return true;
 		}
 	}
 
@@ -77,77 +74,48 @@ bool BoardAnalyzer::isReachable(
 		const Board& board, const Square& src, const Square& dst)
 {
 	if (src.rank() == dst.rank() && src.file() == dst.file()) {
-		throw Exception("A square can always reach itself!");
+		throw std::invalid_argument("A square can always reach itself!");
 	}
 
-	if (src.rank() == dst.rank())
+	if (!isInDiagonal(src, dst) && !isInSameRankOrFile(src, dst))
 	{
-		// They are in the same rank, so they might be connected horizontally
-		const char originFile = std::min(src.file(), dst.file());
-		const char destFile = std::max(src.file(), dst.file());
+		return false;
+	}
 
-		for (char file = originFile + 1; file != destFile; ++file)
+	const uint8_t rankStep =
+		(src.rank() == dst.rank())
+			? 0
+			: (src.rank() > dst.rank())
+				? -1
+				: 1;
+
+	const uint8_t fileStep =
+		(src.file() == dst.file())
+			? 0
+			: (src.file() > dst.file())
+				? -1
+				: 1;
+
+	uint8_t rank = src.rank() + rankStep;
+	char file = src.file() + fileStep;
+
+	while (rank != dst.rank() || file != dst.file())
+	{
+		if (!isEmpty(board, Square::instantiateWithRankAndFile(rank, file)))
 		{
-			if (!isEmpty(board,
-						Square::instantiateWithRankAndFile(src.rank(), file)))
-			{
-				return false;
-			}
+			return false;
 		}
 
-		return true;
+		rank += rankStep;
+		file += fileStep;
 	}
 
-	if (src.file() == dst.file())
-	{
-		// They are in the same file, so they might be connected vertically
-		const uint8_t originRank = std::min(src.rank(), dst.rank());
-		const uint8_t destRank = std::max(src.rank(), dst.rank());
-
-		for (uint8_t rank = originRank + 1; rank != destRank; ++rank)
-		{
-			if (!isEmpty(board,
-						Square::instantiateWithRankAndFile(rank, src.file())))
-			{
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	if (isInDiagonal(src, dst))
-	{
-		// They are in the same diagonal.
-		// Iterate over all squares between src and dst
-		const uint8_t rankStep = dst.rank() - src.rank() > 0 ? 1 : -1;
-		const uint8_t fileStep = dst.file() - src.file() > 0 ? 1 : -1;
-
-		const uint8_t originRank = src.rank() + rankStep;
-		const char originFile = src.file() + fileStep;
-
-		uint8_t rank = originRank;
-		char file = originFile;
-
-		while (rank != dst.rank() && file != dst.file())
-		{
-			if (!isEmpty(board,
-						Square::instantiateWithRankAndFile(rank, file)))
-			{
-				return false;
-			}
-			rank += rankStep;
-			file += fileStep;
-		}
-
-		return true;
-	}
-	return false;
+	return true;
 }
 
 const Square& BoardAnalyzer::kingSquare(const Board& board, Color color)
 {
-	for (const auto& entry : board.mPiecePositions)
+	for (const auto& entry : board.occupiedSquares())
 	{
 		if (entry.second.type() == TYPE_KING
 				&& entry.second.color() == color)
@@ -156,5 +124,5 @@ const Square& BoardAnalyzer::kingSquare(const Board& board, Color color)
 		}
 	}
 
-	throw Exception("At least one king is missing from the board!");
+	throw IllegalStateException("At least one king is missing from the board!");
 }

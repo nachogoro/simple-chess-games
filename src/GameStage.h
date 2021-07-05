@@ -2,6 +2,7 @@
 #define GAME_STAGE_H_3064169C_7DBE_4CB3_91C2_EFE730CF43BB
 
 #include <Board.h>
+#include <Color.h>
 #include <Piece.h>
 #include <PlayedMove.h>
 
@@ -11,6 +12,8 @@
 
 namespace simplechess
 {
+	class Game;
+
 	enum CastlingRight
 	{
 		CASTLING_RIGHT_WHITE_KINGSIDE  = (1 << 0),
@@ -30,27 +33,6 @@ namespace simplechess
 	class GameStage
 	{
 		public:
-			/**
-			 * \brief Constructor.
-			 *
-			 * \param board The state of the board at this stage.
-			 * \param toPlay Color whose turn it is to move.
-			 * \param castlingRights A bit mask of the types of \ref
-			 * CastlingRight available in the position.
-			 * \param halfmoveClock Number of half-moves since the last capture
-			 * or pawn advance.
-			 * \param fullmoveClock The number of the full move, starting at 1
-			 * and being incremented after black's move.
-			 * \param move The latest move played to reach this point. Should
-			 * be empty if no move has been played yet.
-			 */
-			GameStage(const Board& board,
-					Color toPlay,
-					uint8_t castlingRights,
-					uint16_t halfmoveClock,
-					uint16_t fullmoveClock,
-					const boost::optional<PlayedMove>& move);
-
 			/**
 			 * \brief Returns the state of the board in the current stage.
 			 * \return The state of the board in the current stage.
@@ -101,8 +83,34 @@ namespace simplechess
 			const std::string& fen() const;
 
 		private:
+			friend class Game;
+
+			/**
+			 * \brief Constructor.
+			 *
+			 * \param board The state of the board at this stage.
+			 * \param toPlay Color whose turn it is to move.
+			 * \param castlingRights A bit mask of the types of \ref
+			 * CastlingRight available in the position.
+			 * \param halfmoveClock Number of half-moves since the last capture
+			 * or pawn advance.
+			 * \param fullmoveClock The number of the full move, starting at 1
+			 * and being incremented after black's move.
+			 * \param move The latest move played to reach this point. Should
+			 * be empty if no move has been played yet.
+			 */
+			GameStage(const Board& board,
+					Color toPlay,
+					uint8_t castlingRights,
+					uint16_t halfmoveClock,
+					uint16_t fullmoveClock,
+					const boost::optional<PlayedMove>& move);
+
+			GameStage makeMove(const PieceMove& move, bool offerDraw) const;
+
 			std::string generateFen() const;
 
+		private:
 			const Board mBoard;
 			const Color mActiveColor;
 			const uint8_t mCastlingRights;

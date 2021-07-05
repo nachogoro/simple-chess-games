@@ -191,12 +191,12 @@ std::string GameStage::generateFen() const
 	// capture.
 	ss << " ";
 	if (move()
-			&& move()->pieceMove() == TYPE_PAWN
+			&& move()->pieceMove().piece() == TYPE_PAWN
 			&& abs(move->pieceMove().dst().rank()
 					- move->pieceMove().src().rank()) == 2)
 	{
 		ss << move()->pieceMove().dst().file()
-			<< (move()->pieceMove()->piece()->color() == COLOR_WHITE)
+			<< (move()->pieceMove().piece().color() == COLOR_WHITE)
 				? 3
 				: 6;
 	}

@@ -38,6 +38,18 @@ namespace simplechess
 				 */
 				static Piece stringToPiece(char c);
 
+				/**
+				 * \brief Returns a shorter version of the FEN string which can
+				 * be used to check if the position has been reached before
+				 * according to the criterion of the n-fold repetition rule.
+				 *
+				 * \param The full FEN string.
+				 * \return A shorter version of the FEN string suitable to be
+				 * directly compared with others to determine whether the
+				 * positions are the same.
+				 */
+				static std::string fenForRepetitions(const std::string& fen);
+
 			private:
 				boost::bimap<char, Piece> sPieceMap;
 		};

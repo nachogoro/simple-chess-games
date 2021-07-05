@@ -58,3 +58,12 @@ char FenUtils::stringToPiece(const char c)
 
 	return it->second;
 }
+
+std::string FenUtils::fenForRepetitions(const std::string& fen)
+{
+		std::vector<std::string> fenTokens;
+		boost::split(fenTokens, fen,  [](char c) { return c == ' ';});
+		fenTokens.pop_back();
+		fenTokens.pop_back();
+		return boost::algorithm::join(fenTokens, ' ');
+}

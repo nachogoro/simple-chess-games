@@ -1,9 +1,10 @@
 #ifndef GAME_H_AA82C7D6_D956_405F_95B0_8A23678A5041
 #define GAME_H_AA82C7D6_D956_405F_95B0_8A23678A5041
 
-#include "PlayedMove.h"
-#include "Board.h"
-#include "Piece.h"
+#include <Board.h>
+#include <Color.h>
+#include <Piece.h>
+#include <PlayedMove.h>
 
 #include <boost/optional.hpp>
 
@@ -105,7 +106,7 @@ namespace simplechess
 			 *
 			 * \return The player whose turn it is to play.
 			 */
-			Color currentPlayer() const;
+			Color activeColor() const;
 
 			/**
 			 * \brief Returns all the possible \c PieceMove for a given piece
@@ -177,8 +178,11 @@ namespace simplechess
 			 *   checkmate).
 			 * - If there is insufficient material for any side to checkmate.
 			 *
-			 * \return \c true if the current player can claim a draw, \c false
-			 * otherwise.
+			 * \throws \ref IllegalStateException if the state of the game is
+			 * not \ref GAME_STATE_PLAYING.
+			 *
+			 * \return A possible reason to claim a draw if it exists, an empty
+			 * value otherwise.
 			 */
 			boost::optional<DrawReason> reasonToClaimDraw() const;
 
@@ -212,10 +216,16 @@ namespace simplechess
 			Game(
 					GameState gameState,
 					boost::optional<DrawReason> drawReason,
-					const GameStage& position);
+					const std::vector<GameStage>& history);
+
+			const GameStage& currentStage() const;
 
 			const GameState mGameState;
+			const boost::optional<DrawReason> mDrawReason;
 			const std::vector<GameStage> mHistory;
+			// Map of the amount of times each position has been reached.
+			// A position is described as the first four fields of a FEN string
+			const std::map<std::string, uint8_t> mTimesPositionsReached;
 	}
 }
 

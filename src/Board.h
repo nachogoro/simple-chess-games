@@ -40,15 +40,12 @@ namespace simplechess
 			boost::optional<Piece> pieceAt(const Square& square) const;
 
 			/**
-			 * \brief Returns an ordered collection of all occupied squares.
+			 * \brief Returns a relation of all occupied squares and the pieces
+			 * ocuppying them.
 			 *
-			 * The order is defined similar to the one used for Forsyth-Edwards
-			 * Notation (in descending order of ranks, and inside a rank in
-			 * ascending order of file).
-			 *
-			 * \return An ordered collection of all occupied squares.
+			 * \return A collection of all occupied squares.
 			 */
-			std::vector<Square> occupiedSquares() const;
+			std::map<Square, Piece> occupiedSquares() const;
 
 			/**
 			 * \brief Returns a new copy of the state of the board after making

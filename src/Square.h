@@ -1,6 +1,8 @@
 #ifndef SQUARE_H_95959D4D_51F1_4755_A8C4_542B83FBE505
 #define SQUARE_H_95959D4D_51F1_4755_A8C4_542B83FBE505
 
+#include <Color.h>
+
 #include <cstdint>
 #include <string>
 
