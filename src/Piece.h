@@ -45,6 +45,12 @@ namespace simplechess
 			 */
 			Color color() const;
 
+			bool operator==(const Piece& o) const;
+
+			bool operator!=(const Piece& o) const;
+
+			bool operator<(const Piece& o) const;
+
 		private:
 			PieceType mType;
 			Color mColor;

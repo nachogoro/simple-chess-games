@@ -3,12 +3,14 @@
 
 #include <Board.h>
 #include <Color.h>
+#include <Exceptions.h>
 #include <Piece.h>
 #include <PlayedMove.h>
 
 #include <boost/optional.hpp>
 
 #include <cstdint>
+#include <set>
 #include <vector>
 
 namespace simplechess
@@ -23,13 +25,13 @@ namespace simplechess
 
 	enum DrawReason
 	{
-		DRAW_REASON_STALEMATE
+		DRAW_REASON_STALEMATE,
 		DRAW_REASON_INSUFFICIENT_MATERIAL,
 		DRAW_REASON_OFFERED_AND_ACCEPTED,
 		DRAW_REASON_THREE_FOLD_REPETITION,
 		DRAW_REASON_FIVE_FOLD_REPETITION,
 		DRAW_REASON_50_MOVE_RULE,
-		DRAW_REASON_75_MOVE_RULE,
+		DRAW_REASON_75_MOVE_RULE
 	};
 
 	/**
@@ -220,13 +222,13 @@ namespace simplechess
 
 			const GameStage& currentStage() const;
 
-			const GameState mGameState;
-			const boost::optional<DrawReason> mDrawReason;
-			const std::vector<GameStage> mHistory;
+			GameState mGameState;
+			boost::optional<DrawReason> mDrawReason;
+			std::vector<GameStage> mHistory;
 			// Map of the amount of times each position has been reached.
 			// A position is described as the first four fields of a FEN string
-			const std::map<std::string, uint8_t> mTimesPositionsReached;
-	}
+			std::map<std::string, uint8_t> mTimesPositionsReached;
+	};
 }
 
 #endif

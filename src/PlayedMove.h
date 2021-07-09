@@ -11,8 +11,7 @@
 
 namespace simplechess
 {
-
-	class PlayedMoveFactory;
+	class GameStage;
 
 	/**
 	 * The different types of check which can be caused by a move.
@@ -71,7 +70,7 @@ namespace simplechess
 			 * \return \c true if an opponent's piece has been captured in this
 			 * move, \c false otherwise.
 			 */
-			boost::optional<Piece>& capturedPiece() const;
+			const boost::optional<Piece>& capturedPiece() const;
 
 			/**
 			 * \brief The type of check delivered by the move.
@@ -104,13 +103,18 @@ namespace simplechess
 					CheckType checkType,
 					const std::string& algebraicNotation);
 
-			friend class PlayedMoveFactory;
+			static PlayedMove instantiate(
+					const Board& board,
+					const PieceMove& move,
+					bool drawOffered);
 
-			const PieceMove mPieceMove;
-			const boost::optional<Piece> mCapturedPiece;
-			const bool mDrawOffered;
-			const CheckType mCheckType;
-			const std::string mAlgebraicNotation;
+			friend class GameStage;
+
+			PieceMove mPieceMove;
+			boost::optional<Piece> mCapturedPiece;
+			bool mDrawOffered;
+			CheckType mCheckType;
+			std::string mAlgebraicNotation;
 	};
 }
 

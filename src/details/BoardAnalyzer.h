@@ -3,6 +3,11 @@
 
 #include <Board.h>
 #include <Color.h>
+#include <Square.h>
+
+#include <boost/optional.hpp>
+
+#include <set>
 
 namespace simplechess
 {
@@ -19,17 +24,11 @@ namespace simplechess
 				 * piece of color \a color.
 				 *
 				 * A square is considered threatened if a piece of the
-				 * specified \a color could occupy it in a single move.
-				 *
-				 * \note In the case of en passant capture, the threatened
-				 * square is the one "behind" the pawn, as it is the one
-				 * susceptible of being occupied.
+				 * specified \a color could occupy it in a single move if the
+				 * square were to be occupied by a piece of the color opposite
+				 * to \a color.
 				 *
 				 * \param board The board to be inspected.
-				 * \param enPassantTarget The optional \c Square which is
-				 * a target of en passant capture (the one "behind" the pawn).
-				 * \param castlingRights A bit mask of the types of \ref
-				 * CastlingRight available in the position.
 				 * \param square The square being queried.
 				 * \param color The "attacking" color.
 				 * \return \c true if \a square in \a board is threatened by
@@ -37,9 +36,18 @@ namespace simplechess
 				 */
 				static bool isSquareThreatenedBy(
 						const Board& board,
-						const boost::optional<Square>& enPassantTarget,
-						uint8_t castlingRights,
 						const Square& square,
+						Color color);
+
+				/**
+				 * \brief Whether the King of color \a color is in check.
+				 *
+				 * \param board The board to be inspected.
+				 * \param color The color of the King.
+				 * \return \c true if the King is in check, \c false otherwise.
+				 */
+				static bool isInCheck(
+						const Board& board,
 						Color color);
 
 				/**
@@ -90,39 +98,34 @@ namespace simplechess
 						const Board& board, const Square& square, Color color);
 
 				/**
-				 * \brief Whether two squares are connected diagonally.
-				 * \param src One of the squares.
-				 * \param dst The other square.
-				 * \return \c true if they are connected diagonally, \c false
-				 * otherwise.
-				 */
-				static bool isInDiagonal(const Square& src, const Square& dst);
-
-				/**
-				 * \brief Whether two squares are in the same rank or file.
-				 * \param src One of the squares.
-				 * \param dst The other square.
-				 * \return \c true if they are in the same rank or file, \c
-				 * false otherwise.
-				 */
-				static bool isInSameRankOrFile(const Square& src, const Square& dst);
-
-				/**
-				 * \brief Whether there is a clear line of sight between two
-				 * squares, either diagonally, vertically or horizontally.
+				 * \brief Returns all the squares which could be reached by a
+				 * piece of color \a color from \a src by moving in the
+				 * direction specified by \a rankStep and \a fileStep.
 				 *
-				 * A clear line of sight means that both squares are in the
-				 * same file, rank or diagonal line and the squares between
-				 * them are empty (excluding \a src and \dst).
+				 * All squares in a given direction from \a src are reachable
+				 * until:
+				 * - A square is reached which cannot be occupied by a piece of
+				 *   color \a color.
+				 * - The first square occupied by a piece of the opposite color
+				 *   is reached.
+				 * - The end of the board is reached.
 				 *
 				 * \param board The state of the board.
-				 * \param src One of the squares.
-				 * \param dst The other square.
+				 * \param src The square from where the piece would start.
+				 * \param color The color of the moving piece.
+				 * \param rankStep How much would the rank increments in each
+				 * move.
+				 * \param fileStep How much would the file increments in each
+				 * move.
 				 * \return \c true if they are in the same rank or file, \c
 				 * false otherwise.
 				 */
-				static bool isReachable(
-						const Board& board, const Square& src, const Square& dst);
+				static std::set<Square> reachableSquaresInDirection(
+						const Board& board,
+						const Square& src,
+						Color color,
+						int8_t rankStep,
+						int8_t fileStep);
 
 				/**
 				 * \brief Returns the \ref Square occupied by the King of the

@@ -93,18 +93,18 @@ namespace simplechess
 			private:
 				FenParser(
 						const Board& board,
-						Color toPlay,
+						Color activeColor,
 						uint8_t castlingRights,
 						const boost::optional<Square>& enPassantTarget,
 						uint16_t halfmoveClock,
 						uint16_t mFullmoveClock);
 
-				const Board mBoard;
-				const Color mToPlay;
-				const uint8_t mCastlingRights;
-				const boost::optional<Square> mEpTarget;
-				const uint16_t mHalfmoveClock;
-				const uint16_t mFullmoveClock;
+				Board mBoard;
+				Color mActiveColor;
+				uint8_t mCastlingRights;
+				boost::optional<Square> mEpTarget;
+				uint16_t mHalfmoveClock;
+				uint16_t mFullmoveClock;
 		};
 	}
 }

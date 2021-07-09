@@ -1,7 +1,10 @@
 #include "DrawEvaluator.h"
 
-#include "fen/FenUtils.h"
+#include <details/BoardAnalyzer.h>
+#include <details/MoveValidator.h>
+#include <details/fen/FenUtils.h>
 
+using namespace simplechess;
 using namespace simplechess::details;
 
 namespace internal
@@ -90,7 +93,7 @@ namespace internal
 			// Should be unreachable
 			throw std::runtime_error(
 					"Inconsistency when evaluating whether material "
-					+ "is sufficient (bishops)");
+					"is sufficient (bishops)");
 		}
 
 		// One side has only the King and the other has King + some other piece
@@ -135,7 +138,7 @@ boost::optional<DrawReason> DrawEvaluator::reasonToDraw(
 	const std::string relevantFen
 		= FenUtils::fenForRepetitions(stage.fen());
 
-	const timesPositionAppearedPreviously =
+	const uint8_t timesPositionAppearedPreviously =
 		(previouslyReachedPositions.count(relevantFen) != 0)
 			? previouslyReachedPositions.at(relevantFen)
 			: 0;
@@ -148,24 +151,19 @@ boost::optional<DrawReason> DrawEvaluator::reasonToDraw(
 	const std::set<PieceMove> allPossibleMoves
 		= MoveValidator::allAvailableMoves(
 				stage.board(),
-				MoveValidator::enPassantTarget(stage),
+				stage.move()
+					? MoveValidator::enPassantTarget(stage.move()->pieceMove())
+					: boost::optional<Square>{},
 				stage.castlingRights(),
 				stage.activeColor());
 
 	if (allPossibleMoves.size() == 0
-			&& !BoardAnalyzer::isSquareThreatenedBy(
-				stage.board(),
-				MoveValidator::enPassantTarget(stage),
-				stage.castlingRights(),
-				BoardAnalyzer::kingSquare(
-					stage.board(),
-					stage.activeColor()),
-				oppositeColor(stage.activeColor())))
+			&& !BoardAnalyzer::isInCheck(stage.board(), stage.activeColor()))
 	{
 		return { DRAW_REASON_STALEMATE };
 	}
 
-	if (!enoughMatingMaterial(stage.board()))
+	if (!internal::enoughMatingMaterial(stage.board()))
 	{
 		return { DRAW_REASON_INSUFFICIENT_MATERIAL };
 	}
@@ -192,14 +190,16 @@ boost::optional<DrawReason> DrawEvaluator::reasonToDraw(
 
 	for (const auto& move : allPossibleMoves)
 	{
+		// To achieve the hypothetical next stage we don't care about draw
+		// offers
 		const GameStage nextStage
-			= stage.makeMove(pieceMove, offerDraw);
+			= stage.makeMove(move, false);
 
 		const std::string relevantFen
 			= FenUtils::fenForRepetitions(nextStage.fen());
 
-		if (mTimesPositionsReached.count(relevantFen)
-				&& mTimesPositionsReached.at(relevantFen) >= 2)
+		if (previouslyReachedPositions.count(relevantFen)
+				&& previouslyReachedPositions.at(relevantFen) >= 2)
 		{
 			return { DRAW_REASON_THREE_FOLD_REPETITION };
 		}

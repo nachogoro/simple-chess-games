@@ -1,6 +1,213 @@
 #include "PlayedMove.h"
 
+#include <details/BoardAnalyzer.h>
+#include <details/MoveValidator.h>
+
+#include <set>
+#include <sstream>
+
 using namespace simplechess;
+
+namespace internal
+{
+	/**
+	 * Infers the en passant target square (the one behind the pawn) in a given
+	 * position from the move made by the opposite side, for the purpose of
+	 * ambiguity detection.
+	 * Basically, if move is an en passant capture then we can be sure that the
+	 * landing square was an en passant target. If not, we can't know if any
+	 * other target was, but we don't care.
+	 */
+	boost::optional<Square> targetIfEnPassantCapture(
+			const Board& board,
+			const PieceMove& move)
+	{
+		if (move.piece().type() == TYPE_PAWN
+				&& move.src().file() != move.dst().file()
+				&& !board.pieceAt(move.dst()))
+		{
+			// A pawn has moved diagonally but the landing square was empty, it
+			// must be en passant
+			return { move.dst() };
+		}
+		return {};
+	}
+
+	std::string toString(const CheckType checkType)
+	{
+		switch (checkType)
+		{
+			case NO_CHECK:
+				return "";
+			case CHECK:
+				return "+";
+			default:
+				return "#";
+		}
+	}
+
+	std::string toString(const PieceType type)
+	{
+		switch (type)
+		{
+			case TYPE_ROOK:
+				return "R";
+			case TYPE_KNIGHT:
+				return "N";
+			case TYPE_BISHOP:
+				return "B";
+			case TYPE_QUEEN:
+				return "Q";
+			case TYPE_KING:
+				return "K";
+			case TYPE_PAWN:
+				// Nothing
+				return "";
+		}
+		throw std::invalid_argument("Unknown piece type: " + type);
+	}
+
+	enum CastlingType
+	{
+		CASTLING_KINGSIDE,
+		CASTLING_QUEENSIDE
+	};
+
+	boost::optional<CastlingType> castlingType(const PieceMove& move)
+	{
+		if (move.piece().type() == TYPE_KING
+				&& abs(move.dst().file() - move.src().file()) == 2)
+		{
+			return { move.dst().file() > move.src().file()
+				? CASTLING_KINGSIDE
+				: CASTLING_QUEENSIDE };
+		}
+
+		 return {};
+	}
+
+	enum AlgebraicAmbiguity
+	{
+		DIFFERENT_RANK_AND_FILE = 0x001,
+		SAME_RANK = 0x010,
+		SAME_FILE = 0x100,
+	};
+
+	uint8_t getAmbiguityMask(
+			const Board& board,
+			const PieceMove& move)
+	{
+		if (castlingType(move))
+		{
+			// Castling can never be ambiguous
+			return 0;
+		}
+
+		const std::set<PieceMove> allPossibleMoves
+			= details::MoveValidator::allAvailableMoves(
+					board,
+					internal::targetIfEnPassantCapture(board, move),
+					0, // Not castling, so irrelevant for ambiguity (hack)
+					move.piece().color());
+
+		uint8_t ambiguityMask = 0;
+
+		for (const auto& otherMove : allPossibleMoves)
+		{
+			if (otherMove.piece().type() == move.piece().type()
+					&& otherMove.dst() == move.dst()
+					&& otherMove.src() != move.src())
+			{
+				// If another piece of the same type could move to the same
+				// square, the move is ambiguous
+				if (otherMove.src().rank() == move.src().rank())
+				{
+					ambiguityMask |= SAME_RANK;
+				}
+				else if (otherMove.src().file() == move.src().file())
+				{
+					ambiguityMask |= SAME_FILE;
+				}
+				else
+				{
+					ambiguityMask |= DIFFERENT_RANK_AND_FILE;
+				}
+			}
+		}
+
+		return ambiguityMask;
+	}
+
+	std::string toAlgebraicNotation(
+			const Board& board,
+			const PieceMove& move,
+			const bool drawOffered,
+			const CheckType checkType)
+	{
+		const bool isCapture = board.pieceAt(move.dst()).has_value();
+		const uint8_t ambiguityMask = getAmbiguityMask(board, move);
+
+		std::stringstream ss;
+		const boost::optional<CastlingType> castling = castlingType(move);
+
+		// Castling is handled differently
+		if (castling)
+		{
+			ss << (*castling == CASTLING_KINGSIDE)
+				? "O-O"
+				: "O-O-O";
+
+			ss << toString(checkType);
+			ss << drawOffered ? "(=)" : "";
+
+			return ss.str();
+		}
+
+		// 1. First add the piece letter
+		ss << toString(move.piece().type());
+
+		// 2. Add the disambiguation characters if needed
+		if (ambiguityMask != 0)
+		{
+			if ((ambiguityMask & SAME_FILE) == 0)
+			{
+				// Specifying the file should be enough
+				ss << move.src().file();
+			}
+			else if ((ambiguityMask & SAME_RANK) == 0)
+			{
+				// Another piece is in the same file but different rank
+				ss << move.src().rank();
+			}
+			else
+			{
+				// Both file and rank are needed for disambiguation
+				ss << move.src().file();
+				ss << move.src().rank();
+			}
+		}
+
+		// 3. Add the capture symbol if appropriate
+		ss << (isCapture ? "x" : "");
+
+		// 4. Add destination square
+		ss << move.dst().toString();
+
+		// 5. If pawn promotion, add promoted piece type
+		if (move.promoted())
+		{
+			ss << "=" << toString(*move.promoted());
+		}
+
+		// 6. Add check
+		ss << toString(checkType);
+
+		// 7. Add draw offer
+		ss << drawOffered ? "(=)" : "";
+
+		return ss.str();
+	}
+}
 
 PlayedMove::PlayedMove(
 		const PieceMove& pieceMove,
@@ -26,7 +233,7 @@ const PieceMove& PlayedMove::pieceMove() const
 	return mPieceMove;
 }
 
-boost::optional<Piece>& PlayedMove::capturedPiece() const
+const boost::optional<Piece>& PlayedMove::capturedPiece() const
 {
 	return mCapturedPiece;
 }
@@ -39,4 +246,44 @@ CheckType PlayedMove::checkType() const
 bool PlayedMove::isDrawOffered() const
 {
 	return mDrawOffered;
+}
+
+PlayedMove PlayedMove::instantiate(
+		const Board& board,
+		const PieceMove& move,
+		const bool drawOffered)
+{
+	const Board afterMove = board.makeMove(move);
+
+	const bool isInCheck
+		= details::BoardAnalyzer::isInCheck(
+				afterMove,
+				oppositeColor(move.piece().color()));
+
+	CheckType checkType;
+
+	if (!isInCheck)
+	{
+		checkType = NO_CHECK;
+	}
+	else
+	{
+		const std::set<PieceMove> allPossibleMoves
+			= details::MoveValidator::allAvailableMoves(
+					afterMove,
+					details::MoveValidator::enPassantTarget({move}),
+					0, // If in check, we can't castle any way
+					oppositeColor(move.piece().color()));
+
+		checkType = (allPossibleMoves.size() == 0)
+			? CHECKMATE
+			: CHECK;
+	}
+
+	return PlayedMove(
+			move,
+			board.pieceAt(move.dst()),
+			drawOffered,
+			checkType,
+			internal::toAlgebraicNotation(board, move, drawOffered, checkType));
 }

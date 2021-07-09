@@ -1,1 +1,102 @@
-/home/ic/projects/chess-games/build/compile_commands.json
+[
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/Piece.cpp.o -c /home/ic/projects/simple-chess-games/src/Piece.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/Piece.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/GameStage.cpp.o -c /home/ic/projects/simple-chess-games/src/GameStage.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/GameStage.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/Square.cpp.o -c /home/ic/projects/simple-chess-games/src/Square.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/Square.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/Board.cpp.o -c /home/ic/projects/simple-chess-games/src/Board.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/Board.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/details/fen/FenParser.cpp.o -c /home/ic/projects/simple-chess-games/src/details/fen/FenParser.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/details/fen/FenParser.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/details/fen/FenUtils.cpp.o -c /home/ic/projects/simple-chess-games/src/details/fen/FenUtils.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/details/fen/FenUtils.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/details/moves/KnightMove.cpp.o -c /home/ic/projects/simple-chess-games/src/details/moves/KnightMove.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/details/moves/KnightMove.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/details/moves/KingMove.cpp.o -c /home/ic/projects/simple-chess-games/src/details/moves/KingMove.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/details/moves/KingMove.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/details/moves/BishopMove.cpp.o -c /home/ic/projects/simple-chess-games/src/details/moves/BishopMove.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/details/moves/BishopMove.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/details/moves/RookMove.cpp.o -c /home/ic/projects/simple-chess-games/src/details/moves/RookMove.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/details/moves/RookMove.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/details/moves/PawnMove.cpp.o -c /home/ic/projects/simple-chess-games/src/details/moves/PawnMove.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/details/moves/PawnMove.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/details/moves/QueenMove.cpp.o -c /home/ic/projects/simple-chess-games/src/details/moves/QueenMove.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/details/moves/QueenMove.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/details/DrawEvaluator.cpp.o -c /home/ic/projects/simple-chess-games/src/details/DrawEvaluator.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/details/DrawEvaluator.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/details/MoveValidator.cpp.o -c /home/ic/projects/simple-chess-games/src/details/MoveValidator.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/details/MoveValidator.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/details/BoardAnalyzer.cpp.o -c /home/ic/projects/simple-chess-games/src/details/BoardAnalyzer.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/details/BoardAnalyzer.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/PieceMove.cpp.o -c /home/ic/projects/simple-chess-games/src/PieceMove.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/PieceMove.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/PlayedMove.cpp.o -c /home/ic/projects/simple-chess-games/src/PlayedMove.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/PlayedMove.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/Exceptions.cpp.o -c /home/ic/projects/simple-chess-games/src/Exceptions.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/Exceptions.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/Game.cpp.o -c /home/ic/projects/simple-chess-games/src/Game.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/Game.cpp"
+},
+{
+  "directory": "/home/ic/projects/simple-chess-games",
+  "command": "/usr/bin/c++ -Dsimple_chess_games_EXPORTS -I/home/ic/projects/simple-chess-games/src -fPIC -o CMakeFiles/simple-chess-games.dir/src/Color.cpp.o -c /home/ic/projects/simple-chess-games/src/Color.cpp",
+  "file": "/home/ic/projects/simple-chess-games/src/Color.cpp"
+}
+]

@@ -1,5 +1,7 @@
 #include "GameStage.h"
 
+#include "details/BoardAnalyzer.h"
+
 #include <cctype>
 #include <sstream>
 
@@ -53,6 +55,82 @@ GameStage::GameStage(
 	  mMove(move),
 	  mFen(generateFen())
 {
+	// Validate that the state is correct:
+	// 1. One and only one King per side
+	// 2. The color to move cannot be checking the opposite King
+	// 3. If one type of castling is available, both the king and the rook
+	// should be in place
+	// 4. Move clocks are consistent
+	uint8_t whiteKings = 0;
+	uint8_t blackKings = 0;
+
+	for (const auto& entry : board.occupiedSquares())
+	{
+		if (entry.second.type() == TYPE_KING)
+		{
+			if (entry.second.color() == COLOR_WHITE)
+			{
+				whiteKings++;
+			}
+			else
+			{
+				blackKings++;
+			}
+		}
+	}
+
+	if (whiteKings != 1 || blackKings != 1)
+	{
+		throw std::invalid_argument("Invalid number of kings on board");
+	}
+
+	if (details::BoardAnalyzer::isInCheck(board, oppositeColor(toPlay)))
+	{
+		throw std::invalid_argument("Color to move is already checking");
+	}
+
+	const Piece whiteKing = {TYPE_KING, COLOR_WHITE};
+	const Piece blackKing = {TYPE_KING, COLOR_BLACK};
+	const Piece whiteRook = {TYPE_ROOK, COLOR_WHITE};
+	const Piece blackRook = {TYPE_ROOK, COLOR_BLACK};
+
+	if ((castlingRights & CASTLING_RIGHT_WHITE_KINGSIDE)
+			&& (*board.pieceAt(Square::instantiateFromString("e1")) != whiteKing
+				|| *board.pieceAt(Square::instantiateFromString("h1")) != whiteRook))
+	{
+		throw std::invalid_argument(
+				"Kingside castling right for white is inconsistent with board state");
+	}
+
+	if ((castlingRights & CASTLING_RIGHT_WHITE_QUEENSIDE)
+			&& (*board.pieceAt(Square::instantiateFromString("e1")) != whiteKing
+				|| *board.pieceAt(Square::instantiateFromString("a1")) != whiteRook))
+	{
+		throw std::invalid_argument(
+				"Queenside castling right for white is inconsistent with board state");
+	}
+
+	if ((castlingRights & CASTLING_RIGHT_BLACK_KINGSIDE)
+			&& (*board.pieceAt(Square::instantiateFromString("e8")) != blackKing
+				|| *board.pieceAt(Square::instantiateFromString("h8")) != blackRook))
+	{
+		throw std::invalid_argument(
+				"Kingside castling right for black is inconsistent with board state");
+	}
+
+	if ((castlingRights & CASTLING_RIGHT_BLACK_QUEENSIDE)
+			&& (*board.pieceAt(Square::instantiateFromString("e8")) != blackKing
+				|| *board.pieceAt(Square::instantiateFromString("a8")) != blackRook))
+	{
+		throw std::invalid_argument(
+				"Queenside castling right for black is inconsistent with board state");
+	}
+
+	if (static_cast<uint16_t>(halfmoveClock / 2) > fullmoveClock)
+	{
+		throw std::invalid_argument(
+				"Inconsistent half move and full move clocks");
+	}
 }
 
 const Board& GameStage::board() const
@@ -191,9 +269,9 @@ std::string GameStage::generateFen() const
 	// capture.
 	ss << " ";
 	if (move()
-			&& move()->pieceMove().piece() == TYPE_PAWN
-			&& abs(move->pieceMove().dst().rank()
-					- move->pieceMove().src().rank()) == 2)
+			&& move()->pieceMove().piece().type() == TYPE_PAWN
+			&& abs(move()->pieceMove().dst().rank()
+					- move()->pieceMove().src().rank()) == 2)
 	{
 		ss << move()->pieceMove().dst().file()
 			<< (move()->pieceMove().piece().color() == COLOR_WHITE)
@@ -214,4 +292,68 @@ std::string GameStage::generateFen() const
 	ss << " " << mFullmoveClock;
 
 	return ss.str();
+}
+
+GameStage GameStage::makeMove(const PieceMove& move, bool offerDraw) const
+{
+	const PlayedMove playedMove = PlayedMove::instantiate(
+				board(),
+				move,
+				offerDraw);
+
+	uint8_t updatedCastlingRights = castlingRights();
+
+	if (move.piece().type() == TYPE_KING)
+	{
+		// Once the king moves, castling is no longer allowed
+		if (move.piece().color() == COLOR_WHITE)
+		{
+			updatedCastlingRights &= ~CASTLING_RIGHT_WHITE_KINGSIDE;
+			updatedCastlingRights &= ~CASTLING_RIGHT_WHITE_QUEENSIDE;
+		}
+		else
+		{
+			updatedCastlingRights &= ~CASTLING_RIGHT_BLACK_KINGSIDE;
+			updatedCastlingRights &= ~CASTLING_RIGHT_BLACK_QUEENSIDE;
+		}
+	}
+
+	if (move.piece().type() == TYPE_ROOK)
+	{
+		// If a rook moves from the original position of a rook of such color,
+		// clear the castling rights of that side. It might already be cleared,
+		// but that's not an issue
+		if (move.piece().color() == COLOR_WHITE)
+		{
+			if (move.src() == Square::instantiateFromString("a1"))
+			{
+				updatedCastlingRights &= ~CASTLING_RIGHT_WHITE_QUEENSIDE;
+			}
+			else if (move.src() == Square::instantiateFromString("h1"))
+			{
+				updatedCastlingRights &= ~CASTLING_RIGHT_WHITE_KINGSIDE;
+			}
+		}
+		else
+		{
+			if (move.src() == Square::instantiateFromString("a8"))
+			{
+				updatedCastlingRights &= ~CASTLING_RIGHT_BLACK_QUEENSIDE;
+			}
+			else if (move.src() == Square::instantiateFromString("h8"))
+			{
+				updatedCastlingRights &= ~CASTLING_RIGHT_BLACK_KINGSIDE;
+			}
+		}
+	}
+
+	return GameStage(
+			board().makeMove(move),
+			oppositeColor(activeColor()),
+			updatedCastlingRights,
+			(move.piece().type() == TYPE_PAWN || playedMove.capturedPiece())
+				? 0
+				: halfMovesSinceLastCaptureOrPawnAdvance() + 1,
+			fullMoveCounter() + (activeColor() == COLOR_BLACK ? 1 : 0),
+			playedMove);
 }

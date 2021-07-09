@@ -30,7 +30,7 @@ Square Square::instantiateFromString(const std::string& algebraicSquare)
 			static_cast<uint8_t>(algebraicSquare[1] - '0'));
 }
 
-bool Square::isInsideBoundaries(int rank, char file)
+bool Square::isInsideBoundaries(uint8_t rank, char file)
 {
 	file = tolower(file);
 	return (rank >= 1 && rank <= 8 && file >= 'a' && file <= 'h');

@@ -7,11 +7,12 @@
 #include <cstdint>
 #include <vector>
 
+using namespace simplechess;
 using namespace simplechess::details;
 
 namespace internal
 {
-	std::map<Square, Piece> parsePiecePlacement(
+	Board parsePiecePlacement(
 			const std::string& piecePlacementFen)
 	{
 		std::vector<std::string> rows;
@@ -86,8 +87,9 @@ namespace internal
 								+ " is not a valid \"piece placement\" "
 								+ "field in a FEN string");
 				}
-				pieceLocations[Square::instantiateWithRankAndFile(row, col)]
-					= FenUtils::stringToPiece(c);
+				pieceLocations.insert({
+						Square::instantiateWithRankAndFile(row, col),
+						FenUtils::stringToPiece(c)});
 			}
 		}
 
@@ -96,11 +98,11 @@ namespace internal
 
 	Color parseColor(const std::string& str)
 	{
-		if (str == 'w')
+		if (str == "w")
 		{
 			return COLOR_WHITE;
 		}
-		else if (str == 'b')
+		else if (str == "b")
 		{
 			return COLOR_BLACK;
 		}
@@ -185,13 +187,13 @@ namespace internal
 
 FenParser::FenParser(
 		const Board& board,
-		const Color toPlay,
+		const Color activeColor,
 		const uint8_t castlingRights,
 		const boost::optional<Square>& enPassantTarget,
 		const uint16_t halfmoveClock,
 		const uint16_t fullmoveClock)
 	: mBoard(board),
-	  mToPlay(toPlay),
+	  mActiveColor(activeColor),
 	  mCastlingRights(castlingRights),
 	  mEpTarget(enPassantTarget),
 	  mHalfmoveClock(halfmoveClock),
@@ -209,30 +211,22 @@ FenParser FenParser::parse(const std::string& fen)
 		throw std::invalid_argument(fen + " is not a valid FEN string");
 	}
 
-	const Board board = internal::parsePiecePlacement(results[0]);
-	const Color activeColor = internal::parseColor(results[1]);
-	const uint8_t castlingRights = internal::parseCastlingRights(results[2]);
-	const boost::optional<Square> epTarget = internal::parseEnPassantTarget(results[3]);
-	const uint16_t halfmoveClock = internal::parseMoveClock(results[4]);
-	const uint16_t fullmoveClock = internal::parseMoveClock(results[5]);
+	const Board board = internal::parsePiecePlacement(tokens[0]);
+	const Color activeColor = internal::parseColor(tokens[1]);
+	const uint8_t castlingRights = internal::parseCastlingRights(tokens[2]);
+	const boost::optional<Square> epTarget = internal::parseEnPassantTarget(tokens[3]);
+	const uint16_t halfmoveClock = internal::parseMoveClock(tokens[4]);
+	const uint16_t fullmoveClock = internal::parseMoveClock(tokens[5]);
 
 	if (epTarget
 			&& ((epTarget->rank() == 3
-					&& board.pieceAt(*epTarget) != {{PIECE_PAWN, COLOR_WHITE}})
+					&& board.pieceAt(*epTarget) != boost::optional<Piece>({TYPE_PAWN, COLOR_WHITE}))
 				|| (epTarget->rank() == 6
-					&& board.pieceAt(*epTarget) != {{PIECE_PAWN, COLOR_BLACK}})))
+					&& board.pieceAt(*epTarget) != boost::optional<Piece>({TYPE_PAWN, COLOR_BLACK}))))
 	{
 		throw std::invalid_argument(
 				"Found inconsistency between piece placement and "
-				+ "\"en passant target\" square in FEN string: "
-				+ fen);
-	}
-
-	if (static_cast<uint16_t>(halfmoveClock / 2) > fullmoveClock)
-	{
-		throw std::invalid_argument(
-				"Found inconsistency between half move and full move clocks "
-				+ "in FEN string: "
+				"\"en passant target\" square in FEN string: "
 				+ fen);
 	}
 
@@ -240,7 +234,7 @@ FenParser FenParser::parse(const std::string& fen)
 	{
 		throw std::invalid_argument(
 				"Found inconsistency between half move clock and en pasant move "
-				+ "in FEN string: "
+				"in FEN string: "
 				+ fen);
 	}
 
@@ -248,7 +242,7 @@ FenParser FenParser::parse(const std::string& fen)
 	{
 		throw std::invalid_argument(
 				"Found inconsistency between full move clock and en pasant move "
-				+ "in FEN string: "
+				"in FEN string: "
 				+ fen);
 	}
 

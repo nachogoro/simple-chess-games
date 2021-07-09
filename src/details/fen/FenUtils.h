@@ -51,7 +51,7 @@ namespace simplechess
 				static std::string fenForRepetitions(const std::string& fen);
 
 			private:
-				boost::bimap<char, Piece> sPieceMap;
+				static boost::bimap<char, Piece> sPieceMap;
 		};
 	}
 }

@@ -58,7 +58,7 @@ namespace simplechess
 			 * \return \c true if it is inside the boundaries of the board, \c
 			 * false otherwise.
 			 */
-			static bool isInsideBoundaries(int rank, char file);
+			static bool isInsideBoundaries(uint8_t rank, char file);
 
 			/**
 			 * \brief Equal comparison operator.

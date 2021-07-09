@@ -1,7 +1,10 @@
 #include "FenUtils.h"
 
+#include <boost/algorithm/string.hpp>
+
 #include <stdexcept>
 
+using namespace simplechess;
 using namespace simplechess::details;
 
 namespace internal
@@ -34,7 +37,7 @@ boost::bimap<char, Piece> FenUtils::sPieceMap
 char FenUtils::pieceToString(const Piece& piece)
 {
 	boost::bimap<char, Piece>::right_const_iterator it
-		= sPieceMap.by<Piece>().find(piece);
+		= sPieceMap.right.find(piece);
 
 	if (it == sPieceMap.right.end())
 	{
@@ -44,16 +47,16 @@ char FenUtils::pieceToString(const Piece& piece)
 	return it->second;
 }
 
-char FenUtils::stringToPiece(const char c)
+Piece FenUtils::stringToPiece(const char c)
 {
 	boost::bimap<char, Piece>::left_const_iterator it
-		= sPieceMap.by<char>().find(c);
+		= sPieceMap.left.find(c);
 
 	if (it == sPieceMap.left.end())
 	{
-		throw std::invalid_argument(
-				"Character '" + c
-				+ "' is not a piece-representing character in FEN notation");
+		throw std::invalid_argument(std::string("Character \'")
+				+ c
+				+ "\' is not a piece-representing character in FEN notation");
 	}
 
 	return it->second;
@@ -65,5 +68,5 @@ std::string FenUtils::fenForRepetitions(const std::string& fen)
 		boost::split(fenTokens, fen,  [](char c) { return c == ' ';});
 		fenTokens.pop_back();
 		fenTokens.pop_back();
-		return boost::algorithm::join(fenTokens, ' ');
+		return boost::algorithm::join(fenTokens, " ");
 }

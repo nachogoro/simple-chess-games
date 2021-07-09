@@ -1,7 +1,9 @@
 #include <Game.h>
 #include "details/BoardAnalyzer.h"
+#include "details/DrawEvaluator.h"
 #include "details/MoveValidator.h"
 #include "details/fen/FenParser.h"
+#include "details/fen/FenUtils.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/join.hpp>
@@ -17,29 +19,34 @@ namespace internal
 			const GameStage& stage,
 			const std::map<std::string, uint8_t>& previouslyReachedPositions)
 	{
-		const std::set<PieceMove> allPossibleMoves
-			= details::MoveValidator::allAvailableMoves(
+		const bool inCheck
+			= details::BoardAnalyzer::isInCheck(
 					stage.board(),
-					MoveValidator::enPassantTarget(stage),
-					stage.castlingRights(),
 					stage.activeColor());
 
-		if (allPossibleMoves.size() == 0
-				&& BoardAnalyzer::isSquareThreatenedBy(
+		if (details::BoardAnalyzer::isInCheck(
 					stage.board(),
-					MoveValidator::enPassantTarget(stage),
-					stage.castlingRights(),
-					BoardAnalyzer::kingSquare(
-						stage.board(),
-						stage.activeColor()),
-					oppositeColor(stage.activeColor())))
+					stage.activeColor()))
 		{
-			// If the active color can't move and is in check, it is check mate
-			return {
-				stage.activeColor() == COLOR_WHITE
-					? GAME_STATE_BLACK_WON
-					: GAME_STATE_WHITE_WON,
-				{} };
+			const std::set<PieceMove> allPossibleMoves
+				= details::MoveValidator::allAvailableMoves(
+						stage.board(),
+						stage.move()
+						? details::MoveValidator::enPassantTarget(stage.move()->pieceMove())
+						: boost::optional<Square>() ,
+						stage.castlingRights(),
+						stage.activeColor());
+
+			if (allPossibleMoves.size() == 0)
+			{
+				// If the active color can't move and is in check, it is check
+				// mate
+				return {
+					stage.activeColor() == COLOR_WHITE
+						? GAME_STATE_BLACK_WON
+						: GAME_STATE_WHITE_WON,
+						{} };
+			}
 		}
 
 		const boost::optional<DrawReason> reason
@@ -60,6 +67,30 @@ namespace internal
 
 		// There is a mandatory draw reason, so the game is drawn
 		return { GAME_STATE_DRAWN, reason };
+	}
+
+	std::map<std::string, uint8_t> getPositionsMap(
+			const std::vector<GameStage>& history)
+	{
+		std::map<std::string, uint8_t> result;
+
+		for (const auto& stage : history)
+		{
+			const std::string repetitionFen
+				= details::FenUtils::fenForRepetitions(stage.fen());
+
+			if (result.count(repetitionFen))
+			{
+				result.at(repetitionFen)++;
+			}
+			else
+			{
+				result.insert({repetitionFen, 1});
+			}
+		}
+
+		return result;
+	}
 }
 
 Game Game::createNewGame() {
@@ -78,7 +109,7 @@ Game Game::createGameFromStartingFen(const std::string& fen)
 	if (epSquare)
 	{
 		const Piece pawn(
-				PIECE_PAWN,
+				TYPE_PAWN,
 				(epSquare->rank() == 3)
 					? COLOR_WHITE
 					: COLOR_BLACK);
@@ -126,12 +157,18 @@ Game Game::createGameFromStartingFen(const std::string& fen)
 				lastMove->dst(),
 				lastMove->src()));
 
+	const uint16_t fullMoveCounterDecrease
+		= (parsedState.activeColor() == COLOR_WHITE)
+			? 1
+			: 0;
+
 	const GameStage originalStage = {
 		originalBoardState,
 		oppositeColor(parsedState.activeColor()),
 		parsedState.castlingRights(),
 		0, // Unknown, filler value
-		parsedState.fullMoveCounter() - (parsedState.activeColor() == COLOR_WHITE ? 1 : 0),
+		static_cast<uint16_t>(
+				parsedState.fullMoveCounter() - fullMoveCounterDecrease),
 		{} };
 
 	const boost::tuple<GameState, boost::optional<DrawReason>> fullState =
@@ -140,7 +177,7 @@ Game Game::createGameFromStartingFen(const std::string& fen)
 	const Game originalGame(
 				fullState.get<0>(),
 				fullState.get<1>(),
-				originalStage);
+				{originalStage});
 
 	return originalGame.makeMove(*lastMove, false);
 }
@@ -197,9 +234,11 @@ std::set<PieceMove> Game::availableMovesForPiece(const Square& square) const
 {
 	const GameStage& stage = currentStage();
 
-	return details::MoveValidator::allValidMoves(
-			stage.board,
-			details::MoveValidator::enPassantTarget(stage),
+	return details::MoveValidator::availableMovesForPiece(
+			stage.board(),
+			stage.move()
+				? details::MoveValidator::enPassantTarget(stage.move()->pieceMove())
+				: boost::optional<Square>(),
 			stage.castlingRights(),
 			square);
 }
@@ -208,9 +247,11 @@ std::set<PieceMove> Game::allAvailableMoves() const
 {
 	const GameStage& stage = currentStage();
 
-	return details::MoveValidator::allValidMoves(
-			stage.board,
-			details::MoveValidator::enPassantTarget(stage),
+	return details::MoveValidator::allAvailableMoves(
+			stage.board(),
+			stage.move()
+				? details::MoveValidator::enPassantTarget(stage.move()->pieceMove())
+				: boost::optional<Square>(),
 			stage.castlingRights(),
 			stage.activeColor());
 }
@@ -256,7 +297,7 @@ boost::optional<DrawReason> Game::reasonToClaimDraw() const
 				"Draws cannot be claimed in finished games");
 	}
 
-	return DrawEvaluator::reasonToDraw(
+	return details::DrawEvaluator::reasonToDraw(
 			currentStage(),
 			mTimesPositionsReached);
 }

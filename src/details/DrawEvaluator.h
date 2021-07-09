@@ -6,6 +6,8 @@
 
 #include <boost/optional.hpp>
 
+#include <set>
+
 namespace simplechess
 {
 	namespace details
@@ -56,7 +58,7 @@ namespace simplechess
 				 */
 				static boost::optional<DrawReason> reasonToDraw(
 						const GameStage& stage,
-						std::map<std::string, uint8_t> previouslyReachedPositions);
+						const std::map<std::string, uint8_t>& previouslyReachedPositions);
 		};
 	}
 }

@@ -2,18 +2,6 @@
 
 using namespace simplechess;
 
-PieceMove PieceMove::fromAlgebraicNotation(
-		const Board& board,
-		const std::string& algebraicNotation)
-{
-	// TODO
-	return PieceMove(
-			Piece(TYPE_PAWN, COLOR_WHITE),
-			Square::instantiateFromString("e2"),
-			Square::instantiateFromString("e4"),
-			{});
-}
-
 PieceMove PieceMove::regularMove(
 		const Piece& piece,
 		const Square& src,
@@ -57,4 +45,36 @@ const Square& PieceMove::dst() const
 const boost::optional<PieceType>& PieceMove::promoted() const
 {
 	return mPromotedType;
+}
+
+bool PieceMove::operator<(const PieceMove& o) const
+{
+	if (piece() < o.piece())
+	{
+		return true;
+	}
+	else if (piece() != o.piece())
+	{
+		return false;
+	}
+
+	if (src() < o.src())
+	{
+		return true;
+	}
+	else if (src() != o.src())
+	{
+		return false;
+	}
+
+	if (dst() < o.dst())
+	{
+		return true;
+	}
+	else if (dst() != o.dst())
+	{
+		return false;
+	}
+
+	return promoted() < o.promoted();
 }

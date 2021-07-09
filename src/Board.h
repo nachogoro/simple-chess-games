@@ -2,6 +2,7 @@
 #define BOARD_H_060630C0_3ADF_4CCD_B96C_1728BF67C017
 
 #include "Piece.h"
+#include "PieceMove.h"
 #include "Square.h"
 
 #include <boost/optional.hpp>
@@ -45,7 +46,7 @@ namespace simplechess
 			 *
 			 * \return A collection of all occupied squares.
 			 */
-			std::map<Square, Piece> occupiedSquares() const;
+			const std::map<Square, Piece>& occupiedSquares() const;
 
 			/**
 			 * \brief Returns a new copy of the state of the board after making
@@ -56,6 +57,8 @@ namespace simplechess
 			 *
 			 * \param move Move to be made.
 			 * \return A new copy of the state of the board after the move.
+			 *
+			 * TODO make private
 			 */
 			Board makeMove(const PieceMove& move) const;
 

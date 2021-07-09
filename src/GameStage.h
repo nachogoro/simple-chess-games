@@ -12,7 +12,13 @@
 
 namespace simplechess
 {
+	// TODO fix this mess by not having makeMove be a private method
 	class Game;
+
+	namespace details
+	{
+		class DrawEvaluator;
+	}
 
 	enum CastlingRight
 	{
@@ -84,6 +90,7 @@ namespace simplechess
 
 		private:
 			friend class Game;
+			friend class details::DrawEvaluator;
 
 			/**
 			 * \brief Constructor.
@@ -111,13 +118,13 @@ namespace simplechess
 			std::string generateFen() const;
 
 		private:
-			const Board mBoard;
-			const Color mActiveColor;
-			const uint8_t mCastlingRights;
-			const uint16_t mHalfmoveClock;
-			const uint16_t mFullmoveClock;
-			const boost::optional<PlayedMove> mMove;
-			const std::string mFen;
+			Board mBoard;
+			Color mActiveColor;
+			uint8_t mCastlingRights;
+			uint16_t mHalfmoveClock;
+			uint16_t mFullmoveClock;
+			boost::optional<PlayedMove> mMove;
+			std::string mFen;
 	};
 }
 

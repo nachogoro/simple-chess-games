@@ -1,7 +1,6 @@
 #ifndef PIECE_MOVE_H_565687CA_B90B_47F1_84E4_181A6503B9EE
 #define PIECE_MOVE_H_565687CA_B90B_47F1_84E4_181A6503B9EE
 
-#include <Board.h>
 #include <Piece.h>
 #include <Square.h>
 
@@ -26,32 +25,6 @@ namespace simplechess
 	class PieceMove
 	{
 		public:
-			/**
-			 * \brief Factory method to create a \c PieceMove from its string
-			 * representation in algebraic notation.
-			 *
-			 * Since algebraic notation is context-dependent, the state of the
-			 * board must also be provided to eliminate ambiguities. For
-			 * example, in algebraic notation "xe4" means "A pawn takes on e4",
-			 * but without knowing the state of the board when the move is made
-			 * it is impossible to know if the capturing pawn was originally in
-			 * d5 or f5.
-			 *
-			 * \throws std::invalid_argument in the following circumstances:
-			 * - \p algebraicNotation has invalid syntax.
-			 * - \p algebraicNotation represents an invalid move according to
-			 *   the current state of the board.
-			 *
-			 * \param board The current state of the board.
-			 * \param algebraicNotation A string representing a move in
-			 * algebraic notation.
-			 *
-			 * \return The constructed \c PieceMove.
-			 */
-			static PieceMove fromAlgebraicNotation(
-					const Board& board,
-					const std::string& algebraicNotation);
-
 			/**
 			 * \brief Factory method to create a regular \c PieceMove.
 			 *
@@ -133,6 +106,8 @@ namespace simplechess
 			 */
 			const boost::optional<PieceType>& promoted() const;
 
+			bool operator<(const PieceMove& o) const;
+
 		private:
 			PieceMove(
 					const Piece& piece,
@@ -140,10 +115,10 @@ namespace simplechess
 					const Square& dst,
 					const boost::optional<PieceType>& promotedType);
 
-			const Piece mPiece;
-			const Square mSrc;
-			const Square mDst;
-			const boost::optional<PieceType> mPromotedType;
+			Piece mPiece;
+			Square mSrc;
+			Square mDst;
+			boost::optional<PieceType> mPromotedType;
 	};
 }
 
