@@ -30,7 +30,7 @@ namespace simplechess
 			 * case insensitive).
 			 * \return A \c Square object.
 			 */
-			static Square instantiateWithRankAndFile(uint8_t rank, char file);
+			static Square fromRankAndFile(uint8_t rank, char file);
 
 			/**
 			 * \brief Factory method to instantiate a \c Square from a string.

@@ -88,7 +88,7 @@ namespace internal
 								+ "field in a FEN string");
 				}
 				pieceLocations.insert({
-						Square::instantiateWithRankAndFile(row, col),
+						Square::fromRankAndFile(row, col),
 						FenUtils::stringToPiece(c)});
 
 				col++;
@@ -222,9 +222,9 @@ FenParser FenParser::parse(const std::string& fen)
 
 	if (epTarget
 			&& ((epTarget->rank() == 3
-					&& board.pieceAt(Square::instantiateWithRankAndFile(4, epTarget->file())) != boost::optional<Piece>({TYPE_PAWN, COLOR_WHITE}))
+					&& board.pieceAt(Square::fromRankAndFile(4, epTarget->file())) != boost::optional<Piece>({TYPE_PAWN, COLOR_WHITE}))
 				|| (epTarget->rank() == 6
-					&& board.pieceAt(Square::instantiateWithRankAndFile(5, epTarget->file())) != boost::optional<Piece>({TYPE_PAWN, COLOR_BLACK}))))
+					&& board.pieceAt(Square::fromRankAndFile(5, epTarget->file())) != boost::optional<Piece>({TYPE_PAWN, COLOR_BLACK}))))
 	{
 		throw std::invalid_argument(
 				"Found inconsistency between piece placement and "

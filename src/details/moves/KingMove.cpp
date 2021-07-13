@@ -25,7 +25,7 @@ std::set<PieceMove> simplechess::details::kingMovesExceptCastling(
 						square.rank() + rankStep,
 						square.file() + fileStep))
 			{
-				const Square dst = Square::instantiateWithRankAndFile(
+				const Square dst = Square::fromRankAndFile(
 						square.rank() + rankStep,
 						square.file() + fileStep);
 
@@ -68,8 +68,8 @@ std::set<PieceMove> simplechess::details::validKingMoves(
 	{
 		// Only available if the passing squares are empty and not under attack
 		const std::set<Square> mustBeFreeSquares = {
-			Square::instantiateWithRankAndFile(square.rank(), 'f'),
-			Square::instantiateWithRankAndFile(square.rank(), 'g')
+			Square::fromRankAndFile(square.rank(), 'f'),
+			Square::fromRankAndFile(square.rank(), 'g')
 		};
 
 		bool allClear = true;
@@ -91,7 +91,7 @@ std::set<PieceMove> simplechess::details::validKingMoves(
 			result.insert(PieceMove::regularMove(
 						king,
 						square,
-						Square::instantiateWithRankAndFile(
+						Square::fromRankAndFile(
 							square.rank(),
 							'g')));
 		}
@@ -104,8 +104,8 @@ std::set<PieceMove> simplechess::details::validKingMoves(
 	{
 		// Only available if the passing squares are empty and not under attack
 		const std::set<Square> mustBeFreeSquares = {
-			Square::instantiateWithRankAndFile(square.rank(), 'd'),
-			Square::instantiateWithRankAndFile(square.rank(), 'c')
+			Square::fromRankAndFile(square.rank(), 'd'),
+			Square::fromRankAndFile(square.rank(), 'c')
 		};
 
 		bool allClear = true;
@@ -127,7 +127,7 @@ std::set<PieceMove> simplechess::details::validKingMoves(
 			result.insert(PieceMove::regularMove(
 						king,
 						square,
-						Square::instantiateWithRankAndFile(
+						Square::fromRankAndFile(
 							square.rank(),
 							'c')));
 		}

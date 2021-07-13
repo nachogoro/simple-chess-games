@@ -12,103 +12,103 @@ TEST(MoveAvailabilityTest, RegularGameMoves) {
 	{
 		PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(2, 'a'),
-				Square::instantiateWithRankAndFile(3, 'a')),
+				Square::fromRankAndFile(2, 'a'),
+				Square::fromRankAndFile(3, 'a')),
 
 		PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(2, 'a'),
-				Square::instantiateWithRankAndFile(4, 'a')),
+				Square::fromRankAndFile(2, 'a'),
+				Square::fromRankAndFile(4, 'a')),
 
 		PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(2, 'b'),
-				Square::instantiateWithRankAndFile(3, 'b')),
+				Square::fromRankAndFile(2, 'b'),
+				Square::fromRankAndFile(3, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(2, 'b'),
-				Square::instantiateWithRankAndFile(4, 'b')),
+				Square::fromRankAndFile(2, 'b'),
+				Square::fromRankAndFile(4, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(2, 'c'),
-				Square::instantiateWithRankAndFile(3, 'c')),
+				Square::fromRankAndFile(2, 'c'),
+				Square::fromRankAndFile(3, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(2, 'c'),
-				Square::instantiateWithRankAndFile(4, 'c')),
+				Square::fromRankAndFile(2, 'c'),
+				Square::fromRankAndFile(4, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(2, 'd'),
-				Square::instantiateWithRankAndFile(3, 'd')),
+				Square::fromRankAndFile(2, 'd'),
+				Square::fromRankAndFile(3, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(2, 'd'),
-				Square::instantiateWithRankAndFile(4, 'd')),
+				Square::fromRankAndFile(2, 'd'),
+				Square::fromRankAndFile(4, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(2, 'e'),
-				Square::instantiateWithRankAndFile(3, 'e')),
+				Square::fromRankAndFile(2, 'e'),
+				Square::fromRankAndFile(3, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(2, 'e'),
-				Square::instantiateWithRankAndFile(4, 'e')),
+				Square::fromRankAndFile(2, 'e'),
+				Square::fromRankAndFile(4, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(2, 'f'),
-				Square::instantiateWithRankAndFile(3, 'f')),
+				Square::fromRankAndFile(2, 'f'),
+				Square::fromRankAndFile(3, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(2, 'f'),
-				Square::instantiateWithRankAndFile(4, 'f')),
+				Square::fromRankAndFile(2, 'f'),
+				Square::fromRankAndFile(4, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(2, 'g'),
-				Square::instantiateWithRankAndFile(3, 'g')),
+				Square::fromRankAndFile(2, 'g'),
+				Square::fromRankAndFile(3, 'g')),
 
 		PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(2, 'g'),
-				Square::instantiateWithRankAndFile(4, 'g')),
+				Square::fromRankAndFile(2, 'g'),
+				Square::fromRankAndFile(4, 'g')),
 
 		PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(2, 'h'),
-				Square::instantiateWithRankAndFile(3, 'h')),
+				Square::fromRankAndFile(2, 'h'),
+				Square::fromRankAndFile(3, 'h')),
 
 		PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(2, 'h'),
-				Square::instantiateWithRankAndFile(4, 'h')),
+				Square::fromRankAndFile(2, 'h'),
+				Square::fromRankAndFile(4, 'h')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'b'),
-				Square::instantiateWithRankAndFile(3, 'a')),
+				Square::fromRankAndFile(1, 'b'),
+				Square::fromRankAndFile(3, 'a')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'b'),
-				Square::instantiateWithRankAndFile(3, 'c')),
+				Square::fromRankAndFile(1, 'b'),
+				Square::fromRankAndFile(3, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'g'),
-				Square::instantiateWithRankAndFile(3, 'f')),
+				Square::fromRankAndFile(1, 'g'),
+				Square::fromRankAndFile(3, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'g'),
-				Square::instantiateWithRankAndFile(3, 'h')),
+				Square::fromRankAndFile(1, 'g'),
+				Square::fromRankAndFile(3, 'h')),
 	};
 
 	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
@@ -124,58 +124,58 @@ TEST(MoveAvailabilityTest, KnightMovesUnobstructed) {
 	{
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(2, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(2, 'a')),
 
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(2, 'b')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(2, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(1, 'b')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(1, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(6, 'c')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(6, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(6, 'e')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(6, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(5, 'b')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(5, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(5, 'f')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(5, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(3, 'b')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(3, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(3, 'f')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(3, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(2, 'c')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(2, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(2, 'e'))
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(2, 'e'))
 	};
 
 	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
@@ -193,58 +193,58 @@ TEST(MoveAvailabilityTest, KnightMovesObstructedAttempt) {
 	{
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(2, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(2, 'a')),
 
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(2, 'b')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(2, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(1, 'b')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(1, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(6, 'c')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(6, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(6, 'e')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(6, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(5, 'b')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(5, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(5, 'f')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(5, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(3, 'b')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(3, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(3, 'f')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(3, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(2, 'c')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(2, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(2, 'e'))
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(2, 'e'))
 	};
 
 	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
@@ -260,158 +260,158 @@ TEST(MoveAvailabilityTest, BishopMovesUnobstructed) {
 	{
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'd'),
-				Square::instantiateWithRankAndFile(1, 'c')),
+				Square::fromRankAndFile(1, 'd'),
+				Square::fromRankAndFile(1, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'd'),
-				Square::instantiateWithRankAndFile(2, 'c')),
+				Square::fromRankAndFile(1, 'd'),
+				Square::fromRankAndFile(2, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'd'),
-				Square::instantiateWithRankAndFile(2, 'd')),
+				Square::fromRankAndFile(1, 'd'),
+				Square::fromRankAndFile(2, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'd'),
-				Square::instantiateWithRankAndFile(2, 'e')),
+				Square::fromRankAndFile(1, 'd'),
+				Square::fromRankAndFile(2, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'd'),
-				Square::instantiateWithRankAndFile(1, 'e')),
+				Square::fromRankAndFile(1, 'd'),
+				Square::fromRankAndFile(1, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(6, 'c')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(6, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(7, 'b')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(7, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(8, 'a')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(8, 'a')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(6, 'e')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(6, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(7, 'f')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(7, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(8, 'g')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(8, 'g')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(4, 'c')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(4, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(3, 'b')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(3, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(2, 'a')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(2, 'a')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(4, 'e')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(4, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(3, 'f')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(3, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(2, 'g')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(2, 'g')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(1, 'h')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(1, 'h')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'e'),
-				Square::instantiateWithRankAndFile(6, 'd')),
+				Square::fromRankAndFile(5, 'e'),
+				Square::fromRankAndFile(6, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'e'),
-				Square::instantiateWithRankAndFile(7, 'c')),
+				Square::fromRankAndFile(5, 'e'),
+				Square::fromRankAndFile(7, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'e'),
-				Square::instantiateWithRankAndFile(8, 'b')),
+				Square::fromRankAndFile(5, 'e'),
+				Square::fromRankAndFile(8, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'e'),
-				Square::instantiateWithRankAndFile(6, 'f')),
+				Square::fromRankAndFile(5, 'e'),
+				Square::fromRankAndFile(6, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'e'),
-				Square::instantiateWithRankAndFile(7, 'g')),
+				Square::fromRankAndFile(5, 'e'),
+				Square::fromRankAndFile(7, 'g')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'e'),
-				Square::instantiateWithRankAndFile(8, 'h')),
+				Square::fromRankAndFile(5, 'e'),
+				Square::fromRankAndFile(8, 'h')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'e'),
-				Square::instantiateWithRankAndFile(4, 'd')),
+				Square::fromRankAndFile(5, 'e'),
+				Square::fromRankAndFile(4, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'e'),
-				Square::instantiateWithRankAndFile(3, 'c')),
+				Square::fromRankAndFile(5, 'e'),
+				Square::fromRankAndFile(3, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'e'),
-				Square::instantiateWithRankAndFile(2, 'b')),
+				Square::fromRankAndFile(5, 'e'),
+				Square::fromRankAndFile(2, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'e'),
-				Square::instantiateWithRankAndFile(1, 'a')),
+				Square::fromRankAndFile(5, 'e'),
+				Square::fromRankAndFile(1, 'a')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'e'),
-				Square::instantiateWithRankAndFile(4, 'f')),
+				Square::fromRankAndFile(5, 'e'),
+				Square::fromRankAndFile(4, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'e'),
-				Square::instantiateWithRankAndFile(3, 'g')),
+				Square::fromRankAndFile(5, 'e'),
+				Square::fromRankAndFile(3, 'g')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'e'),
-				Square::instantiateWithRankAndFile(2, 'h')),
+				Square::fromRankAndFile(5, 'e'),
+				Square::fromRankAndFile(2, 'h')),
 	};
 
 	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
@@ -427,58 +427,58 @@ TEST(MoveAvailabilityTest, BishopMovesObstructed) {
 	{
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'c'),
-				Square::instantiateWithRankAndFile(1, 'd')),
+				Square::fromRankAndFile(1, 'c'),
+				Square::fromRankAndFile(1, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(5, 'c')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(5, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(6, 'b')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(6, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(7, 'a')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(7, 'a')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(5, 'e')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(5, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(6, 'f')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(6, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(7, 'g')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(7, 'g')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(3, 'c')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(3, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(2, 'b')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(2, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(3, 'e')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(3, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(2, 'f'))
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(2, 'f'))
 	};
 
 	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
@@ -494,98 +494,98 @@ TEST(MoveAvailabilityTest, RookMovesUnobstructed) {
 	{
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(1, 'd')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(1, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(2, 'd')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(2, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(2, 'e')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(2, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(2, 'f')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(2, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(1, 'f')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(1, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(5, 'a')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(5, 'a')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(5, 'b')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(5, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(5, 'c')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(5, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(5, 'e')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(5, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(5, 'f')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(5, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(5, 'g')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(5, 'g')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(5, 'h')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(5, 'h')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(8, 'd')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(8, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(7, 'd')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(7, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(6, 'd')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(6, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(4, 'd')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(4, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(3, 'd')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(3, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(2, 'd')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(2, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(1, 'd'))
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(1, 'd'))
 	};
 
 	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
@@ -601,58 +601,58 @@ TEST(MoveAvailabilityTest, RookMovesObstructed) {
 	{
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'c'),
-				Square::instantiateWithRankAndFile(1, 'd')),
+				Square::fromRankAndFile(1, 'c'),
+				Square::fromRankAndFile(1, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(4, 'b')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(4, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(4, 'c')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(4, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(4, 'e')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(4, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(4, 'f')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(4, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(4, 'g')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(4, 'g')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(6, 'd')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(6, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(5, 'd')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(5, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(3, 'd')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(3, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(2, 'd')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(2, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(1, 'd'))
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(1, 'd'))
 	};
 
 	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
@@ -668,163 +668,163 @@ TEST(MoveAvailabilityTest, QueenMovesUnobstructed) {
 	{
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(1, 'd')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(1, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(2, 'd')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(2, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(2, 'e')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(2, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(2, 'f')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(2, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(1, 'f')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(1, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(6, 'c')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(6, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(7, 'b')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(7, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(8, 'a')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(8, 'a')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(6, 'e')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(6, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(7, 'f')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(7, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(8, 'g')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(8, 'g')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(4, 'c')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(4, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(3, 'b')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(3, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(2, 'a')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(2, 'a')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(4, 'e')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(4, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(3, 'f')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(3, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(2, 'g')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(2, 'g')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(1, 'h')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(1, 'h')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(5, 'a')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(5, 'a')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(5, 'b')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(5, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(5, 'c')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(5, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(5, 'e')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(5, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(5, 'f')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(5, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(5, 'g')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(5, 'g')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(5, 'h')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(5, 'h')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(8, 'd')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(8, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(7, 'd')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(7, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(6, 'd')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(6, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(4, 'd')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(4, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(3, 'd')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(3, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(2, 'd')),
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(2, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(1, 'd'))
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(1, 'd'))
 	};
 
 	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
@@ -840,108 +840,108 @@ TEST(MoveAvailabilityTest, QueenMovesObstructed) {
 	{
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'c'),
-				Square::instantiateWithRankAndFile(1, 'd')),
+				Square::fromRankAndFile(1, 'c'),
+				Square::fromRankAndFile(1, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(4, 'b')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(4, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(4, 'c')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(4, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(4, 'e')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(4, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(4, 'f')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(4, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(4, 'g')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(4, 'g')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(6, 'd')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(6, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(5, 'd')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(5, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(3, 'd')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(3, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(2, 'd')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(2, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(1, 'd')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(1, 'd')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(5, 'c')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(5, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(6, 'b')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(6, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(7, 'a')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(7, 'a')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(5, 'e')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(5, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(6, 'f')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(6, 'f')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(7, 'g')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(7, 'g')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(3, 'c')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(3, 'c')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(2, 'b')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(2, 'b')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(3, 'e')),
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(3, 'e')),
 
 		PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'd'),
-				Square::instantiateWithRankAndFile(2, 'f'))
+				Square::fromRankAndFile(4, 'd'),
+				Square::fromRankAndFile(2, 'f'))
 	};
 
 	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
@@ -957,108 +957,108 @@ TEST(MoveAvailabilityTest, WhiteCastlingUnobstructed) {
 	{
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(2, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(2, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(3, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(3, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(4, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(4, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(5, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(5, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(6, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(6, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(7, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(7, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(8, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(8, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(1, 'b')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(1, 'b')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(1, 'c')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(1, 'c')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(1, 'd')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(1, 'd')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(2, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(2, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(3, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(3, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(4, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(4, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(5, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(5, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(6, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(6, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(7, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(7, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(8, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(8, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(1, 'g')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(1, 'g')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(1, 'f')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(1, 'f')),
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(1, 'd')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(1, 'd')),
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(2, 'd')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(2, 'd')),
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(2, 'e')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(2, 'e')),
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(2, 'f')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(2, 'f')),
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(1, 'f')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(1, 'f')),
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(1, 'c')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(1, 'c')),
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(1, 'g')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(1, 'g')),
 	};
 
 	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
@@ -1074,100 +1074,100 @@ TEST(MoveAvailabilityTest, WhiteCastlingQueensideObstructed) {
 	{
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(2, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(2, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(3, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(3, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(4, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(4, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(5, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(5, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(6, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(6, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(7, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(7, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(8, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(8, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(1, 'b')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(1, 'b')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(1, 'c')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(1, 'c')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(1, 'd')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(1, 'd')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(2, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(2, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(3, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(3, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(4, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(4, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(5, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(5, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(6, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(6, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(7, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(7, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(8, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(8, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(1, 'g')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(1, 'g')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(1, 'f')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(1, 'f')),
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(1, 'd')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(1, 'd')),
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(2, 'e')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(2, 'e')),
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(2, 'f')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(2, 'f')),
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(1, 'f')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(1, 'f')),
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(1, 'g')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(1, 'g')),
 	};
 
 	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
@@ -1183,96 +1183,96 @@ TEST(MoveAvailabilityTest, WhiteCastlingBothObstructed) {
 	{
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(2, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(2, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(3, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(3, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(4, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(4, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(5, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(5, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(6, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(6, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(7, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(7, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(8, 'a')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(8, 'a')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(1, 'b')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(1, 'b')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(1, 'c')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(1, 'c')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'a'),
-				Square::instantiateWithRankAndFile(1, 'd')),
+				Square::fromRankAndFile(1, 'a'),
+				Square::fromRankAndFile(1, 'd')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(2, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(2, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(3, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(3, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(4, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(4, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(5, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(5, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(6, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(6, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(7, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(7, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(8, 'h')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(8, 'h')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(1, 'g')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(1, 'g')),
 		PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(1, 'f')),
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(1, 'f')),
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(1, 'd')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(1, 'd')),
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(2, 'e')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(2, 'e')),
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(2, 'f')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(2, 'f')),
 		PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(1, 'f')),
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(1, 'f')),
 	};
 
 	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
@@ -1286,13 +1286,13 @@ TEST(MoveAvailabilityTest, WhiteCastlingUnavailable) {
 
 	const PieceMove kingSideCastling = PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(1, 'g'));
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(1, 'g'));
 
 	const PieceMove queenSideCastling = PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(1, 'c'));
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(1, 'c'));
 
 	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
 	EXPECT_EQ(availableMoves.count(kingSideCastling), 0);
@@ -1305,13 +1305,13 @@ TEST(MoveAvailabilityTest, BlackCastlingInCheck) {
 
 	const PieceMove kingSideCastling = PieceMove::regularMove(
 				{TYPE_KING, COLOR_BLACK},
-				Square::instantiateWithRankAndFile(8, 'e'),
-				Square::instantiateWithRankAndFile(8, 'g'));
+				Square::fromRankAndFile(8, 'e'),
+				Square::fromRankAndFile(8, 'g'));
 
 	const PieceMove queenSideCastling = PieceMove::regularMove(
 				{TYPE_KING, COLOR_BLACK},
-				Square::instantiateWithRankAndFile(8, 'e'),
-				Square::instantiateWithRankAndFile(8, 'c'));
+				Square::fromRankAndFile(8, 'e'),
+				Square::fromRankAndFile(8, 'c'));
 
 	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
 	EXPECT_EQ(availableMoves.count(kingSideCastling), 0);
@@ -1324,8 +1324,8 @@ TEST(MoveAvailabilityTest, EnPassantAvailable) {
 
 	const PieceMove enPassant = PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_BLACK},
-				Square::instantiateWithRankAndFile(4, 'e'),
-				Square::instantiateWithRankAndFile(3, 'f'));
+				Square::fromRankAndFile(4, 'e'),
+				Square::fromRankAndFile(3, 'f'));
 
 	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
 	EXPECT_EQ(availableMoves.count(enPassant), 1);
@@ -1337,8 +1337,8 @@ TEST(MoveAvailabilityTest, EnPassantWouldLeaveInCheck) {
 
 	const PieceMove enPassant = PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'e'),
-				Square::instantiateWithRankAndFile(6, 'd'));
+				Square::fromRankAndFile(5, 'e'),
+				Square::fromRankAndFile(6, 'd'));
 
 	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
 	EXPECT_EQ(availableMoves.count(enPassant), 0);
@@ -1350,74 +1350,74 @@ TEST(MoveAvailabilityTest, PawnPromotion) {
 
 	const PieceMove promotionQueen = PieceMove::pawnPromotion(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(7, 'f'),
-				Square::instantiateWithRankAndFile(8, 'f'),
+				Square::fromRankAndFile(7, 'f'),
+				Square::fromRankAndFile(8, 'f'),
 				TYPE_QUEEN);
 
 	const PieceMove promotionRook = PieceMove::pawnPromotion(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(7, 'f'),
-				Square::instantiateWithRankAndFile(8, 'f'),
+				Square::fromRankAndFile(7, 'f'),
+				Square::fromRankAndFile(8, 'f'),
 				TYPE_ROOK);
 
 	const PieceMove promotionKnight = PieceMove::pawnPromotion(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(7, 'f'),
-				Square::instantiateWithRankAndFile(8, 'f'),
+				Square::fromRankAndFile(7, 'f'),
+				Square::fromRankAndFile(8, 'f'),
 				TYPE_KNIGHT);
 
 	const PieceMove promotionBishop = PieceMove::pawnPromotion(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(7, 'f'),
-				Square::instantiateWithRankAndFile(8, 'f'),
+				Square::fromRankAndFile(7, 'f'),
+				Square::fromRankAndFile(8, 'f'),
 				TYPE_BISHOP);
 
 	const PieceMove wrongPromotionKing = PieceMove::pawnPromotion(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(7, 'f'),
-				Square::instantiateWithRankAndFile(8, 'f'),
+				Square::fromRankAndFile(7, 'f'),
+				Square::fromRankAndFile(8, 'f'),
 				TYPE_KING);
 
 	const PieceMove wrongPromotionPawn = PieceMove::pawnPromotion(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(7, 'f'),
-				Square::instantiateWithRankAndFile(8, 'f'),
+				Square::fromRankAndFile(7, 'f'),
+				Square::fromRankAndFile(8, 'f'),
 				TYPE_KING);
 
 	const PieceMove promotionQueenWithCapture = PieceMove::pawnPromotion(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(7, 'f'),
-				Square::instantiateWithRankAndFile(8, 'e'),
+				Square::fromRankAndFile(7, 'f'),
+				Square::fromRankAndFile(8, 'e'),
 				TYPE_QUEEN);
 
 	const PieceMove promotionRookWithCapture = PieceMove::pawnPromotion(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(7, 'f'),
-				Square::instantiateWithRankAndFile(8, 'e'),
+				Square::fromRankAndFile(7, 'f'),
+				Square::fromRankAndFile(8, 'e'),
 				TYPE_ROOK);
 
 	const PieceMove promotionKnightWithCapture = PieceMove::pawnPromotion(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(7, 'f'),
-				Square::instantiateWithRankAndFile(8, 'e'),
+				Square::fromRankAndFile(7, 'f'),
+				Square::fromRankAndFile(8, 'e'),
 				TYPE_KNIGHT);
 
 	const PieceMove promotionBishopWithCapture = PieceMove::pawnPromotion(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(7, 'f'),
-				Square::instantiateWithRankAndFile(8, 'e'),
+				Square::fromRankAndFile(7, 'f'),
+				Square::fromRankAndFile(8, 'e'),
 				TYPE_BISHOP);
 
 	const PieceMove wrongPromotionKingWithCapture = PieceMove::pawnPromotion(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(7, 'f'),
-				Square::instantiateWithRankAndFile(8, 'e'),
+				Square::fromRankAndFile(7, 'f'),
+				Square::fromRankAndFile(8, 'e'),
 				TYPE_KING);
 
 	const PieceMove wrongPromotionPawnWithCapture = PieceMove::pawnPromotion(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(7, 'f'),
-				Square::instantiateWithRankAndFile(8, 'e'),
+				Square::fromRankAndFile(7, 'f'),
+				Square::fromRankAndFile(8, 'e'),
 				TYPE_KING);
 
 	const std::set<PieceMove> availableMoves = game.allAvailableMoves();

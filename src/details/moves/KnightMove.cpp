@@ -25,7 +25,7 @@ std::set<PieceMove> simplechess::details::validKnightMoves(
 						square.rank() + longStep,
 						square.file() + shortStep))
 			{
-				const Square dst = Square::instantiateWithRankAndFile(
+				const Square dst = Square::fromRankAndFile(
 						square.rank() + longStep,
 						square.file() + shortStep);
 
@@ -39,7 +39,7 @@ std::set<PieceMove> simplechess::details::validKnightMoves(
 						square.rank() + shortStep,
 						square.file() + longStep))
 			{
-				const Square dst = Square::instantiateWithRankAndFile(
+				const Square dst = Square::fromRankAndFile(
 						square.rank() + shortStep,
 						square.file() + longStep);
 

@@ -21,7 +21,7 @@ boost::optional<Square> MoveValidator::enPassantTarget(
 	if (pieceMove.piece().type() == TYPE_PAWN
 			&& abs(pieceMove.dst().rank() - pieceMove.src().rank()) == 2)
 	{
-		return { Square::instantiateWithRankAndFile(
+		return { Square::fromRankAndFile(
 				((pieceMove.piece().color() == COLOR_WHITE)
 				 ? 3
 				 : 6),

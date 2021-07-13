@@ -11,8 +11,8 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckNoAmbiguity) {
 	const GameStage stage = game.makeMove(
 			PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(3, 'c'),
-				Square::instantiateWithRankAndFile(5, 'b'))).currentStage();
+				Square::fromRankAndFile(3, 'c'),
+				Square::fromRankAndFile(5, 'b'))).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "Nb5");
 }
@@ -24,8 +24,8 @@ TEST(AlgebraicNotationTest, PieceMoveCaptureNoCheckNoAmbiguity) {
 	const GameStage stage = game.makeMove(
 			PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'f'),
-				Square::instantiateWithRankAndFile(4, 'c'))).currentStage();
+				Square::fromRankAndFile(1, 'f'),
+				Square::fromRankAndFile(4, 'c'))).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "Bxc4");
 }
@@ -37,8 +37,8 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguity) {
 	const GameStage stage = game.makeMove(
 			PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_BLACK},
-				Square::instantiateWithRankAndFile(8, 'c'),
-				Square::instantiateWithRankAndFile(3, 'h'))).currentStage();
+				Square::fromRankAndFile(8, 'c'),
+				Square::fromRankAndFile(3, 'h'))).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "Qh3+");
 }
@@ -50,8 +50,8 @@ TEST(AlgebraicNotationTest, PieceMoveCaptureCheckNoAmbiguity) {
 	const GameStage stage = game.makeMove(
 			PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_BLACK},
-				Square::instantiateWithRankAndFile(4, 'h'),
-				Square::instantiateWithRankAndFile(4, 'e'))).currentStage();
+				Square::fromRankAndFile(4, 'h'),
+				Square::fromRankAndFile(4, 'e'))).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "Qxe4+");
 }
@@ -63,8 +63,8 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureCheckMateNoAmbiguity) {
 	const GameStage stage = game.makeMove(
 			PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(7, 'h'),
-				Square::instantiateWithRankAndFile(8, 'h'))).currentStage();
+				Square::fromRankAndFile(7, 'h'),
+				Square::fromRankAndFile(8, 'h'))).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "Rh8#");
 }
@@ -76,8 +76,8 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankAmbiguity) {
 	const GameStage stage = game.makeMove(
 			PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(1, 'd'))).currentStage();
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(1, 'd'))).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "Rhd1");
 }
@@ -89,8 +89,8 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankNoAmbiguity) {
 	const GameStage stage = game.makeMove(
 			PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'h'),
-				Square::instantiateWithRankAndFile(2, 'h'))).currentStage();
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(2, 'h'))).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "Rh2");
 }
@@ -102,8 +102,8 @@ TEST(AlgebraicNotationTest, PieceMoveCaptureNoCheckSameFileAmbiguity) {
 	const GameStage stage = game.makeMove(
 			PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_BLACK},
-				Square::instantiateWithRankAndFile(8, 'a'),
-				Square::instantiateWithRankAndFile(6, 'c'))).currentStage();
+				Square::fromRankAndFile(8, 'a'),
+				Square::fromRankAndFile(6, 'c'))).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "B8xc6");
 }
@@ -115,8 +115,8 @@ TEST(AlgebraicNotationTest, PieceMoveCaptureCheckSameFileSameRankAmbiguity) {
 	const GameStage stage = game.makeMove(
 			PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_BLACK},
-				Square::instantiateWithRankAndFile(8, 'a'),
-				Square::instantiateWithRankAndFile(6, 'c'))).currentStage();
+				Square::fromRankAndFile(8, 'a'),
+				Square::fromRankAndFile(6, 'c'))).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "Ba8xc6+");
 }
@@ -128,8 +128,8 @@ TEST(AlgebraicNotationTest, PawnPromotionNoCaptureNoCheck) {
 	const GameStage stage = game.makeMove(
 			PieceMove::pawnPromotion(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(7, 'b'),
-				Square::instantiateWithRankAndFile(8, 'b'),
+				Square::fromRankAndFile(7, 'b'),
+				Square::fromRankAndFile(8, 'b'),
 				TYPE_QUEEN)).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "b8=Q");
@@ -142,8 +142,8 @@ TEST(AlgebraicNotationTest, PawnPromotionCaptureCheck) {
 	const GameStage stage = game.makeMove(
 			PieceMove::pawnPromotion(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(7, 'b'),
-				Square::instantiateWithRankAndFile(8, 'c'),
+				Square::fromRankAndFile(7, 'b'),
+				Square::fromRankAndFile(8, 'c'),
 				TYPE_ROOK)).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "xc8=R+");
@@ -156,8 +156,8 @@ TEST(AlgebraicNotationTest, PawnRegularMoveCaptureAmbiguityNoCheck) {
 	const GameStage stage = game.makeMove(
 			PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_BLACK},
-				Square::instantiateWithRankAndFile(5, 'd'),
-				Square::instantiateWithRankAndFile(4, 'e'))).currentStage();
+				Square::fromRankAndFile(5, 'd'),
+				Square::fromRankAndFile(4, 'e'))).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "dxe4");
 }
@@ -169,8 +169,8 @@ TEST(AlgebraicNotationTest, PawnRegularMoveCaptureNoAmbiguityNoCheck) {
 	const GameStage stage = game.makeMove(
 			PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_BLACK},
-				Square::instantiateWithRankAndFile(5, 'g'),
-				Square::instantiateWithRankAndFile(4, 'h'))).currentStage();
+				Square::fromRankAndFile(5, 'g'),
+				Square::fromRankAndFile(4, 'h'))).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "xh4");
 }
@@ -182,8 +182,8 @@ TEST(AlgebraicNotationTest, PawnEnPassantCaptureNoAmbiguityNoCheck) {
 	const GameStage stage = game.makeMove(
 			PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'a'),
-				Square::instantiateWithRankAndFile(6, 'b'))).currentStage();
+				Square::fromRankAndFile(5, 'a'),
+				Square::fromRankAndFile(6, 'b'))).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "xb6");
 }
@@ -195,8 +195,8 @@ TEST(AlgebraicNotationTest, PawnEnPassantCaptureAmbiguityNoCheck) {
 	const GameStage stage = game.makeMove(
 			PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(5, 'a'),
-				Square::instantiateWithRankAndFile(6, 'b'))).currentStage();
+				Square::fromRankAndFile(5, 'a'),
+				Square::fromRankAndFile(6, 'b'))).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "axb6");
 }
@@ -208,8 +208,8 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguityDrawOffer) {
 	const GameStage stage = game.makeMove(
 			PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(4, 'a'),
-				Square::instantiateWithRankAndFile(4, 'b')), true).currentStage();
+				Square::fromRankAndFile(4, 'a'),
+				Square::fromRankAndFile(4, 'b')), true).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "Qb4+(=)");
 }
@@ -221,8 +221,8 @@ TEST(AlgebraicNotationTest, CastlingKingsideNoCheck) {
 	const GameStage stage = game.makeMove(
 			PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(1, 'e'),
-				Square::instantiateWithRankAndFile(1, 'g'))).currentStage();
+				Square::fromRankAndFile(1, 'e'),
+				Square::fromRankAndFile(1, 'g'))).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "O-O");
 }
@@ -234,8 +234,8 @@ TEST(AlgebraicNotationTest, CastlingQueensideCheckmate) {
 	const GameStage stage = game.makeMove(
 			PieceMove::regularMove(
 				{TYPE_KING, COLOR_BLACK},
-				Square::instantiateWithRankAndFile(8, 'e'),
-				Square::instantiateWithRankAndFile(8, 'c'))).currentStage();
+				Square::fromRankAndFile(8, 'e'),
+				Square::fromRankAndFile(8, 'c'))).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "O-O-O#");
 }

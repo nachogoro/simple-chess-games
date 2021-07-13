@@ -83,7 +83,7 @@ std::set<Square> BoardAnalyzer::reachableSquaresInDirection(
 					src.rank() + i*rankStep,
 					src.file() + i*fileStep))
 		{
-			const Square dst = Square::instantiateWithRankAndFile(
+			const Square dst = Square::fromRankAndFile(
 					src.rank() + i*rankStep,
 					src.file() + i*fileStep);
 

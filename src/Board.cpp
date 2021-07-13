@@ -41,12 +41,12 @@ Board Board::makeMove(const PieceMove& move) const
 
 		// ... and the rook
 		const Square rookSrc = (move.dst().file() == 'g')
-			? Square::instantiateWithRankAndFile(move.dst().rank(), 'h')
-			: Square::instantiateWithRankAndFile(move.dst().rank(), 'a');
+			? Square::fromRankAndFile(move.dst().rank(), 'h')
+			: Square::fromRankAndFile(move.dst().rank(), 'a');
 
 		const Square rookDst = (move.dst().file() == 'g')
-			? Square::instantiateWithRankAndFile(move.dst().rank(), 'f')
-			: Square::instantiateWithRankAndFile(move.dst().rank(), 'd');
+			? Square::fromRankAndFile(move.dst().rank(), 'f')
+			: Square::fromRankAndFile(move.dst().rank(), 'd');
 
 		positions.insert({rookDst, positions.at(rookSrc)});
 		positions.erase(rookSrc);
@@ -64,7 +64,7 @@ Board Board::makeMove(const PieceMove& move) const
 
 		// Remove the captured pawn
 		positions.erase(
-				Square::instantiateWithRankAndFile(
+				Square::fromRankAndFile(
 					move.dst().rank() + (move.dst().rank() == 6 ? -1 : 1),
 					move.dst().file()));
 

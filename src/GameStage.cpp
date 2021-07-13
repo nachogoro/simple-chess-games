@@ -188,7 +188,7 @@ std::string GameStage::generateFen() const
 		for (char file = 'a'; file <= 'h'; ++file)
 		{
 			const Square square
-				= Square::instantiateWithRankAndFile(rank, file);
+				= Square::fromRankAndFile(rank, file);
 
 			const boost::optional<Piece> piece = board().pieceAt(square);
 

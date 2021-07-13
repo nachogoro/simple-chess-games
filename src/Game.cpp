@@ -112,13 +112,13 @@ Game Game::createGameFromStartingFen(const std::string& fen)
 					? COLOR_WHITE
 					: COLOR_BLACK);
 
-		const Square src = Square::instantiateWithRankAndFile(
+		const Square src = Square::fromRankAndFile(
 				((pawn.color() == COLOR_WHITE)
 					? 2
 					: 7),
 				epSquare->file());
 
-		const Square dst = Square::instantiateWithRankAndFile(
+		const Square dst = Square::fromRankAndFile(
 				((pawn.color() == COLOR_WHITE)
 					? 4
 					: 5),

@@ -9,8 +9,8 @@ TEST(DrawDetectionTest, OfferDraw) {
 
 	const PieceMove knightMove = PieceMove::regularMove(
 			{TYPE_KNIGHT, COLOR_WHITE},
-			Square::instantiateWithRankAndFile(1, 'g'),
-			Square::instantiateWithRankAndFile(3, 'f'));
+			Square::fromRankAndFile(1, 'g'),
+			Square::fromRankAndFile(3, 'f'));
 
 	// Offer draw
 	const Game updated = startingGame.makeMove(knightMove, true);
@@ -25,8 +25,8 @@ TEST(DrawDetectionTest, OfferDrawAndAccept) {
 
 	const PieceMove knightMove = PieceMove::regularMove(
 			{TYPE_KNIGHT, COLOR_WHITE},
-			Square::instantiateWithRankAndFile(1, 'g'),
-			Square::instantiateWithRankAndFile(3, 'f'));
+			Square::fromRankAndFile(1, 'g'),
+			Square::fromRankAndFile(3, 'f'));
 
 	// Offer draw
 	const Game updated = startingGame.makeMove(knightMove, true);
@@ -41,13 +41,13 @@ TEST(DrawDetectionTest, OfferDrawAndReject) {
 
 	const PieceMove whiteMove = PieceMove::regularMove(
 			{TYPE_KNIGHT, COLOR_WHITE},
-			Square::instantiateWithRankAndFile(1, 'g'),
-			Square::instantiateWithRankAndFile(3, 'f'));
+			Square::fromRankAndFile(1, 'g'),
+			Square::fromRankAndFile(3, 'f'));
 
 	const PieceMove blackMove = PieceMove::regularMove(
 			{TYPE_KNIGHT, COLOR_BLACK},
-			Square::instantiateWithRankAndFile(8, 'g'),
-			Square::instantiateWithRankAndFile(6, 'f'));
+			Square::fromRankAndFile(8, 'g'),
+			Square::fromRankAndFile(6, 'f'));
 
 	// Offer draw
 	const Game withDrawOffer = startingGame.makeMove(whiteMove, true);
@@ -67,8 +67,8 @@ TEST(DrawDetectionTest, Stalemate) {
 
 	const PieceMove causeStaleMate = PieceMove::regularMove(
 			{TYPE_ROOK, COLOR_BLACK},
-			Square::instantiateWithRankAndFile(5, 'h'),
-			Square::instantiateWithRankAndFile(4, 'h'));
+			Square::fromRankAndFile(5, 'h'),
+			Square::fromRankAndFile(4, 'h'));
 
 	const Game updated = startingGame.makeMove(causeStaleMate, false);
 
@@ -85,8 +85,8 @@ TEST(DrawDetectionTest, InsufficientMaterialKingvsKing) {
 
 	const PieceMove pawnCapture = PieceMove::regularMove(
 			{TYPE_KING, COLOR_WHITE},
-			Square::instantiateWithRankAndFile(4, 'd'),
-			Square::instantiateWithRankAndFile(5, 'e'));
+			Square::fromRankAndFile(4, 'd'),
+			Square::fromRankAndFile(5, 'e'));
 
 	const Game withNoMaterial = startingGame.makeMove(pawnCapture);
 
@@ -102,8 +102,8 @@ TEST(DrawDetectionTest, InsufficientMaterialKingvsKingAndBishop) {
 
 	const PieceMove rookCapture = PieceMove::regularMove(
 			{TYPE_KING, COLOR_BLACK},
-			Square::instantiateWithRankAndFile(8, 'd'),
-			Square::instantiateWithRankAndFile(7, 'e'));
+			Square::fromRankAndFile(8, 'd'),
+			Square::fromRankAndFile(7, 'e'));
 
 	const Game withNoMaterial = startingGame.makeMove(rookCapture);
 
@@ -119,8 +119,8 @@ TEST(DrawDetectionTest, InsufficientMaterialKingvsKingAndKnight) {
 
 	const PieceMove rookCapture = PieceMove::regularMove(
 			{TYPE_KING, COLOR_BLACK},
-			Square::instantiateWithRankAndFile(8, 'd'),
-			Square::instantiateWithRankAndFile(7, 'd'));
+			Square::fromRankAndFile(8, 'd'),
+			Square::fromRankAndFile(7, 'd'));
 
 	const Game withNoMaterial = startingGame.makeMove(rookCapture);
 
@@ -136,8 +136,8 @@ TEST(DrawDetectionTest, InsufficientMaterialKingAndBishopvsKingAndSameColoredBis
 
 	const PieceMove rookCapture = PieceMove::regularMove(
 			{TYPE_KING, COLOR_WHITE},
-			Square::instantiateWithRankAndFile(4, 'd'),
-			Square::instantiateWithRankAndFile(5, 'd'));
+			Square::fromRankAndFile(4, 'd'),
+			Square::fromRankAndFile(5, 'd'));
 
 	const Game withNoMaterial = startingGame.makeMove(rookCapture);
 
@@ -153,8 +153,8 @@ TEST(DrawDetectionTest, InsufficientMaterialKingAndBishopvsKingAndOppositeColorB
 
 	const PieceMove rookCapture = PieceMove::regularMove(
 			{TYPE_KING, COLOR_WHITE},
-			Square::instantiateWithRankAndFile(4, 'd'),
-			Square::instantiateWithRankAndFile(5, 'd'));
+			Square::fromRankAndFile(4, 'd'),
+			Square::fromRankAndFile(5, 'd'));
 
 	const Game stillEnoughMaterial = startingGame.makeMove(rookCapture);
 
@@ -173,23 +173,23 @@ TEST(DrawDetectionTest, NFoldRepetition) {
 
 	const PieceMove whiteKnightForward = PieceMove::regularMove(
 			{TYPE_KNIGHT, COLOR_WHITE},
-			Square::instantiateWithRankAndFile(1, 'g'),
-			Square::instantiateWithRankAndFile(3, 'f'));
+			Square::fromRankAndFile(1, 'g'),
+			Square::fromRankAndFile(3, 'f'));
 
 	const PieceMove whiteKnightBack = PieceMove::regularMove(
 			{TYPE_KNIGHT, COLOR_WHITE},
-			Square::instantiateWithRankAndFile(3, 'f'),
-			Square::instantiateWithRankAndFile(1, 'g'));
+			Square::fromRankAndFile(3, 'f'),
+			Square::fromRankAndFile(1, 'g'));
 
 	const PieceMove blackKnightForward = PieceMove::regularMove(
 			{TYPE_KNIGHT, COLOR_BLACK},
-			Square::instantiateWithRankAndFile(8, 'g'),
-			Square::instantiateWithRankAndFile(6, 'f'));
+			Square::fromRankAndFile(8, 'g'),
+			Square::fromRankAndFile(6, 'f'));
 
 	const PieceMove blackKnightBack = PieceMove::regularMove(
 			{TYPE_KNIGHT, COLOR_BLACK},
-			Square::instantiateWithRankAndFile(6, 'f'),
-			Square::instantiateWithRankAndFile(8, 'g'));
+			Square::fromRankAndFile(6, 'f'),
+			Square::fromRankAndFile(8, 'g'));
 
 	const Game move1 = startingGame.makeMove(whiteKnightForward);
 	EXPECT_EQ(!!move1.reasonToClaimDraw(), false);
@@ -231,8 +231,8 @@ TEST(DrawDetectionTest, FiftyMoveRule) {
 	const Game fiftyFullMoves = startingGame.makeMove(
 			PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(2, 'd'),
-				Square::instantiateWithRankAndFile(2, 'c')));
+				Square::fromRankAndFile(2, 'd'),
+				Square::fromRankAndFile(2, 'c')));
 
 	EXPECT_EQ(fiftyFullMoves.gameState(), GAME_STATE_PLAYING);
 	EXPECT_EQ(!!fiftyFullMoves.reasonToClaimDraw(), true);
@@ -241,8 +241,8 @@ TEST(DrawDetectionTest, FiftyMoveRule) {
 	const Game fiftyOneFullMoves = fiftyFullMoves.makeMove(
 			PieceMove::regularMove(
 				{TYPE_BISHOP, COLOR_BLACK},
-				Square::instantiateWithRankAndFile(7, 'c'),
-				Square::instantiateWithRankAndFile(6, 'b')));
+				Square::fromRankAndFile(7, 'c'),
+				Square::fromRankAndFile(6, 'b')));
 
 	EXPECT_EQ(fiftyOneFullMoves.gameState(), GAME_STATE_PLAYING);
 	EXPECT_EQ(!!fiftyOneFullMoves.reasonToClaimDraw(), true);
@@ -260,8 +260,8 @@ TEST(DrawDetectionTest, SeventyFiveMoveRule) {
 	const Game seventyFiveFullMoves = startingGame.makeMove(
 			PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
-				Square::instantiateWithRankAndFile(2, 'd'),
-				Square::instantiateWithRankAndFile(2, 'c')));
+				Square::fromRankAndFile(2, 'd'),
+				Square::fromRankAndFile(2, 'c')));
 
 	EXPECT_EQ(seventyFiveFullMoves.gameState(), GAME_STATE_DRAWN);
 	EXPECT_EQ(seventyFiveFullMoves.drawReason(), DRAW_REASON_75_MOVE_RULE);

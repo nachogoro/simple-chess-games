@@ -6,7 +6,7 @@
 
 using namespace simplechess;
 
-Square Square::instantiateWithRankAndFile(uint8_t rank, char file)
+Square Square::fromRankAndFile(uint8_t rank, char file)
 {
 	if (!isInsideBoundaries(rank, file))
 	{
@@ -27,7 +27,7 @@ Square Square::instantiateFromString(const std::string& algebraicSquare)
 		throw std::invalid_argument(algebraicSquare + " is not a valid square");
 	}
 
-	return instantiateWithRankAndFile(
+	return fromRankAndFile(
 			static_cast<uint8_t>(algebraicSquare[1] - '0'),
 			algebraicSquare[0]);
 }

@@ -29,7 +29,7 @@ std::set<PieceMove> simplechess::details::validPawnMoves(
 		? 1
 		: -1;
 
-	const Square oneAhead = Square::instantiateWithRankAndFile(
+	const Square oneAhead = Square::fromRankAndFile(
 			square.rank() + step,
 			square.file());
 
@@ -42,7 +42,7 @@ std::set<PieceMove> simplechess::details::validPawnMoves(
 			|| pawn.color() == COLOR_BLACK && square.rank() == 7)
 	{
 		// The pawn has never moved, might be able to move twice ahead
-		const Square twoAhead = Square::instantiateWithRankAndFile(
+		const Square twoAhead = Square::fromRankAndFile(
 				square.rank() + 2*step,
 				square.file());
 
@@ -56,7 +56,7 @@ std::set<PieceMove> simplechess::details::validPawnMoves(
 	if (square.file() != 'a')
 	{
 		// Can potentially capture towards the queen side
-		const Square aheadQueenSide = Square::instantiateWithRankAndFile(
+		const Square aheadQueenSide = Square::fromRankAndFile(
 				square.rank() + step,
 				square.file() - 1);
 
@@ -73,7 +73,7 @@ std::set<PieceMove> simplechess::details::validPawnMoves(
 	if (square.file() != 'h')
 	{
 		// Can potentially capture towards the king side
-		const Square aheadKingSide = Square::instantiateWithRankAndFile(
+		const Square aheadKingSide = Square::fromRankAndFile(
 				square.rank() + step,
 				square.file() + 1);
 
