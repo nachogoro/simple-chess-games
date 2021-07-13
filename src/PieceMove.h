@@ -106,9 +106,33 @@ namespace simplechess
 			 */
 			const boost::optional<PieceType>& promoted() const;
 
-			// TODO document
+			/**
+			 * \brief Less-than comparison operator.
+			 *
+			 * The order established by  this operator is meaningless, as this
+			 * method is only necessary to allow objects of this class to be
+			 * used in std::set collections or as keys in std::map.
+			 *
+			 * \param o The \c PieceMove to be compared against.
+			 * \return \c true if this \c PieceMove is considered lees than \a
+			 * o, \c false otherwise.
+			 */
 			bool operator<(const PieceMove& o) const;
+
+			/**
+			 * \brief Equals comparison operator.
+			 * \param o The \c PieceMove to be compared against.
+			 * \return \c true if this \c PieceMove is identical to \a o, \c
+			 * false otherwise.
+			 */
 			bool operator==(const PieceMove& o) const;
+
+			/**
+			 * \brief Not-equals comparison operator.
+			 * \param o The \c PieceMove to be compared against.
+			 * \return \c true if this \c PieceMove is not identical to \a o,
+			 * \c false otherwise.
+			 */
 			bool operator!=(const PieceMove& o) const;
 
 		private:

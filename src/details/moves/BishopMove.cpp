@@ -5,7 +5,7 @@
 using namespace simplechess;
 using namespace simplechess::details;
 
-std::set<PieceMove> simplechess::details::validBishopMoves(
+std::set<PieceMove> simplechess::details::bishopMovesUnfiltered(
 		const Board& board,
 		const Color color,
 		const Square& square)

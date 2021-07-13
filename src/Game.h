@@ -94,16 +94,28 @@ namespace simplechess
 			DrawReason drawReason() const;
 
 			/**
-			 * Returns the history of the game as a sequence of \ref GameStage.
+			 * \brief Returns the history of the game as a sequence of \ref
+			 * GameStage.
 			 *
 			 * The latest reached position, along with the move which reached
 			 * it, are the last element in the vector.
+			 *
+			 * \note The most reliable way of getting the move counter of a
+			 * certain stage is not to rely on the position on this vector but
+			 * instead use the appropriate method in \ref GameStage.
 			 *
 			 * \return The history of the game.
 			 */
 			const std::vector<GameStage>& gameHistory() const;
 
-			// TODO document
+			/**
+			 * \brief Returns the latest stage of the game.
+			 *
+			 * This is a convenience method to access the last element of \ref
+			 * gameHistory().
+			 *
+			 * \return The latest stage of the game.
+			 */
 			const GameStage& currentStage() const;
 
 			/**

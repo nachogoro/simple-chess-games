@@ -12,7 +12,6 @@
 
 namespace simplechess
 {
-	// TODO fix this mess by not having makeMove be a private method
 	class Game;
 
 	namespace details

@@ -11,9 +11,6 @@
 
 #include <set>
 
-// TODO remove unneeded methods
-// TODO improve name of "unfiltered"
-
 namespace simplechess
 {
 	namespace details
@@ -29,8 +26,10 @@ namespace simplechess
 
 				// Returns all possible moves for activeColor without
 				// accounting for whether the move would leave the king in
-				// check, and excluding castling
-				static std::set<PieceMove> allAvailableMovesUnfiltered(
+				// check (i.e. unfiltered), and excluding castling (i.e. only
+				// potentially capturing moves).
+				static std::set<PieceMove>
+					allPotentiallyCapturingMovesUnfiltered(
 						const Board& board,
 						const boost::optional<Square>& enPassantTarget,
 						Color activeColor);
@@ -43,8 +42,9 @@ namespace simplechess
 
 				// Returns all possible moves for activeColor without
 				// accounting for whether the move would leave the king in
-				// check, and excluding castling in the case of the king
-				static std::set<PieceMove> availableMovesForPieceUnfiltered(
+				// check (i.e. unfiltered), and excluding castling in the case
+				// of the king (i.e. only potentially capturing moves).
+				static std::set<PieceMove> potentiallyCapturingMovesForPieceUnfiltered(
 						const Board& board,
 						const boost::optional<Square>& enPassantTarget,
 						const Square& square);

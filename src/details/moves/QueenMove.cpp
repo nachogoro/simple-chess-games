@@ -6,14 +6,14 @@
 using namespace simplechess;
 using namespace simplechess::details;
 
-std::set<PieceMove> simplechess::details::validQueenMoves(
+std::set<PieceMove> simplechess::details::queenMovesUnfiltered(
 		const Board& board,
 		const Color color,
 		const Square& square)
 {
 	// These moves assume the moving piece is a rook/bishop!
-	const std::set<PieceMove> asRook = validRookMoves(board, color, square);
-	const std::set<PieceMove> asBishop = validBishopMoves(board, color, square);
+	const std::set<PieceMove> asRook = rookMovesUnfiltered(board, color, square);
+	const std::set<PieceMove> asBishop = bishopMovesUnfiltered(board, color, square);
 
 	std::set<PieceMove> combined;
 	combined.insert(asRook.begin(), asRook.end());

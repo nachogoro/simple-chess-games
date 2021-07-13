@@ -12,9 +12,6 @@
 using namespace simplechess;
 using namespace simplechess::details;
 
-// TODO improve the "validXXXMoves" scheme, as they are not really valid until
-// we filter out checks
-
 boost::optional<Square> MoveValidator::enPassantTarget(
 		const PieceMove& pieceMove)
 {
@@ -31,7 +28,7 @@ boost::optional<Square> MoveValidator::enPassantTarget(
 	return {};
 }
 
-std::set<PieceMove> MoveValidator::availableMovesForPieceUnfiltered(
+std::set<PieceMove> MoveValidator::potentiallyCapturingMovesForPieceUnfiltered(
 		const Board& board,
 		const boost::optional<Square>& enPassantTarget,
 		const Square& square)
@@ -41,15 +38,15 @@ std::set<PieceMove> MoveValidator::availableMovesForPieceUnfiltered(
 	switch (board.pieceAt(square)->type())
 	{
 		case TYPE_PAWN:
-			return validPawnMoves(board, enPassantTarget, color, square);
+			return pawnMovesUnfiltered(board, enPassantTarget, color, square);
 		case TYPE_ROOK:
-			return validRookMoves(board, color, square);
+			return rookMovesUnfiltered(board, color, square);
 		case TYPE_KNIGHT:
-			return validKnightMoves(board, color, square);
+			return knightMovesUnfiltered(board, color, square);
 		case TYPE_BISHOP:
-			return validBishopMoves(board, color, square);
+			return bishopMovesUnfiltered(board, color, square);
 		case TYPE_QUEEN:
-			return validQueenMoves(board, color, square);
+			return queenMovesUnfiltered(board, color, square);
 		case TYPE_KING:
 			return kingMovesExceptCastling(board, color, square);
 	}
@@ -57,6 +54,29 @@ std::set<PieceMove> MoveValidator::availableMovesForPieceUnfiltered(
 	throw std::invalid_argument(
 			std::string("Unknown piece type ")
 			+ std::to_string(board.pieceAt(square)->type()));
+}
+
+std::set<PieceMove> MoveValidator::allPotentiallyCapturingMovesUnfiltered(
+		const Board& board,
+		const boost::optional<Square>& enPassantTarget,
+		const Color activeColor)
+{
+	std::set<PieceMove> result;
+
+	for (const auto& squarePiece : board.occupiedSquares())
+	{
+		if (squarePiece.second.color() == activeColor)
+		{
+			const std::set<PieceMove> pieceMoves
+				= potentiallyCapturingMovesForPieceUnfiltered(
+						board,
+						enPassantTarget,
+						squarePiece.first);
+			result.insert(pieceMoves.begin(), pieceMoves.end());
+		}
+	}
+
+	return result;
 }
 
 std::set<PieceMove> MoveValidator::availableMovesForPiece(
@@ -72,22 +92,22 @@ std::set<PieceMove> MoveValidator::availableMovesForPiece(
 	switch (board.pieceAt(square)->type())
 	{
 		case TYPE_PAWN:
-			unfiltered = validPawnMoves(board, enPassantTarget, color, square);
+			unfiltered = pawnMovesUnfiltered(board, enPassantTarget, color, square);
 			break;
 		case TYPE_ROOK:
-			unfiltered = validRookMoves(board, color, square);
+			unfiltered = rookMovesUnfiltered(board, color, square);
 			break;
 		case TYPE_KNIGHT:
-			unfiltered = validKnightMoves(board, color, square);
+			unfiltered = knightMovesUnfiltered(board, color, square);
 			break;
 		case TYPE_BISHOP:
-			unfiltered = validBishopMoves(board, color, square);
+			unfiltered = bishopMovesUnfiltered(board, color, square);
 			break;
 		case TYPE_QUEEN:
-			unfiltered = validQueenMoves(board, color, square);
+			unfiltered = queenMovesUnfiltered(board, color, square);
 			break;
 		case TYPE_KING:
-			unfiltered = validKingMoves(board, castlingRights, color, square);
+			unfiltered = kingMovesUnfiltered(board, castlingRights, color, square);
 			break;
 	}
 
@@ -96,7 +116,7 @@ std::set<PieceMove> MoveValidator::availableMovesForPiece(
 
 	for (const auto& move : unfiltered)
 	{
-		const Board afterMove = board.makeMove(move);
+		const Board afterMove = BoardAnalyzer::makeMoveOnBoard(board, move);
 
 		if (!BoardAnalyzer::isInCheck(afterMove, color))
 		{
@@ -124,29 +144,6 @@ std::set<PieceMove> MoveValidator::allAvailableMoves(
 					enPassantTarget,
 					castlingRights,
 					squarePiece.first);
-			result.insert(pieceMoves.begin(), pieceMoves.end());
-		}
-	}
-
-	return result;
-}
-
-std::set<PieceMove> MoveValidator::allAvailableMovesUnfiltered(
-		const Board& board,
-		const boost::optional<Square>& enPassantTarget,
-		const Color activeColor)
-{
-	std::set<PieceMove> result;
-
-	for (const auto& squarePiece : board.occupiedSquares())
-	{
-		if (squarePiece.second.color() == activeColor)
-		{
-			const std::set<PieceMove> pieceMoves
-				= availableMovesForPieceUnfiltered(
-						board,
-						enPassantTarget,
-						squarePiece.first);
 			result.insert(pieceMoves.begin(), pieceMoves.end());
 		}
 	}

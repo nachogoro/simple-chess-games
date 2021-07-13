@@ -5,7 +5,7 @@
 using namespace simplechess;
 using namespace simplechess::details;
 
-std::set<PieceMove> simplechess::details::validPawnMoves(
+std::set<PieceMove> simplechess::details::pawnMovesUnfiltered(
 		const Board& board,
 		const boost::optional<Square>& enPassantTarget,
 		const Color color,

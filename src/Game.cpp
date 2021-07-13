@@ -13,6 +13,15 @@
 
 using namespace simplechess;
 
+// TODO Compute things only once (e.g. verifying the kind of check a move would
+// imply, or the available moves from a position).
+//
+// TODO In order to be able to move to the public header include/ vs
+// implementation src/ directories, make public facing objects simply contain
+// pre-computed information passed to them through their constructor, and leave
+// all "computing" code (e.g. makeMove()) to a singleton object making use of
+// the pImpl idiom
+
 namespace internal
 {
 	boost::tuple<GameState, boost::optional<DrawReason>> inferGameStateFromStage(
@@ -149,11 +158,13 @@ Game Game::createGameFromStartingFen(const std::string& fen)
 	// We can infer the last move, so we want to start the history of the game
 	// one stage sooner.
 	// We get the original board state by making a backwards pawn move.
-	const Board originalBoardState = parsedState.board().makeMove(
-			PieceMove::regularMove(
-				lastMove->piece(),
-				lastMove->dst(),
-				lastMove->src()));
+	const Board originalBoardState =
+		details::BoardAnalyzer::makeMoveOnBoard(
+				parsedState.board(),
+				PieceMove::regularMove(
+					lastMove->piece(),
+					lastMove->dst(),
+					lastMove->src()));
 
 	const uint16_t fullMoveCounterDecrease
 		= (parsedState.activeColor() == COLOR_WHITE)

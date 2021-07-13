@@ -345,7 +345,7 @@ GameStage GameStage::makeMove(const PieceMove& move, bool offerDraw) const
 	}
 
 	return GameStage(
-			board().makeMove(move),
+			details::BoardAnalyzer::makeMoveOnBoard(board(), move),
 			oppositeColor(activeColor()),
 			updatedCastlingRights,
 			(move.piece().type() == TYPE_PAWN || playedMove.capturedPiece())

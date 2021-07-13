@@ -11,7 +11,7 @@ namespace simplechess
 {
 	namespace details
 	{
-		std::set<PieceMove> validKnightMoves(
+		std::set<PieceMove> knightMovesUnfiltered(
 				const Board& board,
 				Color color,
 				const Square& square);

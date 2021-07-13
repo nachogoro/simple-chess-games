@@ -45,7 +45,7 @@ std::set<PieceMove> simplechess::details::kingMovesExceptCastling(
 	return result;
 }
 
-std::set<PieceMove> simplechess::details::validKingMoves(
+std::set<PieceMove> simplechess::details::kingMovesUnfiltered(
 		const Board& board,
 		const uint8_t castlingRights,
 		const Color color,

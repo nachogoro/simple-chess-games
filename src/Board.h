@@ -48,20 +48,6 @@ namespace simplechess
 			 */
 			const std::map<Square, Piece>& occupiedSquares() const;
 
-			/**
-			 * \brief Returns a new copy of the state of the board after making
-			 * the \p move.
-			 *
-			 * \note This method does not validate whether the move is legal
-			 * according to the state of the board or how pieces move.
-			 *
-			 * \param move Move to be made.
-			 * \return A new copy of the state of the board after the move.
-			 *
-			 * TODO make private
-			 */
-			Board makeMove(const PieceMove& move) const;
-
 		private:
 			std::map<Square, Piece> mPiecePositions;
 	};

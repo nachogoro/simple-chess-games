@@ -251,7 +251,10 @@ PlayedMove PlayedMove::instantiate(
 		const PieceMove& move,
 		const bool drawOffered)
 {
-	const Board afterMove = board.makeMove(move);
+	const Board afterMove
+		= details::BoardAnalyzer::makeMoveOnBoard(
+			board,
+			move);
 
 	const bool isInCheck
 		= details::BoardAnalyzer::isInCheck(

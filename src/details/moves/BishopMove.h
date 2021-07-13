@@ -11,7 +11,7 @@ namespace simplechess
 {
 	namespace details
 	{
-		std::set<PieceMove> validBishopMoves(
+		std::set<PieceMove> bishopMovesUnfiltered(
 				const Board& board,
 				Color color,
 				const Square& square);

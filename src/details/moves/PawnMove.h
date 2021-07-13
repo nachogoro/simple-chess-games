@@ -13,7 +13,7 @@ namespace simplechess
 {
 	namespace details
 	{
-		std::set<PieceMove> validPawnMoves(
+		std::set<PieceMove> pawnMovesUnfiltered(
 				const Board& board,
 				const boost::optional<Square>& enPassantTarget,
 				Color color,
