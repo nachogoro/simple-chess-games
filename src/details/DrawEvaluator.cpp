@@ -1,8 +1,9 @@
 #include "DrawEvaluator.h"
 
-#include <details/BoardAnalyzer.h>
-#include <details/MoveValidator.h>
-#include <details/fen/FenUtils.h>
+#include "BoardAnalyzer.h"
+#include "GameStageUpdater.h"
+#include "MoveValidator.h"
+#include "fen/FenUtils.h"
 
 using namespace simplechess;
 using namespace simplechess::details;
@@ -120,13 +121,32 @@ namespace internal
 }
 
 boost::optional<DrawReason> DrawEvaluator::reasonToDraw(
-		const GameStage& stage)
+		const GameStage& stage,
+		const std::map<std::string, uint8_t>& previouslyReachedPositions)
 {
-	return reasonToDraw(stage, {});
+	const std::set<PieceMove> allPossibleMoves
+		= MoveValidator::allAvailableMoves(
+				stage.board(),
+				stage.move()
+					? MoveValidator::enPassantTarget(stage.move()->pieceMove())
+					: boost::optional<Square>{},
+				stage.castlingRights(),
+				stage.activeColor());
+
+	const bool inCheck
+		= BoardAnalyzer::isInCheck(stage.board(), stage.activeColor());
+
+	return reasonToDraw(
+			stage,
+			inCheck,
+			allPossibleMoves.size() != 0,
+			previouslyReachedPositions);
 }
 
 boost::optional<DrawReason> DrawEvaluator::reasonToDraw(
 		const GameStage& stage,
+		const bool isInCheck,
+		const bool hasAvailableMoves,
 		const std::map<std::string, uint8_t>& previouslyReachedPositions)
 {
 	if (stage.halfMovesSinceLastCaptureOrPawnAdvance() >= 150)
@@ -148,17 +168,7 @@ boost::optional<DrawReason> DrawEvaluator::reasonToDraw(
 		return { DRAW_REASON_FIVE_FOLD_REPETITION };
 	}
 
-	const std::set<PieceMove> allPossibleMoves
-		= MoveValidator::allAvailableMoves(
-				stage.board(),
-				stage.move()
-					? MoveValidator::enPassantTarget(stage.move()->pieceMove())
-					: boost::optional<Square>{},
-				stage.castlingRights(),
-				stage.activeColor());
-
-	if (allPossibleMoves.size() == 0
-			&& !BoardAnalyzer::isInCheck(stage.board(), stage.activeColor()))
+	if (!hasAvailableMoves && !isInCheck)
 	{
 		return { DRAW_REASON_STALEMATE };
 	}
@@ -193,7 +203,7 @@ boost::optional<DrawReason> DrawEvaluator::reasonToDraw(
 		// To achieve the hypothetical next stage we don't care about draw
 		// offers
 		const GameStage nextStage
-			= stage.makeMove(move, false);
+			= GameStageUpdater::makeMove(stage, move, false);
 
 		const std::string relevantFen
 			= FenUtils::fenForRepetitions(nextStage.fen());

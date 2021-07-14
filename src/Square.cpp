@@ -18,7 +18,7 @@ Square Square::fromRankAndFile(uint8_t rank, char file)
 	return Square(rank, tolower(file));
 }
 
-Square Square::instantiateFromString(const std::string& algebraicSquare)
+Square Square::fromString(const std::string& algebraicSquare)
 {
 	if (algebraicSquare.size() != 2
 			|| !std::isalpha(algebraicSquare[0])

@@ -59,47 +59,47 @@ const boost::optional<PieceType>& PieceMove::promoted() const
 	return mPromotedType;
 }
 
-bool PieceMove::operator<(const PieceMove& o) const
+bool PieceMove::operator<(const PieceMove& rhs) const
 {
-	if (piece() < o.piece())
+	if (piece() < rhs.piece())
 	{
 		return true;
 	}
-	else if (piece() != o.piece())
+	else if (piece() != rhs.piece())
 	{
 		return false;
 	}
 
-	if (src() < o.src())
+	if (src() < rhs.src())
 	{
 		return true;
 	}
-	else if (src() != o.src())
+	else if (src() != rhs.src())
 	{
 		return false;
 	}
 
-	if (dst() < o.dst())
+	if (dst() < rhs.dst())
 	{
 		return true;
 	}
-	else if (dst() != o.dst())
+	else if (dst() != rhs.dst())
 	{
 		return false;
 	}
 
-	return promoted() < o.promoted();
+	return promoted() < rhs.promoted();
 }
 
-bool PieceMove::operator==(const PieceMove& o) const
+bool PieceMove::operator==(const PieceMove& rhs) const
 {
-	return piece() == o.piece()
-		&& src() == o.src()
-		&& dst() == o.dst()
-		&& promoted() == o.promoted();
+	return piece() == rhs.piece()
+		&& src() == rhs.src()
+		&& dst() == rhs.dst()
+		&& promoted() == rhs.promoted();
 }
 
-bool PieceMove::operator!=(const PieceMove& o) const
+bool PieceMove::operator!=(const PieceMove& rhs) const
 {
-	return !(*this == o);
+	return !(*this == rhs);
 }

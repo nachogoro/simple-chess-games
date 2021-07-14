@@ -170,7 +170,7 @@ namespace internal
 			return {};
 		}
 
-		return Square::instantiateFromString(str);
+		return Square::fromString(str);
 	}
 
 	uint16_t parseMoveClock(const std::string& str)

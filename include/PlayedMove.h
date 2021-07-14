@@ -1,9 +1,10 @@
 #ifndef MOVE_H_BE1088E7_A628_4046_BB4C_41A12DAA23BC
 #define MOVE_H_BE1088E7_A628_4046_BB4C_41A12DAA23BC
 
-#include "Board.h"
-#include "PieceMove.h"
-#include "Square.h"
+#include <Board.h>
+#include <Piece.h>
+#include <PieceMove.h>
+#include <Square.h>
 
 #include <boost/optional.hpp>
 
@@ -11,7 +12,7 @@
 
 namespace simplechess
 {
-	class GameStage;
+	class PlayedMoveBuilder;
 
 	/**
 	 * The different types of check which can be caused by a move.
@@ -90,12 +91,6 @@ namespace simplechess
 			bool isDrawOffered() const;
 
 		private:
-			/**
-			 * \brief Private constructor.
-			 *
-			 * Users of the library should not instantiate objects of this
-			 * class themselves.
-			 */
 			PlayedMove(
 					const PieceMove& pieceMove,
 					const boost::optional<Piece>& capturedPiece,
@@ -103,12 +98,7 @@ namespace simplechess
 					CheckType checkType,
 					const std::string& algebraicNotation);
 
-			static PlayedMove instantiate(
-					const Board& board,
-					const PieceMove& move,
-					bool drawOffered);
-
-			friend class GameStage;
+			friend class PlayedMoveBuilder;
 
 			PieceMove mPieceMove;
 			boost::optional<Piece> mCapturedPiece;

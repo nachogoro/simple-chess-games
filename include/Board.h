@@ -1,17 +1,18 @@
 #ifndef BOARD_H_060630C0_3ADF_4CCD_B96C_1728BF67C017
 #define BOARD_H_060630C0_3ADF_4CCD_B96C_1728BF67C017
 
-#include "Piece.h"
-#include "PieceMove.h"
-#include "Square.h"
+#include <Piece.h>
+#include <PieceMove.h>
+#include <Square.h>
 
 #include <boost/optional.hpp>
 
 #include <map>
-#include <vector>
 
 namespace simplechess
 {
+	class BoardBuilder;
+
 	/**
 	 * \brief A representation of a chess board.
 	 *
@@ -21,15 +22,6 @@ namespace simplechess
 	class Board
 	{
 		public:
-			/**
-			 * \brief Constructor.
-			 *
-			 * Instantiates a \c Board from a series of \c Piece positions.
-			 *
-			 * \param piecePositions The positions of the pieces in the board.
-			 */
-			Board(const std::map<Square, Piece>& piecePositions);
-
 			/**
 			 * \brief Returns the piece at the specified \p square or an empty
 			 * optional if the \p square is empty.
@@ -49,6 +41,17 @@ namespace simplechess
 			const std::map<Square, Piece>& occupiedSquares() const;
 
 		private:
+			friend class BoardBuilder;
+
+			/**
+			 * \brief Constructor.
+			 *
+			 * Instantiates a \c Board from a series of \c Piece positions.
+			 *
+			 * \param piecePositions The positions of the pieces in the board.
+			 */
+			Board(const std::map<Square, Piece>& piecePositions);
+
 			std::map<Square, Piece> mPiecePositions;
 	};
 }

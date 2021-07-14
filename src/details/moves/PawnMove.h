@@ -13,6 +13,7 @@ namespace simplechess
 {
 	namespace details
 	{
+		// TODO make attacking-only version (no forward moves)
 		std::set<PieceMove> pawnMovesUnfiltered(
 				const Board& board,
 				const boost::optional<Square>& enPassantTarget,

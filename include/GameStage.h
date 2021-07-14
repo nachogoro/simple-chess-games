@@ -12,18 +12,32 @@
 
 namespace simplechess
 {
-	class Game;
+	class GameStageBuilder;
 
-	namespace details
-	{
-		class DrawEvaluator;
-	}
-
+	/**
+	 * \brief The castling rights available for each side at one stage of the
+	 * game.
+	 */
 	enum CastlingRight
 	{
+		/**
+		 * \brief White side can castle kingside.
+		 */
 		CASTLING_RIGHT_WHITE_KINGSIDE  = (1 << 0),
+
+		/**
+		 * \brief White side can castle queenside.
+		 */
 		CASTLING_RIGHT_WHITE_QUEENSIDE = (1 << 1),
+
+		/**
+		 * \brief Black side can castle kingside.
+		 */
 		CASTLING_RIGHT_BLACK_KINGSIDE  = (1 << 2),
+
+		/**
+		 * \brief Black side can castle queenside.
+		 */
 		CASTLING_RIGHT_BLACK_QUEENSIDE = (1 << 3)
 	};
 
@@ -61,6 +75,11 @@ namespace simplechess
 			 * \brief Returns a bit mask containing the \ref CastlingRight
 			 * available at this stage.
 			 *
+			 * \note This right only means for one color that it has not moved
+			 * its king nor its relevant rook, and that the rook has not been
+			 * captured. It does not mean that castling is necessarily possible
+			 * in the current stage.
+			 *
 			 * \return A bit mask containing the \ref CastlingRight
 			 * available at this stage.
 			 */
@@ -88,8 +107,7 @@ namespace simplechess
 			const std::string& fen() const;
 
 		private:
-			friend class Game;
-			friend class details::DrawEvaluator;
+			friend class GameStageBuilder;
 
 			/**
 			 * \brief Constructor.
@@ -110,11 +128,8 @@ namespace simplechess
 					uint8_t castlingRights,
 					uint16_t halfmoveClock,
 					uint16_t fullmoveClock,
+					const std::string& fen,
 					const boost::optional<PlayedMove>& move);
-
-			GameStage makeMove(const PieceMove& move, bool offerDraw) const;
-
-			std::string generateFen() const;
 
 		private:
 			Board mBoard;

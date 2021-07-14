@@ -113,27 +113,27 @@ namespace simplechess
 			 * method is only necessary to allow objects of this class to be
 			 * used in std::set collections or as keys in std::map.
 			 *
-			 * \param o The \c PieceMove to be compared against.
+			 * \param rhs The \c PieceMove to be compared against.
 			 * \return \c true if this \c PieceMove is considered lees than \a
-			 * o, \c false otherwise.
+			 * rhs, \c false otherwise.
 			 */
-			bool operator<(const PieceMove& o) const;
+			bool operator<(const PieceMove& rhs) const;
 
 			/**
 			 * \brief Equals comparison operator.
-			 * \param o The \c PieceMove to be compared against.
-			 * \return \c true if this \c PieceMove is identical to \a o, \c
+			 * \param rhs The \c PieceMove to be compared against.
+			 * \return \c true if this \c PieceMove is identical to \a rhs, \c
 			 * false otherwise.
 			 */
-			bool operator==(const PieceMove& o) const;
+			bool operator==(const PieceMove& rhs) const;
 
 			/**
 			 * \brief Not-equals comparison operator.
-			 * \param o The \c PieceMove to be compared against.
-			 * \return \c true if this \c PieceMove is not identical to \a o,
+			 * \param rhs The \c PieceMove to be compared against.
+			 * \return \c true if this \c PieceMove is not identical to \a rhs,
 			 * \c false otherwise.
 			 */
-			bool operator!=(const PieceMove& o) const;
+			bool operator!=(const PieceMove& rhs) const;
 
 		private:
 			PieceMove(

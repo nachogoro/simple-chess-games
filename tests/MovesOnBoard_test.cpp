@@ -26,9 +26,9 @@ namespace
 			const Piece piece;
 			const Difference diff;
 
-			bool operator==(const Effect& o) const
+			bool operator==(const Effect& rhs) const
 			{
-				return piece == o.piece && diff == o.diff;
+				return piece == rhs.piece && diff == rhs.diff;
 			}
 	};
 

@@ -18,26 +18,26 @@ Color Piece::color() const
 	return mColor;
 }
 
-bool Piece::operator==(const Piece& o) const
+bool Piece::operator==(const Piece& rhs) const
 {
-	return type() == o.type() && color() == o.color();
+	return type() == rhs.type() && color() == rhs.color();
 }
 
-bool Piece::operator!=(const Piece& o) const
+bool Piece::operator!=(const Piece& rhs) const
 {
-	return !(*this == o);
+	return !(*this == rhs);
 }
 
-bool Piece::operator<(const Piece& o) const
+bool Piece::operator<(const Piece& rhs) const
 {
-	if (type() < o.type())
+	if (type() < rhs.type())
 	{
 		return true;
 	}
-	else if (type() > o.type())
+	else if (type() > rhs.type())
 	{
 		return false;
 	}
 
-	return color() < o.color();
+	return color() < rhs.color();
 }

@@ -47,7 +47,7 @@ namespace simplechess
 			 * algebraic notation.
 			 * \return A \c Square object.
 			 */
-			static Square instantiateFromString(
+			static Square fromString(
 					const std::string& algebraicSquare);
 
 			/**
@@ -61,14 +61,14 @@ namespace simplechess
 			static bool isInsideBoundaries(uint8_t rank, char file);
 
 			/**
-			 * \brief Equal comparison operator.
+			 * \brief Equals comparison operator.
 			 * \param rhs The \ref Square to be compared against.
 			 * \return \c true if the squares are equal, \c false otherwise.
 			 */
 			bool operator==(const Square& rhs) const;
 
 			/**
-			 * \brief Not-equal comparison operator.
+			 * \brief Not-equals comparison operator.
 			 * \param rhs The \ref Square to be compared against.
 			 * \return \c true if the squares are not equal, \c false
 			 * otherwise.

@@ -1,39 +1,104 @@
 #ifndef GAME_H_AA82C7D6_D956_405F_95B0_8A23678A5041
 #define GAME_H_AA82C7D6_D956_405F_95B0_8A23678A5041
 
-#include <Board.h>
-#include <Color.h>
 #include <Exceptions.h>
 #include <GameStage.h>
-#include <Piece.h>
-#include <PlayedMove.h>
+#include <PieceMove.h>
+#include <Square.h>
 
 #include <boost/optional.hpp>
 
-#include <cstdint>
 #include <set>
 #include <vector>
 
 namespace simplechess
 {
+	/**
+	 * \brief The state of a game.
+	 */
 	enum GameState
 	{
+		/**
+		 * \brief The game is still being played.
+		 */
 		GAME_STATE_PLAYING,
+
+		/**
+		 * \brief The game ended in a draw.
+		 */
 		GAME_STATE_DRAWN,
+
+		/**
+		  \brief The game ended with a victory for white.
+		 /
 		GAME_STATE_WHITE_WON,
+
+		/**
+		 * \brief The game ended with a victory for black.
+		 */
 		GAME_STATE_BLACK_WON
 	};
 
+	/**
+	 * \brief Reasons why a game might be drawn.
+	 */
 	enum DrawReason
 	{
+		/**
+		 * \brief Stalemate (the active side has no valid moves and is not in
+		 * check).
+		 */
 		DRAW_REASON_STALEMATE,
+
+		/**
+		 * \brief Neither side has sufficient material to mate the other.
+		 */
 		DRAW_REASON_INSUFFICIENT_MATERIAL,
+
+		/**
+		 * \brief A side offered a draw and it was accepted.
+		 */
 		DRAW_REASON_OFFERED_AND_ACCEPTED,
+
+		/**
+		 * \brief The same position has been reached 3 times or will be
+		 * reached for the thrid time with the next move.
+		 *
+		 * \note See FIDE rule 9.2.1 * and 9.2.2.
+		 */
 		DRAW_REASON_THREE_FOLD_REPETITION,
+
+		/**
+		 * \brief The same position has been reached 5 times.
+		 *
+		 * \note See FIDE rule 9.6.1.
+		 */
 		DRAW_REASON_FIVE_FOLD_REPETITION,
+
+		/**
+		 * \brief At least fifty full moves (i.e. each side has played their
+		 * move) have been played (or will have been played after next move)
+		 * since the last capture or pawn move.
+		 *
+		 * TODO cover the case in which the 50th is not yet made
+		 *
+		 * \note See FIDE rules 9.3.1 and 9.3.2.
+		 */
 		DRAW_REASON_50_MOVE_RULE,
+
+		/**
+		 * \brief At least fifty full moves (i.e. each side has played their
+		 * move) have been played (or will have been played after next move)
+		 * since the last capture or pawn move.
+		 *
+		 * TODO test the case in which the 75th is checkmate.
+		 *
+		 * \note See FIDE rule 9.6.2.
+		 */
 		DRAW_REASON_75_MOVE_RULE
 	};
+
+	class GameBuilder;
 
 	/**
 	 * \brief A representation of a game of chess at a given point.
@@ -44,37 +109,6 @@ namespace simplechess
 	class Game
 	{
 		public:
-			/**
-			 * \brief Factory method to create a new game from the standard
-			 * starting position.
-			 *
-			 * \return The constructed Game.
-			 */
-			static Game createNewGame();
-
-			/**
-			 * \brief Factory method to create a new game from a given board
-			 * position.
-			 *
-			 * The original position of the board is given as a string in
-			 * Forsyth-Edwards Notation.
-			 *
-			 * \note FEN descriptions only give limited information about the
-			 * history of the game. In particular, one cannot enforce certain
-			 * drawing rules (triplefold repetition). Hence, the
-			 * history of the resulting \ref Game will not necessarily be of
-			 * much use.
-			 *
-			 * \throws std::invalid_argument if \p fen is not a valid FEN
-			 * string.
-			 *
-			 * \param fen The representation of the initial position in
-			 * Forsyth-Edwards Notation.
-			 *
-			 * \return The constructed Game.
-			 */
-			static Game createGameFromStartingFen(const std::string& fen);
-
 			/**
 			 * \brief Returns the current state of the game.
 			 *
@@ -119,10 +153,9 @@ namespace simplechess
 			const GameStage& currentStage() const;
 
 			/**
-			 * \brief Returns the \ref Color of the player whose turn it is to
-			 * play.
+			 * \brief Returns the \ref Color which is to move next.
 			 *
-			 * \return The player whose turn it is to play.
+			 * \return The \ref Color which is to move next.
 			 */
 			Color activeColor() const;
 
@@ -147,26 +180,7 @@ namespace simplechess
 			 *
 			 * \return All the possible moves for the current player.
 			 */
-			std::set<PieceMove> allAvailableMoves() const;
-
-			/**
-			 * \brief Make a move for the player whose turn it is to play.
-			 *
-			 * \throws IllegalStateException in the following circumstances:
-			 * - The Game has already concluded (its state is not
-			 *   GAME_STATE_PLAYING).
-			 * - The \p pieceMove is not a valid move for the current player.
-			 *
-			 * \param pieceMove The desired piece move.
-			 * \param offerDraw \c true if the move is accompanied by an offer
-			 * to draw to the opponent, \c false otherwise.
-			 *
-			 * \return A new copy of the Game in which the specified move has
-			 * been played.
-			 */
-			Game makeMove(
-					const PieceMove& pieceMove,
-					bool offerDraw=false) const;
+			const std::set<PieceMove>& allAvailableMoves() const;
 
 			/**
 			 * \brief Returns an optional value containing the reason under
@@ -202,46 +216,23 @@ namespace simplechess
 			 * \return A possible reason to claim a draw if it exists, an empty
 			 * value otherwise.
 			 */
-			boost::optional<DrawReason> reasonToClaimDraw() const;
-
-			/**
-			 * \brief Claim a draw.
-			 *
-			 * \throws IllegalStateException in the following circumstances:
-			 * - The Game has already concluded (its state is not
-			 *   GAME_STATE_PLAYING).
-			 * - The current player cannot claim a draw (\ref
-			 *   reasonToClaimDraw() is empty)
-			 *
-			 * \return A new copy of the Game, identical to the current one but
-			 * finished as a draw.
-			 */
-			Game claimDraw() const;
-
-			/**
-			 * \brief Resign the game.
-			 *
-			 * \throws IllegalStateException in the following circumstances:
-			 * - The Game has already concluded (its state is not
-			 *   GAME_STATE_PLAYING).
-			 *
-			 * \return A new copy of the Game, identical to the current one but
-			 * finished with the resignation of \p resigningPlayer.
-			 */
-			Game resign(Color resigningPlayer) const;
+			const boost::optional<DrawReason>& reasonToClaimDraw() const;
 
 		private:
+			friend class GameBuilder;
+
 			Game(
-					GameState gameState,
-					boost::optional<DrawReason> drawReason,
-					const std::vector<GameStage>& history);
+					GameState state,
+					const boost::optional<DrawReason>& drawReason,
+					const std::vector<GameStage>& history,
+					const std::set<PieceMove>& allAvailableMoves,
+					const boost::optional<DrawReason>& reasonToClaimDraw);
 
 			GameState mGameState;
-			boost::optional<DrawReason> mDrawReason;
+			boost::optional<DrawReason> mReasonGameWasDrawn;
 			std::vector<GameStage> mHistory;
-			// Map of the amount of times each position has been reached.
-			// A position is described as the first four fields of a FEN string
-			std::map<std::string, uint8_t> mTimesPositionsReached;
+			std::set<PieceMove> mAllAvailableMoves;
+			boost::optional<DrawReason> mReasonToClaimDraw;
 	};
 }
 
