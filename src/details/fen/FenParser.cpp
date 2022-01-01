@@ -1,6 +1,8 @@
 #include "FenParser.h"
 #include "FenUtils.h"
 
+#include "Builders.h"
+
 #include <boost/algorithm/string.hpp>
 
 #include <cctype>
@@ -95,7 +97,7 @@ namespace internal
 			}
 		}
 
-		return Board(pieceLocations);
+		return BoardBuilder::build(pieceLocations);
 	}
 
 	Color parseColor(const std::string& str)

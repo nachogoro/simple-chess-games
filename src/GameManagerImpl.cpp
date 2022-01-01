@@ -1,9 +1,39 @@
 #include "GameManagerImpl.h"
 
+#include "Builders.h"
+#include "details/BoardAnalyzer.h"
 #include "details/GameStageUpdater.h"
+#include "details/GameStateDetector.h"
 #include "details/fen/FenParser.h"
+#include "details/fen/FenUtils.h"
 
 using namespace simplechess;
+
+namespace internal
+{
+	std::map<std::string, uint8_t> getPreviouslyReachedPositionsMap(
+			const std::vector<GameStage>& history)
+	{
+		std::map<std::string, uint8_t> result;
+
+		for (const auto& stage : history)
+		{
+			const std::string repetitionFen
+				= details::FenUtils::fenForRepetitions(stage.fen());
+
+			if (result.count(repetitionFen))
+			{
+				result.at(repetitionFen)++;
+			}
+			else
+			{
+				result.insert({repetitionFen, 1});
+			}
+		}
+
+		return result;
+	}
+}
 
 Game GameManagerImpl::createNewGame() const
 {
@@ -47,20 +77,18 @@ Game GameManagerImpl::createGameFromFen(const std::string& fen) const
 
 	if (!lastMove)
 	{
-		const GameStage currentStage = {
+		const GameStage currentStage = GameStageBuilder::build(
 			parsedState.board(),
 			parsedState.activeColor(),
 			parsedState.castlingRights(),
 			parsedState.halfMovesSinceLastCaptureOrPawnAdvance(),
 			parsedState.fullMoveCounter(),
-			fen,
-			{}};
+			{});
 
-		const GameStateInformation information = GameStateDetector::detect(
-				currentStage,
-				{});
+		const details::GameStateInformation information
+			= details::GameStateDetector::detect(currentStage, {});
 
-		return Game(
+		return GameBuilder::build(
 				information.gameState,
 				information.reasonItWasDrawn,
 				{currentStage},
@@ -84,20 +112,19 @@ Game GameManagerImpl::createGameFromFen(const std::string& fen) const
 			? 1
 			: 0;
 
-	const GameStage originalStage = {
-		originalBoardState,
-		oppositeColor(parsedState.activeColor()),
-		parsedState.castlingRights(),
-		0, // Unknown, filler value
-		static_cast<uint16_t>(
+	const GameStage originalStage = GameStageBuilder::build(
+			originalBoardState,
+			oppositeColor(parsedState.activeColor()),
+			parsedState.castlingRights(),
+			0, // Unknown, filler value
+			static_cast<uint16_t>(
 				parsedState.fullMoveCounter() - fullMoveCounterDecrease),
-		{} };
-
-	const GameStateInformation information = GameStateDetector::detect(
-			originalStage,
 			{});
 
-	const Game originalGame(
+	const details::GameStateInformation information
+		= details::GameStateDetector::detect(originalStage, {});
+
+	const Game originalGame = GameBuilder::build(
 			information.gameState,
 			information.reasonItWasDrawn,
 			{originalStage},
@@ -117,27 +144,28 @@ Game GameManagerImpl::makeMove(
 		throw IllegalStateException("Attempted to make a move in finished game");
 	}
 
-	const Square& src = pieceMove.src();
+	const Square& src = move.src();
 	const std::set<PieceMove> validMoves = game.allAvailableMoves();
 
-	if (validMoves.count(pieceMove) == 0)
+	if (validMoves.count(move) == 0)
 	{
 		throw IllegalStateException("Attempted to make invalid move");
 	}
 
 	const GameStage nextStage = details::GameStageUpdater::makeMove(
 			game.currentStage(),
-			pieceMove,
+			move,
 			offerDraw);
 
-	const GameStateInformation information = GameStateDetector::detect(
-			nextStage,
-			internal::getPreviouslyReachedPositionsMap(game.history()));
+	const details::GameStateInformation information
+		= details::GameStateDetector::detect(
+				nextStage,
+				internal::getPreviouslyReachedPositionsMap(game.history()));
 
-	std::vector<GameStage> nextHistory = mHistory;
+	std::vector<GameStage> nextHistory = game.history();
 	nextHistory.push_back(nextStage);
 
-	return Game(
+	return  GameBuilder::build(
 			information.gameState,
 			information.reasonItWasDrawn,
 			nextHistory,
@@ -161,7 +189,7 @@ Game GameManagerImpl::claimDraw(const Game& game) const
 				"Attempted to claim draw when it wasn't allowed");
 	}
 
-	return Game(
+	return GameBuilder::build(
 			GAME_STATE_DRAWN,
 			reason,
 			game.history(),
@@ -176,7 +204,7 @@ Game GameManagerImpl::resign(const Game& game, Color resigningPlayer) const
 		throw IllegalStateException("Cannot resign finished games");
 	}
 
-	return Game(
+	return GameBuilder::build(
 			(resigningPlayer == COLOR_WHITE)
 				? GAME_STATE_BLACK_WON
 				: GAME_STATE_WHITE_WON,

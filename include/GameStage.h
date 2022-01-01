@@ -113,7 +113,7 @@ namespace simplechess
 			 * \brief Constructor.
 			 *
 			 * \param board The state of the board at this stage.
-			 * \param toPlay Color whose turn it is to move.
+			 * \param activeColor Color whose turn it is to move.
 			 * \param castlingRights A bit mask of the types of \ref
 			 * CastlingRight available in the position.
 			 * \param halfmoveClock Number of half-moves since the last capture
@@ -124,7 +124,7 @@ namespace simplechess
 			 * be empty if no move has been played yet.
 			 */
 			GameStage(const Board& board,
-					Color toPlay,
+					Color activeColor,
 					uint8_t castlingRights,
 					uint16_t halfmoveClock,
 					uint16_t fullmoveClock,

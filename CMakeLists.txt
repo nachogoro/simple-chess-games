@@ -13,6 +13,7 @@ add_library(simple-chess-games SHARED
 	src/PieceMove.cpp
 	src/PlayedMove.cpp
 	src/Square.cpp
+	src/details/AlgebraicNotationGenerator.cpp
 	src/details/BoardAnalyzer.cpp
 	src/details/DrawEvaluator.cpp
 	src/details/GameStageUpdater.cpp
@@ -78,5 +79,6 @@ add_executable(run_tests
 target_link_libraries(run_tests gtest_main simple-chess-games)
 
 include(GoogleTest)
+include_directories(include)
 include_directories(src)
 gtest_discover_tests(run_tests)

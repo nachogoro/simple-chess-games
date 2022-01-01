@@ -139,14 +139,14 @@ boost::optional<DrawReason> DrawEvaluator::reasonToDraw(
 	return reasonToDraw(
 			stage,
 			inCheck,
-			allPossibleMoves.size() != 0,
+			allPossibleMoves,
 			previouslyReachedPositions);
 }
 
 boost::optional<DrawReason> DrawEvaluator::reasonToDraw(
 		const GameStage& stage,
 		const bool isInCheck,
-		const bool hasAvailableMoves,
+		const std::set<PieceMove> allPossibleMoves,
 		const std::map<std::string, uint8_t>& previouslyReachedPositions)
 {
 	if (stage.halfMovesSinceLastCaptureOrPawnAdvance() >= 150)
@@ -168,7 +168,7 @@ boost::optional<DrawReason> DrawEvaluator::reasonToDraw(
 		return { DRAW_REASON_FIVE_FOLD_REPETITION };
 	}
 
-	if (!hasAvailableMoves && !isInCheck)
+	if (allPossibleMoves.size() == 0 && !isInCheck)
 	{
 		return { DRAW_REASON_STALEMATE };
 	}

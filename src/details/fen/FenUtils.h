@@ -1,7 +1,10 @@
 #ifndef FEN_UTILS_H_74319100_580E_47C2_8610_E38B9948AA96
 #define FEN_UTILS_H_74319100_580E_47C2_8610_E38B9948AA96
 
+#include <Board.h>
+#include <Color.h>
 #include <Piece.h>
+#include <Square.h>
 
 #include <boost/bimap.hpp>
 
@@ -49,6 +52,15 @@ namespace simplechess
 				 * positions are the same.
 				 */
 				static std::string fenForRepetitions(const std::string& fen);
+
+				// TODO document
+				static std::string generateFen(
+						const Board& board,
+						const Color activeColor,
+						const uint8_t castlingRights,
+						const boost::optional<Square>& epTarget,
+						const uint16_t halfmoveClock,
+						const uint16_t fullmoveClock);
 
 			private:
 				static boost::bimap<char, Piece> sPieceMap;

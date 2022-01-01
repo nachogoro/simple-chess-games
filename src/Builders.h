@@ -1,6 +1,7 @@
 #ifndef BUILDERS_H_E5875D9E_C927_464E_BC23_2AA288A34B41
 #define BUILDERS_H_E5875D9E_C927_464E_BC23_2AA288A34B41
 
+#include <Game.h>
 #include <GameStage.h>
 
 /**
@@ -25,6 +26,33 @@ namespace simplechess
 				uint16_t halfmoveClock,
 				uint16_t fullmoveClock,
 				const boost::optional<PlayedMove>& move);
+	};
+
+	class GameBuilder
+	{
+		public:
+			static Game build(
+					GameState gameState,
+					const boost::optional<DrawReason>& drawReason,
+					const std::vector<GameStage>& history,
+					const std::set<PieceMove>& allAvailableMoves,
+					const boost::optional<DrawReason>& reasonToClaimDraw);
+	};
+
+	class BoardBuilder
+	{
+		public:
+			static Board build(
+					const std::map<Square, Piece> positions);
+	};
+
+	class PlayedMoveBuilder
+	{
+		public:
+			static PlayedMove build(
+					const Board& board,
+					const PieceMove& move,
+					const bool drawOffered);
 	};
 }
 

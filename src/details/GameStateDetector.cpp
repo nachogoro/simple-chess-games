@@ -1,5 +1,11 @@
 #include "GameStateDetector.h"
 
+#include "details/BoardAnalyzer.h"
+#include "details/DrawEvaluator.h"
+#include "details/MoveValidator.h"
+
+#include <boost/tuple/tuple.hpp>
+
 using namespace simplechess;
 using namespace simplechess::details;
 
@@ -8,7 +14,7 @@ namespace internal
 	boost::optional<Square> enPassantTarget(
 			const GameStage& stage)
 	{
-		boost::optional<PlayedMove>& move = stage.move();
+		const boost::optional<PlayedMove>& move = stage.move();
 
 		if (move
 				&& move->pieceMove().piece().type() == TYPE_PAWN
@@ -73,6 +79,7 @@ GameStateInformation GameStateDetector::detect(
 		= MoveValidator::allAvailableMoves(
 				stage.board(),
 				internal::enPassantTarget(stage),
+				stage.castlingRights(),
 				stage.activeColor());
 
 	const CheckType checkType = (inCheck

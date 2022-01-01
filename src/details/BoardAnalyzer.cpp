@@ -1,7 +1,9 @@
 #include "BoardAnalyzer.h"
 
+#include "Builders.h"
+#include "details/MoveValidator.h"
+
 #include <Exceptions.h>
-#include <details/MoveValidator.h>
 
 #include <algorithm>
 #include <cstdlib>
@@ -152,7 +154,7 @@ Board BoardAnalyzer::makeMoveOnBoard(
 		positions.insert({rookDst, positions.at(rookSrc)});
 		positions.erase(rookSrc);
 
-		return positions;
+		return BoardBuilder::build(positions);
 	}
 
 	if (move.piece().type() == TYPE_PAWN
@@ -169,7 +171,7 @@ Board BoardAnalyzer::makeMoveOnBoard(
 					move.dst().rank() + (move.dst().rank() == 6 ? -1 : 1),
 					move.dst().file()));
 
-		return positions;
+		return BoardBuilder::build(positions);
 	}
 
 	positions.erase(move.dst());
@@ -180,5 +182,5 @@ Board BoardAnalyzer::makeMoveOnBoard(
 				: move.piece()});
 
 	positions.erase(move.src());
-	return positions;
+	return BoardBuilder::build(positions);
 }

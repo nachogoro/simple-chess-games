@@ -56,8 +56,8 @@ namespace simplechess
 				 *
 				 * \param stage The stage of the game being evaluated.
 				 * \param inCheck Whether the active color is in check.
-				 * \param hasAvailableMoves Whether the active color has valid
-				 * moves available.
+				 * \param allAvailableMoves All the moves available from this
+				 * position.
 				 * \param previouslyReachedPositions Map of positions
 				 * previously reached in the game and the number of times they
 				 * were reached, necessary to evaluate n-fold repetition.
@@ -68,7 +68,7 @@ namespace simplechess
 				static boost::optional<DrawReason> reasonToDraw(
 						const GameStage& stage,
 						bool isInCheck,
-						bool hasAvailableMoves,
+						const std::set<PieceMove> allAvailableMoves,
 						const std::map<std::string, uint8_t>& previouslyReachedPositions);
 		};
 	}

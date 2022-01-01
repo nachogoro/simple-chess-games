@@ -1,22 +1,22 @@
-#include "GameStageUpdater"
+#include "GameStageUpdater.h"
 
-#include "BoardAnalyzer.h"
+#include "Builders.h"
+#include "details/BoardAnalyzer.h"
 
 using namespace simplechess;
 using namespace simplechess::details;
-
 
 GameStage GameStageUpdater::makeMove(
 		const GameStage& stage,
 		const PieceMove& move,
 		const bool offerDraw)
 {
-	const PlayedMove playedMove = PlayedMove::instantiate(
+	const PlayedMove playedMove = PlayedMoveBuilder::build(
 			stage.board(),
 			move,
 			offerDraw);
 
-	uint8_t updatedCastlingRights = castlingRights();
+	uint8_t updatedCastlingRights = stage.castlingRights();
 
 	if (move.piece().type() == TYPE_KING)
 	{
@@ -62,13 +62,16 @@ GameStage GameStageUpdater::makeMove(
 		}
 	}
 
-	return GameStage(
-			details::BoardAnalyzer::makeMoveOnBoard(board(), move),
-			oppositeColor(activeColor()),
+	return GameStageBuilder::build(
+			details::BoardAnalyzer::makeMoveOnBoard(stage.board(), move),
+			oppositeColor(stage.activeColor()),
 			updatedCastlingRights,
 			(move.piece().type() == TYPE_PAWN || playedMove.capturedPiece())
 				? 0
-				: halfMovesSinceLastCaptureOrPawnAdvance() + 1,
-			fullMoveCounter() + (activeColor() == COLOR_BLACK ? 1 : 0),
+				: stage.halfMovesSinceLastCaptureOrPawnAdvance() + 1,
+			stage.fullMoveCounter()
+				+ (stage.activeColor() == COLOR_BLACK)
+					? 1
+					: 0,
 			playedMove);
 }

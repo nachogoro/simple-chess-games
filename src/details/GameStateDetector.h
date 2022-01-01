@@ -14,12 +14,12 @@ namespace simplechess
 		struct GameStateInformation
 		{
 			GameStateInformation(
-					const GameState state,
+					const GameState gameState,
 					const CheckType checkType,
 					const std::set<PieceMove>& availableMoves,
 					const boost::optional<DrawReason>& reasonItWasDrawn,
 					const boost::optional<DrawReason>& reasonToClaimDraw)
-				: state(state),
+				: gameState(gameState),
 				checkType(checkType),
 				availableMoves(availableMoves),
 				reasonItWasDrawn(reasonItWasDrawn),
@@ -27,7 +27,7 @@ namespace simplechess
 			{
 			}
 
-			const GameState state;
+			const GameState gameState;
 			const CheckType checkType;
 			const std::set<PieceMove> availableMoves;
 			const boost::optional<DrawReason> reasonItWasDrawn;

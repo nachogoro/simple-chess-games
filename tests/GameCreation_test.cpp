@@ -11,7 +11,7 @@ TEST(GameCreationTest, RegularGameCreation) {
 
 	EXPECT_THROW_CUSTOM(game.drawReason(), IllegalStateException);
 
-	const std::vector<GameStage>& history = game.gameHistory();
+	const std::vector<GameStage>& history = game.history();
 
 	EXPECT_EQ(history.size(), 1);
 	EXPECT_EQ(game.activeColor(), COLOR_WHITE);
@@ -64,7 +64,7 @@ TEST(GameCreationTest, GameCreationFromPosition1) {
 
 	EXPECT_THROW_CUSTOM(game.drawReason(), IllegalStateException);
 
-	const std::vector<GameStage>& history = game.gameHistory();
+	const std::vector<GameStage>& history = game.history();
 
 	EXPECT_EQ(history.size(), 1);
 	EXPECT_EQ(game.activeColor(), COLOR_BLACK);

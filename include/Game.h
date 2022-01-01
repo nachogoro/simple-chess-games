@@ -30,7 +30,7 @@ namespace simplechess
 
 		/**
 		  \brief The game ended with a victory for white.
-		 /
+		 */
 		GAME_STATE_WHITE_WON,
 
 		/**
@@ -140,13 +140,13 @@ namespace simplechess
 			 *
 			 * \return The history of the game.
 			 */
-			const std::vector<GameStage>& gameHistory() const;
+			const std::vector<GameStage>& history() const;
 
 			/**
 			 * \brief Returns the latest stage of the game.
 			 *
 			 * This is a convenience method to access the last element of \ref
-			 * gameHistory().
+			 * history().
 			 *
 			 * \return The latest stage of the game.
 			 */
@@ -222,7 +222,7 @@ namespace simplechess
 			friend class GameBuilder;
 
 			Game(
-					GameState state,
+					GameState gameState,
 					const boost::optional<DrawReason>& drawReason,
 					const std::vector<GameStage>& history,
 					const std::set<PieceMove>& allAvailableMoves,

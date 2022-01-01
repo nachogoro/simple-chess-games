@@ -23,32 +23,6 @@ using namespace simplechess;
 // all "computing" code (e.g. makeMove()) to a singleton object making use of
 // the pImpl idiom
 
-namespace internal
-{
-	std::map<std::string, uint8_t> getPositionsMap(
-			const std::vector<GameStage>& history)
-	{
-		std::map<std::string, uint8_t> result;
-
-		for (const auto& stage : history)
-		{
-			const std::string repetitionFen
-				= details::FenUtils::fenForRepetitions(stage.fen());
-
-			if (result.count(repetitionFen))
-			{
-				result.at(repetitionFen)++;
-			}
-			else
-			{
-				result.insert({repetitionFen, 1});
-			}
-		}
-
-		return result;
-	}
-}
-
 Game::Game(
 		const GameState gameState,
 		const boost::optional<DrawReason>& drawReason,
@@ -90,7 +64,7 @@ DrawReason Game::drawReason() const
 	return *mReasonGameWasDrawn;
 }
 
-const std::vector<GameStage>& Game::gameHistory() const
+const std::vector<GameStage>& Game::history() const
 {
 	return mHistory;
 }
