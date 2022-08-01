@@ -20,7 +20,9 @@ GameStage GameStageBuilder::build(
 			board,
 			activeColor,
 			castlingRights,
-			details::GameStageUpdater::enPassantTarget(move),
+			move
+				? details::MoveValidator::enPassantTarget({move->pieceMove()})
+				: boost::none,
 			halfmoveClock,
 			fullmoveClock);
 

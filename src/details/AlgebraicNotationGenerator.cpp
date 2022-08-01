@@ -160,8 +160,8 @@ std::string AlgebraicNotationGenerator::toAlgebraicNotation(
 	if (castling)
 	{
 		ss << ((*castling == CASTLING_KINGSIDE)
-				? "0-0"
-				: "0-0-0");
+				? "O-O"
+				: "O-O-O");
 
 		ss << ::toString(checkType);
 		ss << (drawOffered ? "(=)" : "");

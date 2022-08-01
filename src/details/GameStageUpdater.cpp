@@ -70,8 +70,8 @@ GameStage GameStageUpdater::makeMove(
 				? 0
 				: stage.halfMovesSinceLastCaptureOrPawnAdvance() + 1,
 			stage.fullMoveCounter()
-				+ (stage.activeColor() == COLOR_BLACK)
+				+ ((stage.activeColor() == COLOR_BLACK)
 					? 1
-					: 0,
+					: 0),
 			playedMove);
 }

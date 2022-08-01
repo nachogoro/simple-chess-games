@@ -29,6 +29,11 @@ namespace simplechess
 			GameManager();
 
 			/**
+			 * \brief Destructor.
+			 */
+			~GameManager();
+
+			/**
 			 * \brief Factory method to create a new game from the standard
 			 * starting position.
 			 *

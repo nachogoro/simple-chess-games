@@ -9,6 +9,7 @@ GameManager::GameManager()
 {
 }
 
+GameManager::~GameManager() = default;
 
 Game GameManager::createNewGame() const
 {

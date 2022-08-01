@@ -18,9 +18,6 @@ namespace simplechess
 						const GameStage& stage,
 						const PieceMove& move,
 						bool offerDraw);
-
-				static boost::optional<Square> enPassantTarget(
-						const boost::optional<PlayedMove>& move);
 		};
 	}
 }
