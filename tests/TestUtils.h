@@ -1,4 +1,4 @@
-#include <Game.h>
+#include <GameManager.h>
 
 #include <gtest/gtest.h>
 

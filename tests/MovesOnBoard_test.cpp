@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "Game.h"
+#include "GameManager.h"
 
 #include <boost/optional/optional_io.hpp>
 
@@ -74,7 +74,8 @@ namespace
 			const Square& src,
 			const Square& dst)
 	{
-		const Game afterMove = startingGame.makeMove(
+		const Game afterMove = GameManager().makeMove(
+				startingGame,
 				PieceMove::regularMove(
 					piece,
 					src,
@@ -104,7 +105,8 @@ namespace
 			const Square& src,
 			const Square& dst)
 	{
-		const Game afterMove = startingGame.makeMove(
+		const Game afterMove = GameManager().makeMove(
+				startingGame,
 				PieceMove::regularMove(
 					piece,
 					src,
@@ -139,7 +141,8 @@ namespace
 		const Piece king = {TYPE_KING, castlingColor};
 		const Piece rook = {TYPE_ROOK, castlingColor};
 
-		const Game afterPawnMove = startingGame.makeMove(
+		const Game afterPawnMove = GameManager().makeMove(
+				startingGame,
 				PieceMove::regularMove(
 					king,
 					kingSrc,
@@ -174,7 +177,7 @@ namespace
 
 TEST(MovesOnBoardTest, PawnOnceForward) {
 	regularNonCaptureTest(
-			Game::createNewGame(),
+			GameManager().createNewGame(),
 			{TYPE_PAWN, COLOR_WHITE},
 			Square::fromRankAndFile(2, 'f'),
 			Square::fromRankAndFile(3, 'f'));
@@ -182,7 +185,7 @@ TEST(MovesOnBoardTest, PawnOnceForward) {
 
 TEST(MovesOnBoardTest, PawnTwiceForward) {
 	regularNonCaptureTest(
-			Game::createNewGame(),
+			GameManager().createNewGame(),
 			{TYPE_PAWN, COLOR_WHITE},
 			Square::fromRankAndFile(2, 'a'),
 			Square::fromRankAndFile(4, 'a'));
@@ -190,7 +193,7 @@ TEST(MovesOnBoardTest, PawnTwiceForward) {
 
 TEST(MovesOnBoardTest, PawnCapture) {
 	regularCaptureTest(
-			Game::createGameFromStartingFen(
+			GameManager().createGameFromFen(
 				"rn1qk2r/ppp2ppp/3p1n2/4p3/3P2b1/2N1P3/PPPBQPPP/R3KBNR b KQkq - 0 1"),
 			{TYPE_PAWN, COLOR_BLACK},
 			Square::fromRankAndFile(5, 'e'),
@@ -198,7 +201,7 @@ TEST(MovesOnBoardTest, PawnCapture) {
 }
 
 TEST(MovesOnBoardTest, WhitePawnEnPassant) {
-	const Game startingGame = Game::createGameFromStartingFen(
+	const Game startingGame = GameManager().createGameFromFen(
 			"rnbqkbnr/pppp1ppp/8/3Pp3/8/8/PPP1PPPP/RNBQKBNR w KQkq e6 0 1");
 
 	const Square src = Square::fromRankAndFile(5, 'd');
@@ -207,7 +210,8 @@ TEST(MovesOnBoardTest, WhitePawnEnPassant) {
 
 	const Piece piece = {TYPE_PAWN, COLOR_WHITE};
 
-	const Game afterPawnMove = startingGame.makeMove(
+	const Game afterPawnMove = GameManager().makeMove(
+			startingGame,
 			PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
 				src,
@@ -236,7 +240,7 @@ TEST(MovesOnBoardTest, WhitePawnEnPassant) {
 }
 
 TEST(MovesOnBoardTest, BlackPawnEnPassant) {
-	const Game startingGame = Game::createGameFromStartingFen(
+	const Game startingGame = GameManager().createGameFromFen(
 			"8/4k3/8/8/6pP/8/1K6/8 b - h3 0 1");
 
 	const Square src = Square::fromRankAndFile(4, 'g');
@@ -245,7 +249,8 @@ TEST(MovesOnBoardTest, BlackPawnEnPassant) {
 
 	const Piece piece = {TYPE_PAWN, COLOR_BLACK};
 
-	const Game afterPawnMove = startingGame.makeMove(
+	const Game afterPawnMove = GameManager().makeMove(
+			startingGame,
 			PieceMove::regularMove(
 				piece,
 				src,
@@ -274,7 +279,7 @@ TEST(MovesOnBoardTest, BlackPawnEnPassant) {
 }
 
 TEST(MovesOnBoardTest, PawnPromotionNoCapture) {
-	const Game startingGame = Game::createGameFromStartingFen(
+	const Game startingGame = GameManager().createGameFromFen(
 			"8/4k3/8/2q5/7P/2RQ4/1K4p1/8 b - - 0 1");
 
 	const Square src = Square::fromRankAndFile(2, 'g');
@@ -283,7 +288,8 @@ TEST(MovesOnBoardTest, PawnPromotionNoCapture) {
 	const Piece piece = {TYPE_PAWN, COLOR_BLACK};
 	const Piece promoted = {TYPE_QUEEN, COLOR_BLACK};
 
-	const Game afterPawnMove = startingGame.makeMove(
+	const Game afterPawnMove = GameManager().makeMove(
+			startingGame,
 			PieceMove::pawnPromotion(
 				piece,
 				src,
@@ -309,7 +315,7 @@ TEST(MovesOnBoardTest, PawnPromotionNoCapture) {
 }
 
 TEST(MovesOnBoardTest, PawnPromotionCapture) {
-	const Game startingGame = Game::createGameFromStartingFen(
+	const Game startingGame = GameManager().createGameFromFen(
 			"2q5/1P2k3/8/8/8/2RQ4/1K4p1/8 w - - 0 1");
 
 	const Square src = Square::fromRankAndFile(7, 'b');
@@ -318,7 +324,8 @@ TEST(MovesOnBoardTest, PawnPromotionCapture) {
 	const Piece piece = {TYPE_PAWN, COLOR_WHITE};
 	const Piece promoted = {TYPE_QUEEN, COLOR_WHITE};
 
-	const Game afterPawnMove = startingGame.makeMove(
+	const Game afterPawnMove = GameManager().makeMove(
+			startingGame,
 			PieceMove::pawnPromotion(
 				piece,
 				src,
@@ -344,7 +351,7 @@ TEST(MovesOnBoardTest, PawnPromotionCapture) {
 }
 
 TEST(MovesOnBoardTest, KnightNoCapture) {
-	regularNonCaptureTest(Game::createGameFromStartingFen(
+	regularNonCaptureTest(GameManager().createGameFromFen(
 				"8/4k3/8/2n5/6pP/3B4/1K6/8 b - h3 0 1"),
 			{TYPE_KNIGHT, COLOR_BLACK},
 			Square::fromRankAndFile(5, 'c'),
@@ -352,7 +359,7 @@ TEST(MovesOnBoardTest, KnightNoCapture) {
 }
 
 TEST(MovesOnBoardTest, KnightCapture) {
-	regularCaptureTest(Game::createGameFromStartingFen(
+	regularCaptureTest(GameManager().createGameFromFen(
 				"8/4k3/8/2n5/6pP/3B4/1K6/8 b - h3 0 1"),
 			{TYPE_KNIGHT, COLOR_BLACK},
 			Square::fromRankAndFile(5, 'c'),
@@ -360,7 +367,7 @@ TEST(MovesOnBoardTest, KnightCapture) {
 }
 
 TEST(MovesOnBoardTest, BishopNoCapture) {
-	regularNonCaptureTest(Game::createGameFromStartingFen(
+	regularNonCaptureTest(GameManager().createGameFromFen(
 				"8/4k3/6p1/2n5/7P/3B4/1K6/8 w - - 0 1"),
 			{TYPE_BISHOP, COLOR_WHITE},
 			Square::fromRankAndFile(3, 'd'),
@@ -368,7 +375,7 @@ TEST(MovesOnBoardTest, BishopNoCapture) {
 }
 
 TEST(MovesOnBoardTest, BishopCapture) {
-	regularCaptureTest(Game::createGameFromStartingFen(
+	regularCaptureTest(GameManager().createGameFromFen(
 				"8/4k3/6p1/2n5/7P/3B4/1K6/8 w - - 0 1"),
 			{TYPE_BISHOP, COLOR_WHITE},
 			Square::fromRankAndFile(3, 'd'),
@@ -376,7 +383,7 @@ TEST(MovesOnBoardTest, BishopCapture) {
 }
 
 TEST(MovesOnBoardTest, RookNoCapture) {
-	regularNonCaptureTest(Game::createGameFromStartingFen(
+	regularNonCaptureTest(GameManager().createGameFromFen(
 				"8/4k3/6p1/2n5/7P/2RB4/1K6/8 w - - 0 1"),
 			{TYPE_ROOK, COLOR_WHITE},
 			Square::fromRankAndFile(3, 'c'),
@@ -384,7 +391,7 @@ TEST(MovesOnBoardTest, RookNoCapture) {
 }
 
 TEST(MovesOnBoardTest, RookCapture) {
-	regularCaptureTest(Game::createGameFromStartingFen(
+	regularCaptureTest(GameManager().createGameFromFen(
 				"8/4k3/6p1/2n5/7P/2RB4/1K6/8 w - - 0 1"),
 			{TYPE_ROOK, COLOR_WHITE},
 			Square::fromRankAndFile(3, 'c'),
@@ -392,7 +399,7 @@ TEST(MovesOnBoardTest, RookCapture) {
 }
 
 TEST(MovesOnBoardTest, QueenNoCapture) {
-	regularNonCaptureTest(Game::createGameFromStartingFen(
+	regularNonCaptureTest(GameManager().createGameFromFen(
 				"8/4k3/6p1/2q5/7P/2RQ4/1K6/8 b - - 0 1"),
 			{TYPE_QUEEN, COLOR_BLACK},
 			Square::fromRankAndFile(5, 'c'),
@@ -400,7 +407,7 @@ TEST(MovesOnBoardTest, QueenNoCapture) {
 }
 
 TEST(MovesOnBoardTest, QueenCapture) {
-	regularCaptureTest(Game::createGameFromStartingFen(
+	regularCaptureTest(GameManager().createGameFromFen(
 				"8/4k3/6p1/2q5/7P/2RQ4/1K6/8 b - - 0 1"),
 			{TYPE_QUEEN, COLOR_BLACK},
 			Square::fromRankAndFile(5, 'c'),
@@ -408,7 +415,7 @@ TEST(MovesOnBoardTest, QueenCapture) {
 }
 
 TEST(MovesOnBoardTest, KingNoCapture) {
-	regularNonCaptureTest(Game::createGameFromStartingFen(
+	regularNonCaptureTest(GameManager().createGameFromFen(
 				"2k5/1P6/8/8/8/2RQ4/1K4p1/8 b - - 0 1"),
 			{TYPE_KING, COLOR_BLACK},
 			Square::fromRankAndFile(8, 'c'),
@@ -416,7 +423,7 @@ TEST(MovesOnBoardTest, KingNoCapture) {
 }
 
 TEST(MovesOnBoardTest, KingCapture) {
-	regularCaptureTest(Game::createGameFromStartingFen(
+	regularCaptureTest(GameManager().createGameFromFen(
 				"2k5/1P6/8/8/8/2RQ4/1K4p1/8 b - - 0 1"),
 			{TYPE_KING, COLOR_BLACK},
 			Square::fromRankAndFile(8, 'c'),
@@ -425,7 +432,7 @@ TEST(MovesOnBoardTest, KingCapture) {
 
 TEST(MovesOnBoardTest, KingsideCastlingWhite) {
 	castlingTest(
-			Game::createGameFromStartingFen(
+			GameManager().createGameFromFen(
 				"r2qkbnr/ppp2ppp/2np4/1B2p3/6b1/4PN2/PPPP1PPP/RNBQK2R w KQkq - 0 1"),
 			COLOR_WHITE,
 			Square::fromRankAndFile(1, 'e'),
@@ -436,7 +443,7 @@ TEST(MovesOnBoardTest, KingsideCastlingWhite) {
 
 TEST(MovesOnBoardTest, QueensideCastlingWhite) {
 	castlingTest(
-			Game::createGameFromStartingFen(
+			GameManager().createGameFromFen(
 				"r2qkbnr/ppp2ppp/2np4/4p3/6b1/2NPP3/PPPBQPPP/R3KBNR w KQkq - 0 1"),
 			COLOR_WHITE,
 			Square::fromRankAndFile(1, 'e'),
@@ -447,7 +454,7 @@ TEST(MovesOnBoardTest, QueensideCastlingWhite) {
 
 TEST(MovesOnBoardTest, KingsideCastlingBlack) {
 	castlingTest(
-			Game::createGameFromStartingFen(
+			GameManager().createGameFromFen(
 				"rn1qk2r/ppp2ppp/3p1n2/4p3/6b1/2NPP3/PPPBQPPP/R3KBNR b KQkq - 0 1"),
 			COLOR_BLACK,
 			Square::fromRankAndFile(8, 'e'),
@@ -458,7 +465,7 @@ TEST(MovesOnBoardTest, KingsideCastlingBlack) {
 
 TEST(MovesOnBoardTest, QueensideCastlingBlack) {
 	castlingTest(
-			Game::createGameFromStartingFen(
+			GameManager().createGameFromFen(
 				"r3kbnr/ppp2ppp/2np4/4p1q1/6b1/2NPP3/PPPBQPPP/R3KBNR b KQkq - 0 1"),
 			COLOR_BLACK,
 			Square::fromRankAndFile(8, 'e'),

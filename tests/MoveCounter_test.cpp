@@ -5,10 +5,12 @@
 using namespace simplechess;
 
 TEST(MoveCounterTest, FullMoveCounterFromStart) {
-	const Game game = Game::createNewGame();
+	const GameManager gameMgr;
+	const Game game = gameMgr.createNewGame();
 	EXPECT_EQ(game.currentStage().fullMoveCounter(), 1);
 
-	const Game afterFirstWhiteMove = game.makeMove(
+	const Game afterFirstWhiteMove = gameMgr.makeMove(
+			game,
 			PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
 				Square::fromRankAndFile(2, 'e'),
@@ -16,7 +18,8 @@ TEST(MoveCounterTest, FullMoveCounterFromStart) {
 
 	EXPECT_EQ(afterFirstWhiteMove.currentStage().fullMoveCounter(), 1);
 
-	const Game afterBlackFirstMove = afterFirstWhiteMove.makeMove(
+	const Game afterBlackFirstMove = gameMgr.makeMove(
+			afterFirstWhiteMove,
 			PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_BLACK},
 				Square::fromRankAndFile(7, 'e'),
@@ -24,7 +27,8 @@ TEST(MoveCounterTest, FullMoveCounterFromStart) {
 
 	EXPECT_EQ(afterBlackFirstMove.currentStage().fullMoveCounter(), 2);
 
-	const Game afterWhiteResponse = afterBlackFirstMove.makeMove(
+	const Game afterWhiteResponse = gameMgr.makeMove(
+			afterBlackFirstMove,
 			PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
 				Square::fromRankAndFile(1, 'g'),
@@ -34,11 +38,13 @@ TEST(MoveCounterTest, FullMoveCounterFromStart) {
 }
 
 TEST(MoveCounterTest, FullMoveCounterFromFenStartingWhite) {
-	const Game game = Game::createGameFromStartingFen(
+	const GameManager gameMgr;
+	const Game game = gameMgr.createGameFromFen(
 			"8/4k3/6p1/2n5/7P/2RB4/1K6/8 w - - 0 63");
 	EXPECT_EQ(game.currentStage().fullMoveCounter(), 63);
 
-	const Game afterWhiteMove = game.makeMove(
+	const Game afterWhiteMove = gameMgr.makeMove(
+			game,
 			PieceMove::regularMove(
 				{TYPE_ROOK, COLOR_WHITE},
 				Square::fromRankAndFile(3, 'c'),
@@ -46,7 +52,8 @@ TEST(MoveCounterTest, FullMoveCounterFromFenStartingWhite) {
 
 	EXPECT_EQ(afterWhiteMove.currentStage().fullMoveCounter(), 63);
 
-	const Game afterBlackResponse = afterWhiteMove.makeMove(
+	const Game afterBlackResponse = gameMgr.makeMove(
+			afterWhiteMove,
 			PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_BLACK},
 				Square::fromRankAndFile(6, 'g'),
@@ -54,7 +61,8 @@ TEST(MoveCounterTest, FullMoveCounterFromFenStartingWhite) {
 
 	EXPECT_EQ(afterBlackResponse.currentStage().fullMoveCounter(), 64);
 
-	const Game afterWhiteNextMove = afterBlackResponse.makeMove(
+	const Game afterWhiteNextMove = gameMgr.makeMove(
+			afterBlackResponse,
 			PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
 				Square::fromRankAndFile(4, 'h'),
@@ -64,11 +72,13 @@ TEST(MoveCounterTest, FullMoveCounterFromFenStartingWhite) {
 }
 
 TEST(MoveCounterTest, FullMoveCounterFromFenStartingBlack) {
-	const Game game = Game::createGameFromStartingFen(
+	const GameManager gameMgr;
+	const Game game = gameMgr.createGameFromFen(
 			"8/4k3/6p1/2n5/7P/2RB4/1K6/8 b - - 0 51");
 	EXPECT_EQ(game.currentStage().fullMoveCounter(), 51);
 
-	const Game afterBlackMove = game.makeMove(
+	const Game afterBlackMove = gameMgr.makeMove(
+			game,
 			PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_BLACK},
 				Square::fromRankAndFile(5, 'c'),
@@ -76,7 +86,8 @@ TEST(MoveCounterTest, FullMoveCounterFromFenStartingBlack) {
 
 	EXPECT_EQ(afterBlackMove.currentStage().fullMoveCounter(), 52);
 
-	const Game afterWhiteResponse = afterBlackMove.makeMove(
+	const Game afterWhiteResponse = gameMgr.makeMove(
+			afterBlackMove,
 			PieceMove::regularMove(
 				{TYPE_KING, COLOR_WHITE},
 				Square::fromRankAndFile(2, 'b'),
@@ -84,7 +95,8 @@ TEST(MoveCounterTest, FullMoveCounterFromFenStartingBlack) {
 
 	EXPECT_EQ(afterWhiteResponse.currentStage().fullMoveCounter(), 52);
 
-	const Game afterBlackNextMove = afterWhiteResponse.makeMove(
+	const Game afterBlackNextMove = gameMgr.makeMove(
+			afterWhiteResponse,
 			PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_BLACK},
 				Square::fromRankAndFile(6, 'g'),
@@ -94,12 +106,14 @@ TEST(MoveCounterTest, FullMoveCounterFromFenStartingBlack) {
 }
 
 TEST(MoveCounterTest, HalfMoveCounter) {
-	const Game game = Game::createNewGame();
+	const GameManager gameMgr;
+	const Game game = gameMgr.createNewGame();
 
 	EXPECT_EQ(game.currentStage().halfMovesSinceLastCaptureOrPawnAdvance(), 0);
 
 	// Pawn move does not increase the counter if it is 0
-	const Game afterWhite1 = game.makeMove(
+	const Game afterWhite1 = gameMgr.makeMove(
+			game,
 			PieceMove::regularMove(
 				{TYPE_PAWN, COLOR_WHITE},
 				Square::fromRankAndFile(2, 'e'),
@@ -107,14 +121,16 @@ TEST(MoveCounterTest, HalfMoveCounter) {
 	EXPECT_EQ(afterWhite1.currentStage().halfMovesSinceLastCaptureOrPawnAdvance(), 0);
 
 	// Non capture or pawn advance moves increase the counter in 1
-	const Game afterBlack1 = afterWhite1.makeMove(
+	const Game afterBlack1 = gameMgr.makeMove(
+			afterWhite1,
 			PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_BLACK},
 				Square::fromRankAndFile(8, 'g'),
 				Square::fromRankAndFile(6, 'f')));
 	EXPECT_EQ(afterBlack1.currentStage().halfMovesSinceLastCaptureOrPawnAdvance(), 1);
 
-	const Game afterWhite2 = afterBlack1.makeMove(
+	const Game afterWhite2 = gameMgr.makeMove(
+			afterBlack1,
 			PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_WHITE},
 				Square::fromRankAndFile(1, 'b'),
@@ -122,21 +138,24 @@ TEST(MoveCounterTest, HalfMoveCounter) {
 	EXPECT_EQ(afterWhite2.currentStage().halfMovesSinceLastCaptureOrPawnAdvance(), 2);
 
 	// Captures reset the counter to 0
-	const Game afterBlack2 = afterWhite2.makeMove(
+	const Game afterBlack2 = gameMgr.makeMove(
+			afterWhite2,
 			PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_BLACK},
 				Square::fromRankAndFile(6, 'f'),
 				Square::fromRankAndFile(4, 'e')));
 	EXPECT_EQ(afterBlack2.currentStage().halfMovesSinceLastCaptureOrPawnAdvance(), 0);
 
-	const Game afterWhite3 = afterBlack2.makeMove(
+	const Game afterWhite3 = gameMgr.makeMove(
+			afterBlack2,
 			PieceMove::regularMove(
 				{TYPE_QUEEN, COLOR_WHITE},
 				Square::fromRankAndFile(1, 'd'),
 				Square::fromRankAndFile(4, 'g')));
 	EXPECT_EQ(afterWhite3.currentStage().halfMovesSinceLastCaptureOrPawnAdvance(), 1);
 
-	const Game afterBlack3 = afterWhite3.makeMove(
+	const Game afterBlack3 = gameMgr.makeMove(
+			afterWhite3,
 			PieceMove::regularMove(
 				{TYPE_KNIGHT, COLOR_BLACK},
 				Square::fromRankAndFile(8, 'b'),
