@@ -12,7 +12,7 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckNoAmbiguity) {
 	const GameStage stage = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_KNIGHT, COLOR_WHITE},
+				{PieceType::Knight, Color::White},
 				Square::fromRankAndFile(3, 'c'),
 				Square::fromRankAndFile(5, 'b'))).currentStage();
 
@@ -27,7 +27,7 @@ TEST(AlgebraicNotationTest, PieceMoveCaptureNoCheckNoAmbiguity) {
 	const GameStage stage = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_BISHOP, COLOR_WHITE},
+				{PieceType::Bishop, Color::White},
 				Square::fromRankAndFile(1, 'f'),
 				Square::fromRankAndFile(4, 'c'))).currentStage();
 
@@ -42,7 +42,7 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguity) {
 	const GameStage stage = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_QUEEN, COLOR_BLACK},
+				{PieceType::Queen, Color::Black},
 				Square::fromRankAndFile(8, 'c'),
 				Square::fromRankAndFile(3, 'h'))).currentStage();
 
@@ -57,7 +57,7 @@ TEST(AlgebraicNotationTest, PieceMoveCaptureCheckNoAmbiguity) {
 	const GameStage stage = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_QUEEN, COLOR_BLACK},
+				{PieceType::Queen, Color::Black},
 				Square::fromRankAndFile(4, 'h'),
 				Square::fromRankAndFile(4, 'e'))).currentStage();
 
@@ -72,7 +72,7 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureCheckMateNoAmbiguity) {
 	const GameStage stage = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_ROOK, COLOR_WHITE},
+				{PieceType::Rook, Color::White},
 				Square::fromRankAndFile(7, 'h'),
 				Square::fromRankAndFile(8, 'h'))).currentStage();
 
@@ -87,7 +87,7 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankAmbiguity) {
 	const GameStage stage = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_ROOK, COLOR_WHITE},
+				{PieceType::Rook, Color::White},
 				Square::fromRankAndFile(1, 'h'),
 				Square::fromRankAndFile(1, 'd'))).currentStage();
 
@@ -102,7 +102,7 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankNoAmbiguity) {
 	const GameStage stage = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_ROOK, COLOR_WHITE},
+				{PieceType::Rook, Color::White},
 				Square::fromRankAndFile(1, 'h'),
 				Square::fromRankAndFile(2, 'h'))).currentStage();
 
@@ -117,7 +117,7 @@ TEST(AlgebraicNotationTest, PieceMoveCaptureNoCheckSameFileAmbiguity) {
 	const GameStage stage = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_BISHOP, COLOR_BLACK},
+				{PieceType::Bishop, Color::Black},
 				Square::fromRankAndFile(8, 'a'),
 				Square::fromRankAndFile(6, 'c'))).currentStage();
 
@@ -132,7 +132,7 @@ TEST(AlgebraicNotationTest, PieceMoveCaptureCheckSameFileSameRankAmbiguity) {
 	const GameStage stage = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_BISHOP, COLOR_BLACK},
+				{PieceType::Bishop, Color::Black},
 				Square::fromRankAndFile(8, 'a'),
 				Square::fromRankAndFile(6, 'c'))).currentStage();
 
@@ -147,10 +147,10 @@ TEST(AlgebraicNotationTest, PawnPromotionNoCaptureNoCheck) {
 	const GameStage stage = gameMgr.makeMove(
 			game,
 			PieceMove::pawnPromotion(
-				{TYPE_PAWN, COLOR_WHITE},
+				{PieceType::Pawn, Color::White},
 				Square::fromRankAndFile(7, 'b'),
 				Square::fromRankAndFile(8, 'b'),
-				TYPE_QUEEN)).currentStage();
+				PieceType::Queen)).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "b8=Q");
 }
@@ -163,10 +163,10 @@ TEST(AlgebraicNotationTest, PawnPromotionCaptureCheck) {
 	const GameStage stage = gameMgr.makeMove(
 			game,
 			PieceMove::pawnPromotion(
-				{TYPE_PAWN, COLOR_WHITE},
+				{PieceType::Pawn, Color::White},
 				Square::fromRankAndFile(7, 'b'),
 				Square::fromRankAndFile(8, 'c'),
-				TYPE_ROOK)).currentStage();
+				PieceType::Rook)).currentStage();
 
 	EXPECT_EQ(stage.move()->inAlgebraicNotation(), "xc8=R+");
 }
@@ -179,7 +179,7 @@ TEST(AlgebraicNotationTest, PawnRegularMoveCaptureAmbiguityNoCheck) {
 	const GameStage stage = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_PAWN, COLOR_BLACK},
+				{PieceType::Pawn, Color::Black},
 				Square::fromRankAndFile(5, 'd'),
 				Square::fromRankAndFile(4, 'e'))).currentStage();
 
@@ -194,7 +194,7 @@ TEST(AlgebraicNotationTest, PawnRegularMoveCaptureNoAmbiguityNoCheck) {
 	const GameStage stage = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_PAWN, COLOR_BLACK},
+				{PieceType::Pawn, Color::Black},
 				Square::fromRankAndFile(5, 'g'),
 				Square::fromRankAndFile(4, 'h'))).currentStage();
 
@@ -209,7 +209,7 @@ TEST(AlgebraicNotationTest, PawnEnPassantCaptureNoAmbiguityNoCheck) {
 	const GameStage stage = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_PAWN, COLOR_WHITE},
+				{PieceType::Pawn, Color::White},
 				Square::fromRankAndFile(5, 'a'),
 				Square::fromRankAndFile(6, 'b'))).currentStage();
 
@@ -224,7 +224,7 @@ TEST(AlgebraicNotationTest, PawnEnPassantCaptureAmbiguityNoCheck) {
 	const GameStage stage = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_PAWN, COLOR_WHITE},
+				{PieceType::Pawn, Color::White},
 				Square::fromRankAndFile(5, 'a'),
 				Square::fromRankAndFile(6, 'b'))).currentStage();
 
@@ -239,7 +239,7 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguityDrawOffer) {
 	const GameStage stage = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_QUEEN, COLOR_WHITE},
+				{PieceType::Queen, Color::White},
 				Square::fromRankAndFile(4, 'a'),
 				Square::fromRankAndFile(4, 'b')), true).currentStage();
 
@@ -254,7 +254,7 @@ TEST(AlgebraicNotationTest, CastlingKingsideNoCheck) {
 	const GameStage stage = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_KING, COLOR_WHITE},
+				{PieceType::King, Color::White},
 				Square::fromRankAndFile(1, 'e'),
 				Square::fromRankAndFile(1, 'g'))).currentStage();
 
@@ -269,7 +269,7 @@ TEST(AlgebraicNotationTest, CastlingQueensideCheckmate) {
 	const GameStage stage = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_KING, COLOR_BLACK},
+				{PieceType::King, Color::Black},
 				Square::fromRankAndFile(8, 'e'),
 				Square::fromRankAndFile(8, 'c'))).currentStage();
 

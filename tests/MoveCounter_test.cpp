@@ -12,7 +12,7 @@ TEST(MoveCounterTest, FullMoveCounterFromStart) {
 	const Game afterFirstWhiteMove = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_PAWN, COLOR_WHITE},
+				{PieceType::Pawn, Color::White},
 				Square::fromRankAndFile(2, 'e'),
 				Square::fromRankAndFile(4, 'e')));
 
@@ -21,7 +21,7 @@ TEST(MoveCounterTest, FullMoveCounterFromStart) {
 	const Game afterBlackFirstMove = gameMgr.makeMove(
 			afterFirstWhiteMove,
 			PieceMove::regularMove(
-				{TYPE_PAWN, COLOR_BLACK},
+				{PieceType::Pawn, Color::Black},
 				Square::fromRankAndFile(7, 'e'),
 				Square::fromRankAndFile(5, 'e')));
 
@@ -30,7 +30,7 @@ TEST(MoveCounterTest, FullMoveCounterFromStart) {
 	const Game afterWhiteResponse = gameMgr.makeMove(
 			afterBlackFirstMove,
 			PieceMove::regularMove(
-				{TYPE_KNIGHT, COLOR_WHITE},
+				{PieceType::Knight, Color::White},
 				Square::fromRankAndFile(1, 'g'),
 				Square::fromRankAndFile(3, 'f')));
 
@@ -46,7 +46,7 @@ TEST(MoveCounterTest, FullMoveCounterFromFenStartingWhite) {
 	const Game afterWhiteMove = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_ROOK, COLOR_WHITE},
+				{PieceType::Rook, Color::White},
 				Square::fromRankAndFile(3, 'c'),
 				Square::fromRankAndFile(5, 'c')));
 
@@ -55,7 +55,7 @@ TEST(MoveCounterTest, FullMoveCounterFromFenStartingWhite) {
 	const Game afterBlackResponse = gameMgr.makeMove(
 			afterWhiteMove,
 			PieceMove::regularMove(
-				{TYPE_PAWN, COLOR_BLACK},
+				{PieceType::Pawn, Color::Black},
 				Square::fromRankAndFile(6, 'g'),
 				Square::fromRankAndFile(5, 'g')));
 
@@ -64,7 +64,7 @@ TEST(MoveCounterTest, FullMoveCounterFromFenStartingWhite) {
 	const Game afterWhiteNextMove = gameMgr.makeMove(
 			afterBlackResponse,
 			PieceMove::regularMove(
-				{TYPE_PAWN, COLOR_WHITE},
+				{PieceType::Pawn, Color::White},
 				Square::fromRankAndFile(4, 'h'),
 				Square::fromRankAndFile(5, 'g')));
 
@@ -80,7 +80,7 @@ TEST(MoveCounterTest, FullMoveCounterFromFenStartingBlack) {
 	const Game afterBlackMove = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_KNIGHT, COLOR_BLACK},
+				{PieceType::Knight, Color::Black},
 				Square::fromRankAndFile(5, 'c'),
 				Square::fromRankAndFile(3, 'd')));
 
@@ -89,7 +89,7 @@ TEST(MoveCounterTest, FullMoveCounterFromFenStartingBlack) {
 	const Game afterWhiteResponse = gameMgr.makeMove(
 			afterBlackMove,
 			PieceMove::regularMove(
-				{TYPE_KING, COLOR_WHITE},
+				{PieceType::King, Color::White},
 				Square::fromRankAndFile(2, 'b'),
 				Square::fromRankAndFile(3, 'b')));
 
@@ -98,7 +98,7 @@ TEST(MoveCounterTest, FullMoveCounterFromFenStartingBlack) {
 	const Game afterBlackNextMove = gameMgr.makeMove(
 			afterWhiteResponse,
 			PieceMove::regularMove(
-				{TYPE_PAWN, COLOR_BLACK},
+				{PieceType::Pawn, Color::Black},
 				Square::fromRankAndFile(6, 'g'),
 				Square::fromRankAndFile(5, 'g')));
 
@@ -115,7 +115,7 @@ TEST(MoveCounterTest, HalfMoveCounter) {
 	const Game afterWhite1 = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_PAWN, COLOR_WHITE},
+				{PieceType::Pawn, Color::White},
 				Square::fromRankAndFile(2, 'e'),
 				Square::fromRankAndFile(4, 'e')));
 	EXPECT_EQ(afterWhite1.currentStage().halfMovesSinceLastCaptureOrPawnAdvance(), 0);
@@ -124,7 +124,7 @@ TEST(MoveCounterTest, HalfMoveCounter) {
 	const Game afterBlack1 = gameMgr.makeMove(
 			afterWhite1,
 			PieceMove::regularMove(
-				{TYPE_KNIGHT, COLOR_BLACK},
+				{PieceType::Knight, Color::Black},
 				Square::fromRankAndFile(8, 'g'),
 				Square::fromRankAndFile(6, 'f')));
 	EXPECT_EQ(afterBlack1.currentStage().halfMovesSinceLastCaptureOrPawnAdvance(), 1);
@@ -132,7 +132,7 @@ TEST(MoveCounterTest, HalfMoveCounter) {
 	const Game afterWhite2 = gameMgr.makeMove(
 			afterBlack1,
 			PieceMove::regularMove(
-				{TYPE_KNIGHT, COLOR_WHITE},
+				{PieceType::Knight, Color::White},
 				Square::fromRankAndFile(1, 'b'),
 				Square::fromRankAndFile(3, 'c')));
 	EXPECT_EQ(afterWhite2.currentStage().halfMovesSinceLastCaptureOrPawnAdvance(), 2);
@@ -141,7 +141,7 @@ TEST(MoveCounterTest, HalfMoveCounter) {
 	const Game afterBlack2 = gameMgr.makeMove(
 			afterWhite2,
 			PieceMove::regularMove(
-				{TYPE_KNIGHT, COLOR_BLACK},
+				{PieceType::Knight, Color::Black},
 				Square::fromRankAndFile(6, 'f'),
 				Square::fromRankAndFile(4, 'e')));
 	EXPECT_EQ(afterBlack2.currentStage().halfMovesSinceLastCaptureOrPawnAdvance(), 0);
@@ -149,7 +149,7 @@ TEST(MoveCounterTest, HalfMoveCounter) {
 	const Game afterWhite3 = gameMgr.makeMove(
 			afterBlack2,
 			PieceMove::regularMove(
-				{TYPE_QUEEN, COLOR_WHITE},
+				{PieceType::Queen, Color::White},
 				Square::fromRankAndFile(1, 'd'),
 				Square::fromRankAndFile(4, 'g')));
 	EXPECT_EQ(afterWhite3.currentStage().halfMovesSinceLastCaptureOrPawnAdvance(), 1);
@@ -157,7 +157,7 @@ TEST(MoveCounterTest, HalfMoveCounter) {
 	const Game afterBlack3 = gameMgr.makeMove(
 			afterWhite3,
 			PieceMove::regularMove(
-				{TYPE_KNIGHT, COLOR_BLACK},
+				{PieceType::Knight, Color::Black},
 				Square::fromRankAndFile(8, 'b'),
 				Square::fromRankAndFile(6, 'c')));
 	EXPECT_EQ(afterBlack3.currentStage().halfMovesSinceLastCaptureOrPawnAdvance(), 2);

@@ -10,7 +10,7 @@ std::set<PieceMove> simplechess::details::knightMovesUnfiltered(
 		const Color color,
 		const Square& square)
 {
-	const Piece knight = {TYPE_KNIGHT, color};
+	const Piece knight = {PieceType::Knight, color};
 
 	const std::set<int8_t> longSteps = {-2, 2};
 	const std::set<int8_t> shortSteps = {-1, 1};

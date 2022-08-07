@@ -23,7 +23,7 @@ std::set<PieceMove> simplechess::details::queenMovesUnfiltered(
 	for (const auto& move : combined)
 	{
 		result.insert(PieceMove::regularMove(
-					{TYPE_QUEEN, color},
+					{PieceType::Queen, color},
 					move.src(),
 					move.dst()));
 	}

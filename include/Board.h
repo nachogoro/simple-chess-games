@@ -5,7 +5,7 @@
 #include <PieceMove.h>
 #include <Square.h>
 
-#include <boost/optional.hpp>
+#include <optional>
 
 #include <map>
 
@@ -30,7 +30,7 @@ namespace simplechess
 			 * \return The \c Piece at the specified \c Square or an empty
 			 * optional if the square is empty.
 			 */
-			boost::optional<Piece> pieceAt(const Square& square) const;
+			std::optional<Piece> pieceAt(const Square& square) const;
 
 			/**
 			 * \brief Returns a relation of all occupied squares and the pieces

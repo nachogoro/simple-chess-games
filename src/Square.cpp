@@ -77,8 +77,8 @@ Color Square::color() const
 	uint8_t fileIndex = file() - 'a' + 1;
 
 	return ((fileIndex % 2) == (rank() % 2))
-		? COLOR_BLACK
-		: COLOR_WHITE;
+		? Color::Black
+		: Color::White;
 }
 
 std::string Square::toString() const

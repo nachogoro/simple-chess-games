@@ -25,7 +25,7 @@ namespace simplechess
 				uint8_t castlingRights,
 				uint16_t halfmoveClock,
 				uint16_t fullmoveClock,
-				const boost::optional<PlayedMove>& move);
+				const std::optional<PlayedMove>& move);
 	};
 
 	class GameBuilder
@@ -33,10 +33,10 @@ namespace simplechess
 		public:
 			static Game build(
 					GameState gameState,
-					const boost::optional<DrawReason>& drawReason,
+					const std::optional<DrawReason>& drawReason,
 					const std::vector<GameStage>& history,
 					const std::set<PieceMove>& allAvailableMoves,
-					const boost::optional<DrawReason>& reasonToClaimDraw);
+					const std::optional<DrawReason>& reasonToClaimDraw);
 	};
 
 	class BoardBuilder

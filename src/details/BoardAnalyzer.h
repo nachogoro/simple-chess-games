@@ -5,7 +5,7 @@
 #include <Color.h>
 #include <Square.h>
 
-#include <boost/optional.hpp>
+#include <optional>
 
 #include <set>
 

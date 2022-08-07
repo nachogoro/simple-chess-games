@@ -17,8 +17,8 @@ namespace simplechess
 					const GameState gameState,
 					const CheckType checkType,
 					const std::set<PieceMove>& availableMoves,
-					const boost::optional<DrawReason>& reasonItWasDrawn,
-					const boost::optional<DrawReason>& reasonToClaimDraw)
+					const std::optional<DrawReason>& reasonItWasDrawn,
+					const std::optional<DrawReason>& reasonToClaimDraw)
 				: gameState(gameState),
 				checkType(checkType),
 				availableMoves(availableMoves),
@@ -30,8 +30,8 @@ namespace simplechess
 			const GameState gameState;
 			const CheckType checkType;
 			const std::set<PieceMove> availableMoves;
-			const boost::optional<DrawReason> reasonItWasDrawn;
-			const boost::optional<DrawReason> reasonToClaimDraw;
+			const std::optional<DrawReason> reasonItWasDrawn;
+			const std::optional<DrawReason> reasonToClaimDraw;
 		};
 
 		/**

@@ -6,7 +6,7 @@
 #include <PieceMove.h>
 #include <Square.h>
 
-#include <boost/optional.hpp>
+#include <optional>
 
 #include <set>
 #include <vector>
@@ -16,49 +16,49 @@ namespace simplechess
 	/**
 	 * \brief The state of a game.
 	 */
-	enum GameState
+	enum class GameState
 	{
 		/**
 		 * \brief The game is still being played.
 		 */
-		GAME_STATE_PLAYING,
+		Playing,
 
 		/**
 		 * \brief The game ended in a draw.
 		 */
-		GAME_STATE_DRAWN,
+		Drawn,
 
 		/**
 		  \brief The game ended with a victory for white.
 		 */
-		GAME_STATE_WHITE_WON,
+		WhiteWon,
 
 		/**
 		 * \brief The game ended with a victory for black.
 		 */
-		GAME_STATE_BLACK_WON
+		BlackWon
 	};
 
 	/**
 	 * \brief Reasons why a game might be drawn.
 	 */
-	enum DrawReason
+	enum class DrawReason
 	{
 		/**
 		 * \brief Stalemate (the active side has no valid moves and is not in
 		 * check).
 		 */
-		DRAW_REASON_STALEMATE,
+		StaleMate,
 
 		/**
 		 * \brief Neither side has sufficient material to mate the other.
 		 */
-		DRAW_REASON_INSUFFICIENT_MATERIAL,
+		InsufficientMaterial,
 
 		/**
 		 * \brief A side offered a draw and it was accepted.
 		 */
-		DRAW_REASON_OFFERED_AND_ACCEPTED,
+		OfferedAndAccepted,
 
 		/**
 		 * \brief The same position has been reached 3 times or will be
@@ -66,14 +66,14 @@ namespace simplechess
 		 *
 		 * \note See FIDE rule 9.2.1 * and 9.2.2.
 		 */
-		DRAW_REASON_THREE_FOLD_REPETITION,
+		ThreeFoldRepetition,
 
 		/**
 		 * \brief The same position has been reached 5 times.
 		 *
 		 * \note See FIDE rule 9.6.1.
 		 */
-		DRAW_REASON_FIVE_FOLD_REPETITION,
+		FiveFoldRepetition,
 
 		/**
 		 * \brief At least fifty full moves (i.e. each side has played their
@@ -84,7 +84,7 @@ namespace simplechess
 		 *
 		 * \note See FIDE rules 9.3.1 and 9.3.2.
 		 */
-		DRAW_REASON_50_MOVE_RULE,
+		FiftyMoveRule,
 
 		/**
 		 * \brief At least fifty full moves (i.e. each side has played their
@@ -95,7 +95,7 @@ namespace simplechess
 		 *
 		 * \note See FIDE rule 9.6.2.
 		 */
-		DRAW_REASON_75_MOVE_RULE
+		SeventyFiveMoveRule
 	};
 
 	class GameBuilder;
@@ -121,7 +121,7 @@ namespace simplechess
 			 *
 			 * \throws IllegalStateException in the following circumstances:
 			 * - The Game has not been drawn (its state is not
-			 *   GAME_STATE_DRAWN).
+			 *   Drawn).
 			 *
 			 * \return The reason why the game was drawn.
 			 */
@@ -211,28 +211,28 @@ namespace simplechess
 			 * - If there is insufficient material for any side to checkmate.
 			 *
 			 * \throws \ref IllegalStateException if the state of the game is
-			 * not \ref GAME_STATE_PLAYING.
+			 * not \ref Playing.
 			 *
 			 * \return A possible reason to claim a draw if it exists, an empty
 			 * value otherwise.
 			 */
-			const boost::optional<DrawReason>& reasonToClaimDraw() const;
+			const std::optional<DrawReason>& reasonToClaimDraw() const;
 
 		private:
 			friend class GameBuilder;
 
 			Game(
 					GameState gameState,
-					const boost::optional<DrawReason>& drawReason,
+					const std::optional<DrawReason>& drawReason,
 					const std::vector<GameStage>& history,
 					const std::set<PieceMove>& allAvailableMoves,
-					const boost::optional<DrawReason>& reasonToClaimDraw);
+					const std::optional<DrawReason>& reasonToClaimDraw);
 
 			GameState mGameState;
-			boost::optional<DrawReason> mReasonGameWasDrawn;
+			std::optional<DrawReason> mReasonGameWasDrawn;
 			std::vector<GameStage> mHistory;
 			std::set<PieceMove> mAllAvailableMoves;
-			boost::optional<DrawReason> mReasonToClaimDraw;
+			std::optional<DrawReason> mReasonToClaimDraw;
 	};
 }
 

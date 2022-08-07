@@ -11,18 +11,18 @@ using namespace simplechess::details;
 
 namespace internal
 {
-	boost::optional<Square> enPassantTarget(
+	std::optional<Square> enPassantTarget(
 			const GameStage& stage)
 	{
-		const boost::optional<PlayedMove>& move = stage.move();
+		const std::optional<PlayedMove>& move = stage.move();
 
 		if (move
-				&& move->pieceMove().piece().type() == TYPE_PAWN
+				&& move->pieceMove().piece().type() == PieceType::Pawn
 				&& abs(move->pieceMove().dst().rank()
 					- move->pieceMove().src().rank()) == 2)
 		{
 			return { Square::fromRankAndFile(
-					((move->pieceMove().piece().color() == COLOR_WHITE)
+					((move->pieceMove().piece().color() == Color::White)
 					 ? 3
 					 : 6),
 					move->pieceMove().dst().file()) };
@@ -31,11 +31,11 @@ namespace internal
 		return {};
 	}
 
-	boost::tuple<GameState, boost::optional<DrawReason>> inferGameStateFromStage(
+	boost::tuple<GameState, std::optional<DrawReason>> inferGameStateFromStage(
 			const GameStage& stage,
 			const bool inCheck,
 			const std::set<PieceMove> allPossibleMoves,
-			const boost::optional<DrawReason> reasonToClaimDraw)
+			const std::optional<DrawReason> reasonToClaimDraw)
 	{
 		if (inCheck)
 		{
@@ -44,26 +44,26 @@ namespace internal
 				// If the active color can't move and is in check, it is check
 				// mate
 				return {
-					stage.activeColor() == COLOR_WHITE
-						? GAME_STATE_BLACK_WON
-						: GAME_STATE_WHITE_WON,
+					stage.activeColor() == Color::White
+						? GameState::BlackWon
+						: GameState::WhiteWon,
 						{} };
 			}
 		}
 
 		if (!reasonToClaimDraw
-				|| (*reasonToClaimDraw != DRAW_REASON_STALEMATE
-						&& *reasonToClaimDraw != DRAW_REASON_75_MOVE_RULE
-						&& *reasonToClaimDraw != DRAW_REASON_FIVE_FOLD_REPETITION
-						&& *reasonToClaimDraw != DRAW_REASON_INSUFFICIENT_MATERIAL))
+				|| (*reasonToClaimDraw != DrawReason::StaleMate
+						&& *reasonToClaimDraw != DrawReason::SeventyFiveMoveRule
+						&& *reasonToClaimDraw != DrawReason::FiveFoldRepetition
+						&& *reasonToClaimDraw != DrawReason::InsufficientMaterial))
 		{
 			// If there is a reason to draw, it is not automatically applied,
 			// so the game is still playable
-			return {GAME_STATE_PLAYING, {}};
+			return {GameState::Playing, {}};
 		}
 
 		// There is a mandatory draw reason, so the game is drawn
-		return { GAME_STATE_DRAWN, reasonToClaimDraw };
+		return { GameState::Drawn, reasonToClaimDraw };
 	}
 }
 
@@ -84,18 +84,18 @@ GameStateInformation GameStateDetector::detect(
 
 	const CheckType checkType = (inCheck
 		? ((availableMoves.size() == 0)
-				? CHECKMATE
-				: CHECK)
-		: NO_CHECK);
+				? CheckType::CheckMate
+				: CheckType::Check)
+		: CheckType::NoCheck);
 
-	const boost::optional<DrawReason> reasonToClaimDraw
+	const std::optional<DrawReason> reasonToClaimDraw
 		= details::DrawEvaluator::reasonToDraw(
 				stage,
 				inCheck,
 				availableMoves,
 				previouslyReachedPositions);
 
-	const boost::tuple<GameState, boost::optional<DrawReason>> gameState
+	const boost::tuple<GameState, std::optional<DrawReason>> gameState
 		= internal::inferGameStateFromStage(
 			stage,
 			inCheck,

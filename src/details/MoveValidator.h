@@ -7,7 +7,7 @@
 #include <PieceMove.h>
 #include <Square.h>
 
-#include <boost/optional.hpp>
+#include <optional>
 
 #include <set>
 
@@ -21,7 +21,7 @@ namespace simplechess
 		class MoveValidator
 		{
 			public:
-				static boost::optional<Square> enPassantTarget(
+				static std::optional<Square> enPassantTarget(
 						const PieceMove& pieceMove);
 
 				// Returns all possible moves for activeColor without
@@ -31,12 +31,12 @@ namespace simplechess
 				static std::set<PieceMove>
 					allPotentiallyCapturingMovesUnfiltered(
 						const Board& board,
-						const boost::optional<Square>& enPassantTarget,
+						const std::optional<Square>& enPassantTarget,
 						Color activeColor);
 
 				static std::set<PieceMove> allAvailableMoves(
 						const Board& board,
-						const boost::optional<Square>& enPassantTarget,
+						const std::optional<Square>& enPassantTarget,
 						uint8_t castlingRights,
 						Color activeColor);
 
@@ -46,12 +46,12 @@ namespace simplechess
 				// of the king (i.e. only potentially capturing moves).
 				static std::set<PieceMove> potentiallyCapturingMovesForPieceUnfiltered(
 						const Board& board,
-						const boost::optional<Square>& enPassantTarget,
+						const std::optional<Square>& enPassantTarget,
 						const Square& square);
 
 				static std::set<PieceMove> availableMovesForPiece(
 						const Board& board,
-						const boost::optional<Square>& enPassantTarget,
+						const std::optional<Square>& enPassantTarget,
 						uint8_t castlingRights,
 						const Square& square);
 		};

@@ -13,7 +13,7 @@ std::set<PieceMove> simplechess::details::kingMovesExceptCastling(
 {
 	const std::set<int8_t> step = {-1, 0, 1};
 
-	const Piece king = {TYPE_KING, color};
+	const Piece king = {PieceType::King, color};
 
 	std::set<PieceMove> result;
 
@@ -51,7 +51,7 @@ std::set<PieceMove> simplechess::details::kingMovesUnfiltered(
 		const Color color,
 		const Square& square)
 {
-	const Piece king = {TYPE_KING, color};
+	const Piece king = {PieceType::King, color};
 
 	std::set<PieceMove> result = kingMovesExceptCastling(board, color, square);
 
@@ -61,10 +61,10 @@ std::set<PieceMove> simplechess::details::kingMovesUnfiltered(
 		return result;
 	}
 
-	if ((color == COLOR_WHITE
-				&& (castlingRights & CASTLING_RIGHT_WHITE_KINGSIDE))
-			|| (color == COLOR_BLACK
-				&& (castlingRights & CASTLING_RIGHT_BLACK_KINGSIDE)))
+	if ((color == Color::White
+				&& (castlingRights & CastlingRight::WhiteKingSide))
+			|| (color == Color::Black
+				&& (castlingRights & CastlingRight::BlackKingSide)))
 	{
 		// Only available if the passing squares are empty and not under attack
 		const std::set<Square> mustBeFreeSquares = {
@@ -97,10 +97,10 @@ std::set<PieceMove> simplechess::details::kingMovesUnfiltered(
 		}
 	}
 
-	if ((color == COLOR_WHITE
-				&& (castlingRights & CASTLING_RIGHT_WHITE_QUEENSIDE))
-			|| (color == COLOR_BLACK
-				&& (castlingRights & CASTLING_RIGHT_BLACK_QUEENSIDE)))
+	if ((color == Color::White
+				&& (castlingRights & CastlingRight::WhiteQueenSide))
+			|| (color == Color::Black
+				&& (castlingRights & CastlingRight::BlackQueenSide)))
 	{
 		// Only available if the passing squares are empty and not under attack
 		const std::set<Square> mustBeFreeSquares = {

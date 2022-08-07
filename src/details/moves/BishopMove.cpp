@@ -10,7 +10,7 @@ std::set<PieceMove> simplechess::details::bishopMovesUnfiltered(
 		const Color color,
 		const Square& square)
 {
-	const Piece bishop = {TYPE_BISHOP, color};
+	const Piece bishop = {PieceType::Bishop, color};
 
 	std::set<Square> possibleSquares;
 

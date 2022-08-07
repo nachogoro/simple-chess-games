@@ -58,7 +58,7 @@ namespace simplechess
 						const Board& board,
 						const Color activeColor,
 						const uint8_t castlingRights,
-						const boost::optional<Square>& epTarget,
+						const std::optional<Square>& epTarget,
 						const uint16_t halfmoveClock,
 						const uint16_t fullmoveClock);
 

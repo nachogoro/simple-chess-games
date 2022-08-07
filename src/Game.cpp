@@ -25,18 +25,18 @@ using namespace simplechess;
 
 Game::Game(
 		const GameState gameState,
-		const boost::optional<DrawReason>& drawReason,
+		const std::optional<DrawReason>& drawReason,
 		const std::vector<GameStage>& history,
 		const std::set<PieceMove>& allAvailableMoves,
-		const boost::optional<DrawReason>& reasonToClaimDraw)
+		const std::optional<DrawReason>& reasonToClaimDraw)
 	: mGameState(gameState),
 	  mReasonGameWasDrawn(drawReason),
 	  mHistory(history),
 	  mAllAvailableMoves(allAvailableMoves),
 	  mReasonToClaimDraw(reasonToClaimDraw)
 {
-	if ((gameState == GAME_STATE_DRAWN && !drawReason)
-			|| (gameState != GAME_STATE_DRAWN && drawReason))
+	if ((gameState == GameState::Drawn && !drawReason)
+			|| (gameState != GameState::Drawn && drawReason))
 	{
 		throw std::invalid_argument(
 				"Inconsistent arguments related to draw reason");
@@ -55,7 +55,7 @@ GameState Game::gameState() const
 
 DrawReason Game::drawReason() const
 {
-	if (gameState() != GAME_STATE_DRAWN)
+	if (gameState() != GameState::Drawn)
 	{
 		throw IllegalStateException(
 				"Cannot request draw reason of non-drawn game");
@@ -94,9 +94,9 @@ const std::set<PieceMove>& Game::allAvailableMoves() const
 	return mAllAvailableMoves;
 }
 
-const boost::optional<DrawReason>& Game::reasonToClaimDraw() const
+const std::optional<DrawReason>& Game::reasonToClaimDraw() const
 {
-	if (gameState() != GAME_STATE_PLAYING)
+	if (gameState() != GameState::Playing)
 	{
 		throw IllegalStateException(
 				"Draws cannot be claimed in finished games");

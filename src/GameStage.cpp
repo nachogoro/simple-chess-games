@@ -14,7 +14,7 @@ GameStage::GameStage(
 		const uint16_t halfmoveClock,
 		const uint16_t fullmoveClock,
 		const std::string& fen,
-		const boost::optional<PlayedMove>& move)
+		const std::optional<PlayedMove>& move)
 	: mBoard(board),
 	  mActiveColor(toPlay),
 	  mCastlingRights(castlingRights),
@@ -36,9 +36,9 @@ GameStage::GameStage(
 
 	for (const auto& entry : board.occupiedSquares())
 	{
-		if (entry.second.type() == TYPE_KING)
+		if (entry.second.type() == PieceType::King)
 		{
-			if (entry.second.color() == COLOR_WHITE)
+			if (entry.second.color() == Color::White)
 			{
 				whiteKings++;
 			}
@@ -59,12 +59,12 @@ GameStage::GameStage(
 		throw std::invalid_argument("Color to move is already checking");
 	}
 
-	const Piece whiteKing = {TYPE_KING, COLOR_WHITE};
-	const Piece blackKing = {TYPE_KING, COLOR_BLACK};
-	const Piece whiteRook = {TYPE_ROOK, COLOR_WHITE};
-	const Piece blackRook = {TYPE_ROOK, COLOR_BLACK};
+	const Piece whiteKing = {PieceType::King, Color::White};
+	const Piece blackKing = {PieceType::King, Color::Black};
+	const Piece whiteRook = {PieceType::Rook, Color::White};
+	const Piece blackRook = {PieceType::Rook, Color::Black};
 
-	if ((castlingRights & CASTLING_RIGHT_WHITE_KINGSIDE)
+	if ((castlingRights & static_cast<uint8_t>(CastlingRight::WhiteKingSide))
 			&& (*board.pieceAt(Square::fromString("e1")) != whiteKing
 				|| *board.pieceAt(Square::fromString("h1")) != whiteRook))
 	{
@@ -72,7 +72,7 @@ GameStage::GameStage(
 				"Kingside castling right for white is inconsistent with board state");
 	}
 
-	if ((castlingRights & CASTLING_RIGHT_WHITE_QUEENSIDE)
+	if ((castlingRights & static_cast<uint8_t>(CastlingRight::WhiteQueenSide))
 			&& (*board.pieceAt(Square::fromString("e1")) != whiteKing
 				|| *board.pieceAt(Square::fromString("a1")) != whiteRook))
 	{
@@ -80,7 +80,7 @@ GameStage::GameStage(
 				"Queenside castling right for white is inconsistent with board state");
 	}
 
-	if ((castlingRights & CASTLING_RIGHT_BLACK_KINGSIDE)
+	if ((castlingRights & static_cast<uint8_t>(CastlingRight::BlackKingSide))
 			&& (*board.pieceAt(Square::fromString("e8")) != blackKing
 				|| *board.pieceAt(Square::fromString("h8")) != blackRook))
 	{
@@ -88,7 +88,7 @@ GameStage::GameStage(
 				"Kingside castling right for black is inconsistent with board state");
 	}
 
-	if ((castlingRights & CASTLING_RIGHT_BLACK_QUEENSIDE)
+	if ((castlingRights & static_cast<uint8_t>(CastlingRight::BlackQueenSide))
 			&& (*board.pieceAt(Square::fromString("e8")) != blackKing
 				|| *board.pieceAt(Square::fromString("a8")) != blackRook))
 	{
@@ -102,7 +102,7 @@ const Board& GameStage::board() const
 	return mBoard;
 }
 
-const boost::optional<PlayedMove>& GameStage::move() const
+const std::optional<PlayedMove>& GameStage::move() const
 {
 	return mMove;
 }

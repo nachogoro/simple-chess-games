@@ -27,7 +27,7 @@ namespace internal
 		{
 			const Piece& piece = entry.second;
 
-			if (piece.color() == COLOR_WHITE)
+			if (piece.color() == Color::White)
 			{
 				whitePieces.insert(piece);
 			}
@@ -52,8 +52,8 @@ namespace internal
 
 		if (whitePieces.size() == 2 && blackPieces.size() == 2)
 		{
-			if (!(whitePieces.count({TYPE_BISHOP, COLOR_WHITE})
-					&& blackPieces.count({TYPE_BISHOP, COLOR_BLACK})))
+			if (!(whitePieces.count({PieceType::Bishop, Color::White})
+					&& blackPieces.count({PieceType::Bishop, Color::Black})))
 			{
 				// If both sides do not have King + Bishop but have two pieces,
 				// mate is theoretically possible
@@ -62,13 +62,13 @@ namespace internal
 
 			// Both sides have King + Bishop, we need to figure out if they are
 			// of the same color
-			boost::optional<Color> bishopColor;
+			std::optional<Color> bishopColor;
 			for (const auto& entry : occupiedSquares)
 			{
 				const Square& sq = entry.first;
 				const Piece& piece = entry.second;
 
-				if (piece.type() == TYPE_BISHOP)
+				if (piece.type() == PieceType::Bishop)
 				{
 					if (!bishopColor)
 					{
@@ -104,7 +104,7 @@ namespace internal
 				: blackPieces;
 
 		const std::set<PieceType> drawingTypes
-			= {TYPE_KING, TYPE_KNIGHT, TYPE_BISHOP};
+			= {PieceType::King, PieceType::Knight, PieceType::Bishop};
 
 		for (const Piece& piece : piecesOfRelevantSide)
 		{
@@ -120,7 +120,7 @@ namespace internal
 
 }
 
-boost::optional<DrawReason> DrawEvaluator::reasonToDraw(
+std::optional<DrawReason> DrawEvaluator::reasonToDraw(
 		const GameStage& stage,
 		const std::map<std::string, uint8_t>& previouslyReachedPositions)
 {
@@ -129,7 +129,7 @@ boost::optional<DrawReason> DrawEvaluator::reasonToDraw(
 				stage.board(),
 				stage.move()
 					? MoveValidator::enPassantTarget(stage.move()->pieceMove())
-					: boost::optional<Square>{},
+					: std::optional<Square>{},
 				stage.castlingRights(),
 				stage.activeColor());
 
@@ -143,7 +143,7 @@ boost::optional<DrawReason> DrawEvaluator::reasonToDraw(
 			previouslyReachedPositions);
 }
 
-boost::optional<DrawReason> DrawEvaluator::reasonToDraw(
+std::optional<DrawReason> DrawEvaluator::reasonToDraw(
 		const GameStage& stage,
 		const bool isInCheck,
 		const std::set<PieceMove> allPossibleMoves,
@@ -151,7 +151,7 @@ boost::optional<DrawReason> DrawEvaluator::reasonToDraw(
 {
 	if (stage.halfMovesSinceLastCaptureOrPawnAdvance() >= 150)
 	{
-		return { DRAW_REASON_75_MOVE_RULE };
+		return { DrawReason::SeventyFiveMoveRule };
 	}
 
 	// It is possible the current stage if the fifth repetition
@@ -165,27 +165,27 @@ boost::optional<DrawReason> DrawEvaluator::reasonToDraw(
 
 	if (timesPositionAppearedPreviously >= 4)
 	{
-		return { DRAW_REASON_FIVE_FOLD_REPETITION };
+		return { DrawReason::FiveFoldRepetition };
 	}
 
 	if (allPossibleMoves.size() == 0 && !isInCheck)
 	{
-		return { DRAW_REASON_STALEMATE };
+		return { DrawReason::StaleMate };
 	}
 
 	if (!internal::enoughMatingMaterial(stage.board()))
 	{
-		return { DRAW_REASON_INSUFFICIENT_MATERIAL };
+		return { DrawReason::InsufficientMaterial };
 	}
 
 	if (stage.move() && stage.move()->isDrawOffered())
 	{
-		return { DRAW_REASON_OFFERED_AND_ACCEPTED };
+		return { DrawReason::OfferedAndAccepted };
 	}
 
 	if (stage.halfMovesSinceLastCaptureOrPawnAdvance() >= 100)
 	{
-		return { DRAW_REASON_50_MOVE_RULE };
+		return { DrawReason::FiftyMoveRule };
 	}
 
 	// A player can claim a draw if the current position has been reached at
@@ -195,7 +195,7 @@ boost::optional<DrawReason> DrawEvaluator::reasonToDraw(
 	// would cause 3-fold repetition
 	if (timesPositionAppearedPreviously >= 2)
 	{
-		return { DRAW_REASON_THREE_FOLD_REPETITION };
+		return { DrawReason::ThreeFoldRepetition };
 	}
 
 	for (const auto& move : allPossibleMoves)
@@ -211,7 +211,7 @@ boost::optional<DrawReason> DrawEvaluator::reasonToDraw(
 		if (previouslyReachedPositions.count(relevantFen)
 				&& previouslyReachedPositions.at(relevantFen) >= 2)
 		{
-			return { DRAW_REASON_THREE_FOLD_REPETITION };
+			return { DrawReason::ThreeFoldRepetition };
 		}
 	}
 

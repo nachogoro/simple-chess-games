@@ -10,7 +10,7 @@ std::set<PieceMove> simplechess::details::rookMovesUnfiltered(
 		const Color color,
 		const Square& square)
 {
-	const Piece rook = {TYPE_ROOK, color};
+	const Piece rook = {PieceType::Rook, color};
 
 	std::set<Square> possibleSquares;
 

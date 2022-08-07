@@ -18,11 +18,11 @@ namespace
 	 * landing square was an en passant target. If not, we can't know if any
 	 * other target was, but we don't care.
 	 */
-	boost::optional<Square> targetIfEnPassantCapture(
+	std::optional<Square> targetIfEnPassantCapture(
 			const Board& board,
 			const PieceMove& move)
 	{
-		if (move.piece().type() == TYPE_PAWN
+		if (move.piece().type() == PieceType::Pawn
 				&& move.src().file() != move.dst().file()
 				&& !board.pieceAt(move.dst()))
 		{
@@ -37,9 +37,9 @@ namespace
 	{
 		switch (checkType)
 		{
-			case NO_CHECK:
+			case CheckType::NoCheck:
 				return "";
-			case CHECK:
+			case CheckType::Check:
 				return "+";
 			default:
 				return "#";
@@ -50,37 +50,37 @@ namespace
 	{
 		switch (type)
 		{
-			case TYPE_ROOK:
+			case PieceType::Rook:
 				return "R";
-			case TYPE_KNIGHT:
+			case PieceType::Knight:
 				return "N";
-			case TYPE_BISHOP:
+			case PieceType::Bishop:
 				return "B";
-			case TYPE_QUEEN:
+			case PieceType::Queen:
 				return "Q";
-			case TYPE_KING:
+			case PieceType::King:
 				return "K";
-			case TYPE_PAWN:
+			case PieceType::Pawn:
 				// Nothing
 				return "";
 		}
-		throw std::invalid_argument("Unknown piece type: " + type);
+		throw std::invalid_argument("Unknown piece type: " + static_cast<int>(type));
 	}
 
-	enum CastlingType
+	enum class CastlingType
 	{
-		CASTLING_KINGSIDE,
-		CASTLING_QUEENSIDE
+		KingSide,
+		QueenSide
 	};
 
-	boost::optional<CastlingType> castlingType(const PieceMove& move)
+	std::optional<CastlingType> castlingType(const PieceMove& move)
 	{
-		if (move.piece().type() == TYPE_KING
+		if (move.piece().type() == PieceType::King
 				&& abs(move.dst().file() - move.src().file()) == 2)
 		{
 			return { move.dst().file() > move.src().file()
-				? CASTLING_KINGSIDE
-					: CASTLING_QUEENSIDE };
+				? CastlingType::KingSide
+				: CastlingType::QueenSide };
 		}
 
 		return {};
@@ -88,8 +88,8 @@ namespace
 
 	enum AlgebraicAmbiguity
 	{
-		SAME_RANK = 0x01,
-		SAME_FILE = 0x10,
+		SameRank = 0x01,
+		SameFile = 0x10,
 	};
 
 	uint8_t getAmbiguityMask(
@@ -121,12 +121,12 @@ namespace
 				// square, the move is ambiguous
 				if (otherMove.src().rank() == move.src().rank())
 				{
-					ambiguityMask |= SAME_RANK;
+					ambiguityMask |= AlgebraicAmbiguity::SameRank;
 				}
 
 				if (otherMove.src().file() == move.src().file())
 				{
-					ambiguityMask |= SAME_FILE;
+					ambiguityMask |= AlgebraicAmbiguity::SameFile;
 				}
 			}
 		}
@@ -145,7 +145,7 @@ std::string AlgebraicNotationGenerator::toAlgebraicNotation(
 	// it was an en passant capture
 	const bool isCapture =
 		board.pieceAt(move.dst()).has_value()
-		|| (board.pieceAt(move.src())->type() == TYPE_PAWN
+		|| (board.pieceAt(move.src())->type() == PieceType::Pawn
 				&& move.dst().file() != move.src().file());
 
 	const uint8_t ambiguityMask = ::getAmbiguityMask(
@@ -153,13 +153,13 @@ std::string AlgebraicNotationGenerator::toAlgebraicNotation(
 			move);
 
 	std::stringstream ss;
-	const boost::optional<CastlingType> castling
+	const std::optional<CastlingType> castling
 		= ::castlingType(move);
 
 	// Castling is handled differently
 	if (castling)
 	{
-		ss << ((*castling == CASTLING_KINGSIDE)
+		ss << ((*castling == CastlingType::KingSide)
 				? "O-O"
 				: "O-O-O");
 
@@ -175,14 +175,14 @@ std::string AlgebraicNotationGenerator::toAlgebraicNotation(
 	// 2. Add the disambiguation characters if needed
 	if (ambiguityMask != 0)
 	{
-		if ((ambiguityMask & SAME_RANK) != 0)
+		if ((ambiguityMask & AlgebraicAmbiguity::SameRank) != 0)
 		{
 			// It shares rank with another piece causing ambiguity, the
 			// file is needed
 			ss << move.src().file();
 		}
 
-		if ((ambiguityMask & SAME_FILE) != 0)
+		if ((ambiguityMask & AlgebraicAmbiguity::SameFile) != 0)
 		{
 			// It shares file with another piece causing ambiguity, the
 			// rank is needed

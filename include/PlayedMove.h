@@ -6,7 +6,7 @@
 #include <PieceMove.h>
 #include <Square.h>
 
-#include <boost/optional.hpp>
+#include <optional>
 
 #include <string>
 
@@ -17,23 +17,23 @@ namespace simplechess
 	/**
 	 * The different types of check which can be caused by a move.
 	 */
-	enum CheckType
+	enum class CheckType
 	{
 		/**
 		 * No check whatsoever.
 		 */
-		NO_CHECK,
+		NoCheck,
 
 		/**
 		 * Regular check (the other side still has valid moves to break the
 		 * check).
 		 */
-		CHECK,
+		Check,
 
 		/**
 		 * Checkmate (the other side has no valid moves).
 		 */
-		CHECKMATE
+		CheckMate
 	};
 
 	/**
@@ -71,7 +71,7 @@ namespace simplechess
 			 * \return \c true if an opponent's piece has been captured in this
 			 * move, \c false otherwise.
 			 */
-			const boost::optional<Piece>& capturedPiece() const;
+			const std::optional<Piece>& capturedPiece() const;
 
 			/**
 			 * \brief The type of check delivered by the move.
@@ -93,7 +93,7 @@ namespace simplechess
 		private:
 			PlayedMove(
 					const PieceMove& pieceMove,
-					const boost::optional<Piece>& capturedPiece,
+					const std::optional<Piece>& capturedPiece,
 					bool drawOffered,
 					CheckType checkType,
 					const std::string& algebraicNotation);
@@ -101,7 +101,7 @@ namespace simplechess
 			friend class PlayedMoveBuilder;
 
 			PieceMove mPieceMove;
-			boost::optional<Piece> mCapturedPiece;
+			std::optional<Piece> mCapturedPiece;
 			bool mDrawOffered;
 			CheckType mCheckType;
 			std::string mAlgebraicNotation;

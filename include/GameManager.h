@@ -5,7 +5,7 @@
 #include <Game.h>
 #include <PieceMove.h>
 
-#include <boost/optional.hpp>
+#include <optional>
 
 #include <memory>
 #include <string>
@@ -69,7 +69,7 @@ namespace simplechess
 			 *
 			 * \throws IllegalStateException in the following circumstances:
 			 * - The Game has already concluded (its state is not
-			 *   GAME_STATE_PLAYING).
+			 *   Playing).
 			 * - The \p pieceMove is not a valid move for the current player.
 			 *
 			 * \param game Game in which to move is to be made.
@@ -90,7 +90,7 @@ namespace simplechess
 			 *
 			 * \throws IllegalStateException in the following circumstances:
 			 * - The Game has already concluded (its state is not
-			 *   GAME_STATE_PLAYING).
+			 *   Playing).
 			 * - The current player cannot claim a draw (\ref
 			 *   Game.reasonToClaimDraw() is empty)
 			 *
@@ -105,7 +105,7 @@ namespace simplechess
 			 *
 			 * \throws IllegalStateException in the following circumstances:
 			 * - The Game has already concluded (its state is not
-			 *   GAME_STATE_PLAYING).
+			 *   Playing).
 			 *
 			 * \param game Game to be resigned.
 			 * \return A new copy of the Game, identical to the current one but

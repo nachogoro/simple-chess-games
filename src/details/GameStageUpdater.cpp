@@ -18,47 +18,47 @@ GameStage GameStageUpdater::makeMove(
 
 	uint8_t updatedCastlingRights = stage.castlingRights();
 
-	if (move.piece().type() == TYPE_KING)
+	if (move.piece().type() == PieceType::King)
 	{
 		// Once the king moves, castling is no longer allowed
-		if (move.piece().color() == COLOR_WHITE)
+		if (move.piece().color() == Color::White)
 		{
-			updatedCastlingRights &= ~CASTLING_RIGHT_WHITE_KINGSIDE;
-			updatedCastlingRights &= ~CASTLING_RIGHT_WHITE_QUEENSIDE;
+			updatedCastlingRights &= ~CastlingRight::WhiteKingSide;
+			updatedCastlingRights &= ~CastlingRight::WhiteQueenSide;
 		}
 		else
 		{
-			updatedCastlingRights &= ~CASTLING_RIGHT_BLACK_KINGSIDE;
-			updatedCastlingRights &= ~CASTLING_RIGHT_BLACK_QUEENSIDE;
+			updatedCastlingRights &= ~CastlingRight::BlackKingSide;
+			updatedCastlingRights &= ~CastlingRight::BlackQueenSide;
 		}
 	}
 
-	if (move.piece().type() == TYPE_ROOK)
+	if (move.piece().type() == PieceType::Rook)
 	{
 		// If a rook moves or is captured, clear the castling rights of that
 		// side. It might already be cleared, but that's not an issue
 		if (move.src() == Square::fromString("a1")
 				|| move.dst() == Square::fromString("a1"))
 		{
-			updatedCastlingRights &= ~CASTLING_RIGHT_WHITE_QUEENSIDE;
+			updatedCastlingRights &= ~CastlingRight::WhiteQueenSide;
 		}
 
 		if (move.src() == Square::fromString("h1")
 				|| move.dst() == Square::fromString("h1"))
 		{
-			updatedCastlingRights &= ~CASTLING_RIGHT_WHITE_KINGSIDE;
+			updatedCastlingRights &= ~CastlingRight::WhiteKingSide;
 		}
 
 		if (move.src() == Square::fromString("a8")
 				|| move.dst() == Square::fromString("a8"))
 		{
-			updatedCastlingRights &= ~CASTLING_RIGHT_BLACK_QUEENSIDE;
+			updatedCastlingRights &= ~CastlingRight::BlackQueenSide;
 		}
 
 		if (move.src() == Square::fromString("h8")
 				|| move.dst() == Square::fromString("h8"))
 		{
-			updatedCastlingRights &= ~CASTLING_RIGHT_BLACK_KINGSIDE;
+			updatedCastlingRights &= ~CastlingRight::BlackKingSide;
 		}
 	}
 
@@ -66,11 +66,11 @@ GameStage GameStageUpdater::makeMove(
 			details::BoardAnalyzer::makeMoveOnBoard(stage.board(), move),
 			oppositeColor(stage.activeColor()),
 			updatedCastlingRights,
-			(move.piece().type() == TYPE_PAWN || playedMove.capturedPiece())
+			(move.piece().type() == PieceType::Pawn || playedMove.capturedPiece())
 				? 0
 				: stage.halfMovesSinceLastCaptureOrPawnAdvance() + 1,
 			stage.fullMoveCounter()
-				+ ((stage.activeColor() == COLOR_BLACK)
+				+ ((stage.activeColor() == Color::Black)
 					? 1
 					: 0),
 			playedMove);

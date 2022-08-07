@@ -31,7 +31,7 @@ PieceMove::PieceMove(
 		const Piece& piece,
 		const Square& src,
 		const Square& dst,
-		const boost::optional<PieceType>& promotedType)
+		const std::optional<PieceType>& promotedType)
 	: mPiece(piece),
 	  mSrc(src),
 	  mDst(dst),
@@ -54,7 +54,7 @@ const Square& PieceMove::dst() const
 	return mDst;
 }
 
-const boost::optional<PieceType>& PieceMove::promoted() const
+const std::optional<PieceType>& PieceMove::promoted() const
 {
 	return mPromotedType;
 }

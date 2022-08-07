@@ -7,7 +7,7 @@ using namespace simplechess::details;
 
 std::set<PieceMove> simplechess::details::pawnMovesUnfiltered(
 		const Board& board,
-		const boost::optional<Square>& enPassantTarget,
+		const std::optional<Square>& enPassantTarget,
 		const Color color,
 		const Square& square)
 {
@@ -24,8 +24,8 @@ std::set<PieceMove> simplechess::details::pawnMovesUnfiltered(
 	//
 	// Note that a pawn might promote by reaching the last rank. In that case,
 	// all possible promotion moves should be reported.
-	const Piece pawn = {TYPE_PAWN, color};
-	const int step = pawn.color() == COLOR_WHITE
+	const Piece pawn = {PieceType::Pawn, color};
+	const int step = pawn.color() == Color::White
 		? 1
 		: -1;
 
@@ -38,8 +38,8 @@ std::set<PieceMove> simplechess::details::pawnMovesUnfiltered(
 		finalSquares.insert(oneAhead);
 	}
 
-	if (pawn.color() == COLOR_WHITE && square.rank() == 2
-			|| pawn.color() == COLOR_BLACK && square.rank() == 7)
+	if (pawn.color() == Color::White && square.rank() == 2
+			|| pawn.color() == Color::Black && square.rank() == 7)
 	{
 		// The pawn has never moved, might be able to move twice ahead
 		const Square twoAhead = Square::fromRankAndFile(
@@ -88,10 +88,10 @@ std::set<PieceMove> simplechess::details::pawnMovesUnfiltered(
 	}
 
 	static const std::set<PieceType> sPromotionableTypes = {
-		TYPE_ROOK,
-		TYPE_KNIGHT,
-		TYPE_BISHOP,
-		TYPE_QUEEN};
+		PieceType::Rook,
+		PieceType::Knight,
+		PieceType::Bishop,
+		PieceType::Queen};
 
 	std::set<PieceMove> result;
 	for (const Square& dst : finalSquares)

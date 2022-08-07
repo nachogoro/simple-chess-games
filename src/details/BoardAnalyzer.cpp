@@ -118,7 +118,7 @@ const Square& BoardAnalyzer::kingSquare(const Board& board, Color color)
 {
 	for (const auto& entry : board.occupiedSquares())
 	{
-		if (entry.second.type() == TYPE_KING
+		if (entry.second.type() == PieceType::King
 				&& entry.second.color() == color)
 		{
 			return entry.first;
@@ -134,7 +134,7 @@ Board BoardAnalyzer::makeMoveOnBoard(
 {
 	std::map<Square, Piece> positions = board.occupiedSquares();
 
-	if (move.piece().type() == TYPE_KING
+	if (move.piece().type() == PieceType::King
 			&& abs(move.dst().file() - move.src().file()) == 2)
 	{
 		// Castling
@@ -157,7 +157,7 @@ Board BoardAnalyzer::makeMoveOnBoard(
 		return BoardBuilder::build(positions);
 	}
 
-	if (move.piece().type() == TYPE_PAWN
+	if (move.piece().type() == PieceType::Pawn
 			&& move.src().file() != move.dst().file()
 			&& details::BoardAnalyzer::isEmpty(board, move.dst()))
 	{

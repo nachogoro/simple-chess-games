@@ -4,7 +4,7 @@
 #include <Game.h>
 #include <GameStage.h>
 
-#include <boost/optional.hpp>
+#include <optional>
 
 #include <set>
 
@@ -36,7 +36,7 @@ namespace simplechess
 				 * \return A reason why the game could be drawn, or an empty
 				 * value if no such reason is found.
 				 */
-				static boost::optional<DrawReason> reasonToDraw(
+				static std::optional<DrawReason> reasonToDraw(
 						const GameStage& stage,
 						const std::map<std::string, uint8_t>& previouslyReachedPositions);
 
@@ -65,7 +65,7 @@ namespace simplechess
 				 * \return A reason why the game could be drawn, or an empty
 				 * value if no such reason is found.
 				 */
-				static boost::optional<DrawReason> reasonToDraw(
+				static std::optional<DrawReason> reasonToDraw(
 						const GameStage& stage,
 						bool isInCheck,
 						const std::set<PieceMove> allAvailableMoves,

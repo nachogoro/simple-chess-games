@@ -6,7 +6,7 @@
 #include <Piece.h>
 #include <PlayedMove.h>
 
-#include <boost/optional.hpp>
+#include <optional>
 
 #include <string>
 
@@ -23,22 +23,22 @@ namespace simplechess
 		/**
 		 * \brief White side can castle kingside.
 		 */
-		CASTLING_RIGHT_WHITE_KINGSIDE  = (1 << 0),
+		WhiteKingSide  = (1 << 0),
 
 		/**
 		 * \brief White side can castle queenside.
 		 */
-		CASTLING_RIGHT_WHITE_QUEENSIDE = (1 << 1),
+		WhiteQueenSide = (1 << 1),
 
 		/**
 		 * \brief Black side can castle kingside.
 		 */
-		CASTLING_RIGHT_BLACK_KINGSIDE  = (1 << 2),
+		BlackKingSide  = (1 << 2),
 
 		/**
 		 * \brief Black side can castle queenside.
 		 */
-		CASTLING_RIGHT_BLACK_QUEENSIDE = (1 << 3)
+		BlackQueenSide = (1 << 3)
 	};
 
 	/**
@@ -62,7 +62,7 @@ namespace simplechess
 			 * \brief Returns the latest move played at this stage.
 			 * \return The latest move played at this stage.
 			 */
-			const boost::optional<PlayedMove>& move() const;
+			const std::optional<PlayedMove>& move() const;
 
 			/**
 			 * \brief Returns the \ref Color which is to move next.
@@ -129,7 +129,7 @@ namespace simplechess
 					uint16_t halfmoveClock,
 					uint16_t fullmoveClock,
 					const std::string& fen,
-					const boost::optional<PlayedMove>& move);
+					const std::optional<PlayedMove>& move);
 
 		private:
 			Board mBoard;
@@ -137,7 +137,7 @@ namespace simplechess
 			uint8_t mCastlingRights;
 			uint16_t mHalfmoveClock;
 			uint16_t mFullmoveClock;
-			boost::optional<PlayedMove> mMove;
+			std::optional<PlayedMove> mMove;
 			std::string mFen;
 	};
 }

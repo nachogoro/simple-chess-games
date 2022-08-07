@@ -7,7 +7,7 @@
 #include <Piece.h>
 #include <Square.h>
 
-#include <boost/optional.hpp>
+#include <optional>
 
 #include <stdexcept>
 #include <string>
@@ -57,7 +57,7 @@ namespace simplechess
 				 * \return The \ref Square which might be a target of en
 				 * passant.
 				 */
-				const boost::optional<Square>& enPassantTarget() const;
+				const std::optional<Square>& enPassantTarget() const;
 
 				/**
 				 * \brief Returns the \ref Color of the active player.
@@ -95,14 +95,14 @@ namespace simplechess
 						const Board& board,
 						Color activeColor,
 						uint8_t castlingRights,
-						const boost::optional<Square>& enPassantTarget,
+						const std::optional<Square>& enPassantTarget,
 						uint16_t halfmoveClock,
 						uint16_t mFullmoveClock);
 
 				Board mBoard;
 				Color mActiveColor;
 				uint8_t mCastlingRights;
-				boost::optional<Square> mEpTarget;
+				std::optional<Square> mEpTarget;
 				uint16_t mHalfmoveClock;
 				uint16_t mFullmoveClock;
 		};

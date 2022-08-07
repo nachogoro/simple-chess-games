@@ -6,10 +6,10 @@ namespace simplechess
 	/**
 	 * \brief The color of each side in a chess game.
 	 */
-	enum Color
+	enum class Color
 	{
-		COLOR_WHITE,
-		COLOR_BLACK
+		White,
+		Black
 	};
 
 	Color oppositeColor(Color c);

@@ -7,11 +7,11 @@ using namespace simplechess;
 
 namespace
 {
-	enum Difference
+	enum class Difference
 	{
-		PIECE_APPEARED,
-		PIECE_DISAPPEARED,
-		PIECE_REPLACED
+		PieceAppeared,
+		PieceDisappeared,
+		PieceReplaced
 	};
 
 	struct Effect
@@ -40,28 +40,28 @@ namespace
 
 		for (const auto& entry : after.occupiedSquares())
 		{
-			const boost::optional<Piece> inBefore = before.pieceAt(entry.first);
+			const std::optional<Piece> inBefore = before.pieceAt(entry.first);
 			if (!inBefore)
 			{
 				// This square was empty in before but not in after, a piece
 				// appeared
-				result.insert({entry.first, {entry.second, PIECE_APPEARED}});
+				result.insert({entry.first, {entry.second, Difference::PieceAppeared}});
 			}
 			else if (*inBefore != entry.second)
 			{
 				// The contents of this square have changed
-				result.insert({entry.first, {entry.second, PIECE_REPLACED}});
+				result.insert({entry.first, {entry.second, Difference::PieceReplaced}});
 			}
 		}
 
 		for (const auto& entry : before.occupiedSquares())
 		{
-			const boost::optional<Piece> inAfter = after.pieceAt(entry.first);
+			const std::optional<Piece> inAfter = after.pieceAt(entry.first);
 			if (!inAfter)
 			{
 				// This square was empty in before but not in after, a piece
 				// appeared
-				result.insert({entry.first, {entry.second, PIECE_DISAPPEARED}});
+				result.insert({entry.first, {entry.second, Difference::PieceDisappeared}});
 			}
 		}
 
@@ -88,11 +88,11 @@ namespace
 		const std::map<Square, Effect> expected =
 		{
 			{
-				src, {piece, PIECE_DISAPPEARED}
+				src, {piece, Difference::PieceDisappeared}
 			},
 
 			{
-				dst, {piece, PIECE_APPEARED}
+				dst, {piece, Difference::PieceAppeared}
 			}
 		};
 
@@ -119,11 +119,11 @@ namespace
 		const std::map<Square, Effect> expected =
 		{
 			{
-				src, {piece, PIECE_DISAPPEARED}
+				src, {piece, Difference::PieceDisappeared}
 			},
 
 			{
-				dst, {piece, PIECE_REPLACED}
+				dst, {piece, Difference::PieceReplaced}
 			}
 		};
 
@@ -138,8 +138,8 @@ namespace
 			const Square& rookSrc,
 			const Square& rookDst)
 	{
-		const Piece king = {TYPE_KING, castlingColor};
-		const Piece rook = {TYPE_ROOK, castlingColor};
+		const Piece king = {PieceType::King, castlingColor};
+		const Piece rook = {PieceType::Rook, castlingColor};
 
 		const Game afterPawnMove = GameManager().makeMove(
 				startingGame,
@@ -155,19 +155,19 @@ namespace
 		const std::map<Square, Effect> expected =
 		{
 			{
-				kingSrc, {king, PIECE_DISAPPEARED}
+				kingSrc, {king, Difference::PieceDisappeared}
 			},
 
 			{
-				kingDst, {king, PIECE_APPEARED}
+				kingDst, {king, Difference::PieceAppeared}
 			},
 
 			{
-				rookSrc, {rook, PIECE_DISAPPEARED}
+				rookSrc, {rook, Difference::PieceDisappeared}
 			},
 
 			{
-				rookDst, {rook, PIECE_APPEARED}
+				rookDst, {rook, Difference::PieceAppeared}
 			},
 		};
 
@@ -178,7 +178,7 @@ namespace
 TEST(MovesOnBoardTest, PawnOnceForward) {
 	regularNonCaptureTest(
 			GameManager().createNewGame(),
-			{TYPE_PAWN, COLOR_WHITE},
+			{PieceType::Pawn, Color::White},
 			Square::fromRankAndFile(2, 'f'),
 			Square::fromRankAndFile(3, 'f'));
 }
@@ -186,7 +186,7 @@ TEST(MovesOnBoardTest, PawnOnceForward) {
 TEST(MovesOnBoardTest, PawnTwiceForward) {
 	regularNonCaptureTest(
 			GameManager().createNewGame(),
-			{TYPE_PAWN, COLOR_WHITE},
+			{PieceType::Pawn, Color::White},
 			Square::fromRankAndFile(2, 'a'),
 			Square::fromRankAndFile(4, 'a'));
 }
@@ -195,7 +195,7 @@ TEST(MovesOnBoardTest, PawnCapture) {
 	regularCaptureTest(
 			GameManager().createGameFromFen(
 				"rn1qk2r/ppp2ppp/3p1n2/4p3/3P2b1/2N1P3/PPPBQPPP/R3KBNR b KQkq - 0 1"),
-			{TYPE_PAWN, COLOR_BLACK},
+			{PieceType::Pawn, Color::Black},
 			Square::fromRankAndFile(5, 'e'),
 			Square::fromRankAndFile(4, 'd'));
 }
@@ -208,12 +208,12 @@ TEST(MovesOnBoardTest, WhitePawnEnPassant) {
 	const Square dst = Square::fromRankAndFile(6, 'e');
 	const Square squareOfCapturedPawn = Square::fromRankAndFile(5, 'e');
 
-	const Piece piece = {TYPE_PAWN, COLOR_WHITE};
+	const Piece piece = {PieceType::Pawn, Color::White};
 
 	const Game afterPawnMove = GameManager().makeMove(
 			startingGame,
 			PieceMove::regularMove(
-				{TYPE_PAWN, COLOR_WHITE},
+				{PieceType::Pawn, Color::White},
 				src,
 				dst));
 
@@ -224,15 +224,15 @@ TEST(MovesOnBoardTest, WhitePawnEnPassant) {
 	const std::map<Square, Effect> expected =
 	{
 		{
-			src, {piece, PIECE_DISAPPEARED}
+			src, {piece, Difference::PieceDisappeared}
 		},
 
 		{
-			dst, {piece, PIECE_APPEARED}
+			dst, {piece, Difference::PieceAppeared}
 		},
 
 		{
-			squareOfCapturedPawn, {{TYPE_PAWN, COLOR_BLACK}, PIECE_DISAPPEARED}
+			squareOfCapturedPawn, {{PieceType::Pawn, Color::Black}, Difference::PieceDisappeared}
 		}
 	};
 
@@ -247,7 +247,7 @@ TEST(MovesOnBoardTest, BlackPawnEnPassant) {
 	const Square dst = Square::fromRankAndFile(3, 'h');
 	const Square squareOfCapturedPawn = Square::fromRankAndFile(4, 'h');
 
-	const Piece piece = {TYPE_PAWN, COLOR_BLACK};
+	const Piece piece = {PieceType::Pawn, Color::Black};
 
 	const Game afterPawnMove = GameManager().makeMove(
 			startingGame,
@@ -263,15 +263,15 @@ TEST(MovesOnBoardTest, BlackPawnEnPassant) {
 	const std::map<Square, Effect> expected =
 	{
 		{
-			src, {piece, PIECE_DISAPPEARED}
+			src, {piece, Difference::PieceDisappeared}
 		},
 
 		{
-			dst, {piece, PIECE_APPEARED}
+			dst, {piece, Difference::PieceAppeared}
 		},
 
 		{
-			squareOfCapturedPawn, {{TYPE_PAWN, COLOR_WHITE}, PIECE_DISAPPEARED}
+			squareOfCapturedPawn, {{PieceType::Pawn, Color::White}, Difference::PieceDisappeared}
 		}
 	};
 
@@ -285,8 +285,8 @@ TEST(MovesOnBoardTest, PawnPromotionNoCapture) {
 	const Square src = Square::fromRankAndFile(2, 'g');
 	const Square dst = Square::fromRankAndFile(1, 'g');
 
-	const Piece piece = {TYPE_PAWN, COLOR_BLACK};
-	const Piece promoted = {TYPE_QUEEN, COLOR_BLACK};
+	const Piece piece = {PieceType::Pawn, Color::Black};
+	const Piece promoted = {PieceType::Queen, Color::Black};
 
 	const Game afterPawnMove = GameManager().makeMove(
 			startingGame,
@@ -303,11 +303,11 @@ TEST(MovesOnBoardTest, PawnPromotionNoCapture) {
 	const std::map<Square, Effect> expected =
 	{
 		{
-			src, {piece, PIECE_DISAPPEARED}
+			src, {piece, Difference::PieceDisappeared}
 		},
 
 		{
-			dst, {promoted, PIECE_APPEARED}
+			dst, {promoted, Difference::PieceAppeared}
 		}
 	};
 
@@ -321,8 +321,8 @@ TEST(MovesOnBoardTest, PawnPromotionCapture) {
 	const Square src = Square::fromRankAndFile(7, 'b');
 	const Square dst = Square::fromRankAndFile(8, 'c');
 
-	const Piece piece = {TYPE_PAWN, COLOR_WHITE};
-	const Piece promoted = {TYPE_QUEEN, COLOR_WHITE};
+	const Piece piece = {PieceType::Pawn, Color::White};
+	const Piece promoted = {PieceType::Queen, Color::White};
 
 	const Game afterPawnMove = GameManager().makeMove(
 			startingGame,
@@ -339,11 +339,11 @@ TEST(MovesOnBoardTest, PawnPromotionCapture) {
 	const std::map<Square, Effect> expected =
 	{
 		{
-			src, {piece, PIECE_DISAPPEARED}
+			src, {piece, Difference::PieceDisappeared}
 		},
 
 		{
-			dst, {promoted, PIECE_REPLACED}
+			dst, {promoted, Difference::PieceReplaced}
 		}
 	};
 
@@ -353,7 +353,7 @@ TEST(MovesOnBoardTest, PawnPromotionCapture) {
 TEST(MovesOnBoardTest, KnightNoCapture) {
 	regularNonCaptureTest(GameManager().createGameFromFen(
 				"8/4k3/8/2n5/6pP/3B4/1K6/8 b - h3 0 1"),
-			{TYPE_KNIGHT, COLOR_BLACK},
+			{PieceType::Knight, Color::Black},
 			Square::fromRankAndFile(5, 'c'),
 			Square::fromRankAndFile(3, 'b'));
 }
@@ -361,7 +361,7 @@ TEST(MovesOnBoardTest, KnightNoCapture) {
 TEST(MovesOnBoardTest, KnightCapture) {
 	regularCaptureTest(GameManager().createGameFromFen(
 				"8/4k3/8/2n5/6pP/3B4/1K6/8 b - h3 0 1"),
-			{TYPE_KNIGHT, COLOR_BLACK},
+			{PieceType::Knight, Color::Black},
 			Square::fromRankAndFile(5, 'c'),
 			Square::fromRankAndFile(3, 'd'));
 }
@@ -369,7 +369,7 @@ TEST(MovesOnBoardTest, KnightCapture) {
 TEST(MovesOnBoardTest, BishopNoCapture) {
 	regularNonCaptureTest(GameManager().createGameFromFen(
 				"8/4k3/6p1/2n5/7P/3B4/1K6/8 w - - 0 1"),
-			{TYPE_BISHOP, COLOR_WHITE},
+			{PieceType::Bishop, Color::White},
 			Square::fromRankAndFile(3, 'd'),
 			Square::fromRankAndFile(1, 'f'));
 }
@@ -377,7 +377,7 @@ TEST(MovesOnBoardTest, BishopNoCapture) {
 TEST(MovesOnBoardTest, BishopCapture) {
 	regularCaptureTest(GameManager().createGameFromFen(
 				"8/4k3/6p1/2n5/7P/3B4/1K6/8 w - - 0 1"),
-			{TYPE_BISHOP, COLOR_WHITE},
+			{PieceType::Bishop, Color::White},
 			Square::fromRankAndFile(3, 'd'),
 			Square::fromRankAndFile(6, 'g'));
 }
@@ -385,7 +385,7 @@ TEST(MovesOnBoardTest, BishopCapture) {
 TEST(MovesOnBoardTest, RookNoCapture) {
 	regularNonCaptureTest(GameManager().createGameFromFen(
 				"8/4k3/6p1/2n5/7P/2RB4/1K6/8 w - - 0 1"),
-			{TYPE_ROOK, COLOR_WHITE},
+			{PieceType::Rook, Color::White},
 			Square::fromRankAndFile(3, 'c'),
 			Square::fromRankAndFile(4, 'c'));
 }
@@ -393,7 +393,7 @@ TEST(MovesOnBoardTest, RookNoCapture) {
 TEST(MovesOnBoardTest, RookCapture) {
 	regularCaptureTest(GameManager().createGameFromFen(
 				"8/4k3/6p1/2n5/7P/2RB4/1K6/8 w - - 0 1"),
-			{TYPE_ROOK, COLOR_WHITE},
+			{PieceType::Rook, Color::White},
 			Square::fromRankAndFile(3, 'c'),
 			Square::fromRankAndFile(5, 'c'));
 }
@@ -401,7 +401,7 @@ TEST(MovesOnBoardTest, RookCapture) {
 TEST(MovesOnBoardTest, QueenNoCapture) {
 	regularNonCaptureTest(GameManager().createGameFromFen(
 				"8/4k3/6p1/2q5/7P/2RQ4/1K6/8 b - - 0 1"),
-			{TYPE_QUEEN, COLOR_BLACK},
+			{PieceType::Queen, Color::Black},
 			Square::fromRankAndFile(5, 'c'),
 			Square::fromRankAndFile(2, 'f'));
 }
@@ -409,7 +409,7 @@ TEST(MovesOnBoardTest, QueenNoCapture) {
 TEST(MovesOnBoardTest, QueenCapture) {
 	regularCaptureTest(GameManager().createGameFromFen(
 				"8/4k3/6p1/2q5/7P/2RQ4/1K6/8 b - - 0 1"),
-			{TYPE_QUEEN, COLOR_BLACK},
+			{PieceType::Queen, Color::Black},
 			Square::fromRankAndFile(5, 'c'),
 			Square::fromRankAndFile(3, 'c'));
 }
@@ -417,7 +417,7 @@ TEST(MovesOnBoardTest, QueenCapture) {
 TEST(MovesOnBoardTest, KingNoCapture) {
 	regularNonCaptureTest(GameManager().createGameFromFen(
 				"2k5/1P6/8/8/8/2RQ4/1K4p1/8 b - - 0 1"),
-			{TYPE_KING, COLOR_BLACK},
+			{PieceType::King, Color::Black},
 			Square::fromRankAndFile(8, 'c'),
 			Square::fromRankAndFile(8, 'b'));
 }
@@ -425,7 +425,7 @@ TEST(MovesOnBoardTest, KingNoCapture) {
 TEST(MovesOnBoardTest, KingCapture) {
 	regularCaptureTest(GameManager().createGameFromFen(
 				"2k5/1P6/8/8/8/2RQ4/1K4p1/8 b - - 0 1"),
-			{TYPE_KING, COLOR_BLACK},
+			{PieceType::King, Color::Black},
 			Square::fromRankAndFile(8, 'c'),
 			Square::fromRankAndFile(7, 'b'));
 }
@@ -434,7 +434,7 @@ TEST(MovesOnBoardTest, KingsideCastlingWhite) {
 	castlingTest(
 			GameManager().createGameFromFen(
 				"r2qkbnr/ppp2ppp/2np4/1B2p3/6b1/4PN2/PPPP1PPP/RNBQK2R w KQkq - 0 1"),
-			COLOR_WHITE,
+			Color::White,
 			Square::fromRankAndFile(1, 'e'),
 			Square::fromRankAndFile(1, 'g'),
 			Square::fromRankAndFile(1, 'h'),
@@ -445,7 +445,7 @@ TEST(MovesOnBoardTest, QueensideCastlingWhite) {
 	castlingTest(
 			GameManager().createGameFromFen(
 				"r2qkbnr/ppp2ppp/2np4/4p3/6b1/2NPP3/PPPBQPPP/R3KBNR w KQkq - 0 1"),
-			COLOR_WHITE,
+			Color::White,
 			Square::fromRankAndFile(1, 'e'),
 			Square::fromRankAndFile(1, 'c'),
 			Square::fromRankAndFile(1, 'a'),
@@ -456,7 +456,7 @@ TEST(MovesOnBoardTest, KingsideCastlingBlack) {
 	castlingTest(
 			GameManager().createGameFromFen(
 				"rn1qk2r/ppp2ppp/3p1n2/4p3/6b1/2NPP3/PPPBQPPP/R3KBNR b KQkq - 0 1"),
-			COLOR_BLACK,
+			Color::Black,
 			Square::fromRankAndFile(8, 'e'),
 			Square::fromRankAndFile(8, 'g'),
 			Square::fromRankAndFile(8, 'h'),
@@ -467,7 +467,7 @@ TEST(MovesOnBoardTest, QueensideCastlingBlack) {
 	castlingTest(
 			GameManager().createGameFromFen(
 				"r3kbnr/ppp2ppp/2np4/4p1q1/6b1/2NPP3/PPPBQPPP/R3KBNR b KQkq - 0 1"),
-			COLOR_BLACK,
+			Color::Black,
 			Square::fromRankAndFile(8, 'e'),
 			Square::fromRankAndFile(8, 'c'),
 			Square::fromRankAndFile(8, 'a'),

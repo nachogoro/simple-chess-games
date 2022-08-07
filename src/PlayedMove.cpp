@@ -10,7 +10,7 @@ using namespace simplechess;
 
 PlayedMove::PlayedMove(
 		const PieceMove& pieceMove,
-		const boost::optional<Piece>& capturedPiece,
+		const std::optional<Piece>& capturedPiece,
 		const bool drawOffered,
 		const CheckType checkType,
 		const std::string& algebraicNotation)
@@ -32,7 +32,7 @@ const PieceMove& PlayedMove::pieceMove() const
 	return mPieceMove;
 }
 
-const boost::optional<Piece>& PlayedMove::capturedPiece() const
+const std::optional<Piece>& PlayedMove::capturedPiece() const
 {
 	return mCapturedPiece;
 }

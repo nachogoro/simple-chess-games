@@ -8,36 +8,37 @@ namespace simplechess
 	/**
 	 * \brief The type of a chess piece.
 	 */
-	enum PieceType{
+	enum class PieceType
+	{
 		/**
 		 * \brief Pawn.
 		 */
-		TYPE_PAWN,
+		Pawn,
 
 		/**
 		 * \brief Rook.
 		 */
-		TYPE_ROOK,
+		Rook,
 
 		/**
 		 * \brief Knight.
 		 */
-		TYPE_KNIGHT,
+		Knight,
 
 		/**
 		 * \brief Bishop.
 		 */
-		TYPE_BISHOP,
+		Bishop,
 
 		/**
 		 * \brief Queen.
 		 */
-		TYPE_QUEEN,
+		Queen,
 
 		/**
 		 * \brief King.
 		 */
-		TYPE_KING
+		King
 	};
 
 	/**

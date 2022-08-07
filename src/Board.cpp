@@ -8,13 +8,13 @@ Board::Board(const std::map<Square, Piece>& piecePositions)
 {
 }
 
-boost::optional<Piece> Board::pieceAt(const Square& square) const
+std::optional<Piece> Board::pieceAt(const Square& square) const
 {
 	const std::map<Square, Piece>::const_iterator it
 		= mPiecePositions.find(square);
 	if (it == mPiecePositions.end())
 	{
-		return boost::none;
+		return std::nullopt;
 	}
 	else
 	{

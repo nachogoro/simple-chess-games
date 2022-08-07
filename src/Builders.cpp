@@ -14,7 +14,7 @@ GameStage GameStageBuilder::build(
 		const uint8_t castlingRights,
 		const uint16_t halfmoveClock,
 		const uint16_t fullmoveClock,
-		const boost::optional<PlayedMove>& move)
+		const std::optional<PlayedMove>& move)
 {
 	const std::string fen = details::FenUtils::generateFen(
 			board,
@@ -22,7 +22,7 @@ GameStage GameStageBuilder::build(
 			castlingRights,
 			move
 				? details::MoveValidator::enPassantTarget({move->pieceMove()})
-				: boost::none,
+				: std::nullopt,
 			halfmoveClock,
 			fullmoveClock);
 
@@ -38,10 +38,10 @@ GameStage GameStageBuilder::build(
 
 Game GameBuilder::build(
 		const GameState gameState,
-		const boost::optional<DrawReason>& drawReason,
+		const std::optional<DrawReason>& drawReason,
 		const std::vector<GameStage>& history,
 		const std::set<PieceMove>& allAvailableMoves,
-		const boost::optional<DrawReason>& reasonToClaimDraw)
+		const std::optional<DrawReason>& reasonToClaimDraw)
 {
 	return {
 		gameState,
@@ -76,7 +76,7 @@ PlayedMove PlayedMoveBuilder::build(
 
 	if (!isInCheck)
 	{
-		checkType = NO_CHECK;
+		checkType = CheckType::NoCheck;
 	}
 	else
 	{
@@ -88,8 +88,8 @@ PlayedMove PlayedMoveBuilder::build(
 					oppositeColor(move.piece().color()));
 
 		checkType = (availableResponses.size() == 0)
-			? CHECKMATE
-			: CHECK;
+			? CheckType::CheckMate
+			: CheckType::Check;
 	}
 
 	return PlayedMove(

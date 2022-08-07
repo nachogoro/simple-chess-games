@@ -12,7 +12,7 @@ TEST(FenGenerationTest, BlackMoveNoCapture) {
 	const Game result = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_QUEEN, COLOR_BLACK},
+				{PieceType::Queen, Color::Black},
 				Square::fromRankAndFile(8, 'd'),
 				Square::fromRankAndFile(6, 'f')));
 
@@ -28,7 +28,7 @@ TEST(FenGenerationTest, BlackMoveWithCapture) {
 	const Game result = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_QUEEN, COLOR_BLACK},
+				{PieceType::Queen, Color::Black},
 				Square::fromRankAndFile(4, 'h'),
 				Square::fromRankAndFile(6, 'h')));
 
@@ -44,10 +44,10 @@ TEST(FenGenerationTest, BlackPawnMove) {
 	const Game result = gameMgr.makeMove(
 			game,
 			PieceMove::pawnPromotion(
-				{TYPE_PAWN, COLOR_BLACK},
+				{PieceType::Pawn, Color::Black},
 				Square::fromRankAndFile(2, 'a'),
 				Square::fromRankAndFile(1, 'a'),
-				TYPE_QUEEN));
+				PieceType::Queen));
 
 	EXPECT_EQ(result.currentStage().fen(),
 			"8/1B1K4/7N/8/1RnP1P1q/4P3/4k3/q7 w - - 0 27");
@@ -61,7 +61,7 @@ TEST(FenGenerationTest, WhiteMoveNoCapture) {
 	const Game result = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_KNIGHT, COLOR_WHITE},
+				{PieceType::Knight, Color::White},
 				Square::fromRankAndFile(1, 'b'),
 				Square::fromRankAndFile(3, 'c')));
 
@@ -77,7 +77,7 @@ TEST(FenGenerationTest, WhiteMoveWithCapture) {
 	const Game result = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_ROOK, COLOR_WHITE},
+				{PieceType::Rook, Color::White},
 				Square::fromRankAndFile(4, 'b'),
 				Square::fromRankAndFile(4, 'c')));
 
@@ -93,7 +93,7 @@ TEST(FenGenerationTest, WhitePawnMove) {
 	const Game result = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_PAWN, COLOR_WHITE},
+				{PieceType::Pawn, Color::White},
 				Square::fromRankAndFile(4, 'f'),
 				Square::fromRankAndFile(5, 'f')));
 
@@ -109,7 +109,7 @@ TEST(FenGenerationTest, EnPassantTaken) {
 	const Game result = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_PAWN, COLOR_BLACK},
+				{PieceType::Pawn, Color::Black},
 				Square::fromRankAndFile(4, 'e'),
 				Square::fromRankAndFile(3, 'd')));
 
@@ -125,7 +125,7 @@ TEST(FenGenerationTest, EnPassantIgnored) {
 	const Game result = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_PAWN, COLOR_BLACK},
+				{PieceType::Pawn, Color::Black},
 				Square::fromRankAndFile(4, 'e'),
 				Square::fromRankAndFile(3, 'e')));
 
@@ -141,7 +141,7 @@ TEST(FenGenerationTest, EnPassantIsCreated) {
 	const Game result = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_PAWN, COLOR_WHITE},
+				{PieceType::Pawn, Color::White},
 				Square::fromRankAndFile(2, 'f'),
 				Square::fromRankAndFile(4, 'f')));
 
@@ -149,7 +149,7 @@ TEST(FenGenerationTest, EnPassantIsCreated) {
 			"rnbqkbnr/pppp1ppp/8/4p3/5P2/4P3/PPPP2PP/RNBQKBNR b KQkq f3 0 2");
 }
 
-TEST(FenGenerationTest, WhiteKingsideCastling) {
+TEST(FenGenerationTest, WhiteKingSideCastling) {
 	const GameManager gameMgr;
 	const Game game = gameMgr.createGameFromFen(
 			"rn1qkbnr/pp2pppp/2p5/1B1p4/4P1b1/5N2/PPPP1PPP/RNBQK2R w KQkq - 1 6");
@@ -157,7 +157,7 @@ TEST(FenGenerationTest, WhiteKingsideCastling) {
 	const Game result = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_KING, COLOR_WHITE},
+				{PieceType::King, Color::White},
 				Square::fromRankAndFile(1, 'e'),
 				Square::fromRankAndFile(1, 'g')));
 
@@ -173,7 +173,7 @@ TEST(FenGenerationTest, WhiteQueensideCastling) {
 	const Game result = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_KING, COLOR_WHITE},
+				{PieceType::King, Color::White},
 				Square::fromRankAndFile(1, 'e'),
 				Square::fromRankAndFile(1, 'c')));
 
@@ -189,7 +189,7 @@ TEST(FenGenerationTest, BlackKingsideCastling) {
 	const Game result = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_KING, COLOR_BLACK},
+				{PieceType::King, Color::Black},
 				Square::fromRankAndFile(8, 'e'),
 				Square::fromRankAndFile(8, 'g')));
 
@@ -205,7 +205,7 @@ TEST(FenGenerationTest, BlackQueensideCastling) {
 	const Game result = gameMgr.makeMove(
 			game,
 			PieceMove::regularMove(
-				{TYPE_KING, COLOR_BLACK},
+				{PieceType::King, Color::Black},
 				Square::fromRankAndFile(8, 'e'),
 				Square::fromRankAndFile(8, 'c')));
 

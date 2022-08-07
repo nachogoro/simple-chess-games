@@ -104,11 +104,11 @@ namespace internal
 	{
 		if (str == "w")
 		{
-			return COLOR_WHITE;
+			return Color::White;
 		}
 		else if (str == "b")
 		{
-			return COLOR_BLACK;
+			return Color::Black;
 		}
 
 		throw std::invalid_argument(
@@ -137,19 +137,19 @@ namespace internal
 			uint8_t oldMask = mask;
 			if (c == 'K')
 			{
-				mask |= CASTLING_RIGHT_WHITE_KINGSIDE;
+				mask |= CastlingRight::WhiteKingSide;
 			}
 			else if (c == 'Q')
 			{
-				mask |= CASTLING_RIGHT_WHITE_QUEENSIDE;
+				mask |= CastlingRight::WhiteQueenSide;
 			}
 			else if (c == 'k')
 			{
-				mask |= CASTLING_RIGHT_BLACK_KINGSIDE;
+				mask |= CastlingRight::BlackKingSide;
 			}
 			else if (c == 'q')
 			{
-				mask |= CASTLING_RIGHT_BLACK_QUEENSIDE;
+				mask |= CastlingRight::BlackQueenSide;
 			}
 
 			if (oldMask == mask)
@@ -165,7 +165,7 @@ namespace internal
 		return mask;
 	}
 
-	boost::optional<Square> parseEnPassantTarget(const std::string& str)
+	std::optional<Square> parseEnPassantTarget(const std::string& str)
 	{
 		if (str == "-")
 		{
@@ -193,7 +193,7 @@ FenParser::FenParser(
 		const Board& board,
 		const Color activeColor,
 		const uint8_t castlingRights,
-		const boost::optional<Square>& enPassantTarget,
+		const std::optional<Square>& enPassantTarget,
 		const uint16_t halfmoveClock,
 		const uint16_t fullmoveClock)
 	: mBoard(board),
@@ -218,15 +218,15 @@ FenParser FenParser::parse(const std::string& fen)
 	const Board board = internal::parsePiecePlacement(tokens[0]);
 	const Color activeColor = internal::parseColor(tokens[1]);
 	const uint8_t castlingRights = internal::parseCastlingRights(tokens[2]);
-	const boost::optional<Square> epTarget = internal::parseEnPassantTarget(tokens[3]);
+	const std::optional<Square> epTarget = internal::parseEnPassantTarget(tokens[3]);
 	const uint16_t halfmoveClock = internal::parseMoveClock(tokens[4]);
 	const uint16_t fullmoveClock = internal::parseMoveClock(tokens[5]);
 
 	if (epTarget
 			&& ((epTarget->rank() == 3
-					&& board.pieceAt(Square::fromRankAndFile(4, epTarget->file())) != boost::optional<Piece>({TYPE_PAWN, COLOR_WHITE}))
+					&& board.pieceAt(Square::fromRankAndFile(4, epTarget->file())) != std::optional<Piece>({PieceType::Pawn, Color::White}))
 				|| (epTarget->rank() == 6
-					&& board.pieceAt(Square::fromRankAndFile(5, epTarget->file())) != boost::optional<Piece>({TYPE_PAWN, COLOR_BLACK}))))
+					&& board.pieceAt(Square::fromRankAndFile(5, epTarget->file())) != std::optional<Piece>({PieceType::Pawn, Color::Black}))))
 	{
 		throw std::invalid_argument(
 				"Found inconsistency between piece placement and "
@@ -248,7 +248,7 @@ const Board& FenParser::board() const
 	return mBoard;
 }
 
-const boost::optional<Square>& FenParser::enPassantTarget() const
+const std::optional<Square>& FenParser::enPassantTarget() const
 {
 	return mEpTarget;
 }

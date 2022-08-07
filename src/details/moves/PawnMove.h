@@ -5,7 +5,7 @@
 #include <PieceMove.h>
 #include <Square.h>
 
-#include <boost/optional.hpp>
+#include <optional>
 
 #include <set>
 
@@ -16,7 +16,7 @@ namespace simplechess
 		// TODO make attacking-only version (no forward moves)
 		std::set<PieceMove> pawnMovesUnfiltered(
 				const Board& board,
-				const boost::optional<Square>& enPassantTarget,
+				const std::optional<Square>& enPassantTarget,
 				Color color,
 				const Square& square);
 	}

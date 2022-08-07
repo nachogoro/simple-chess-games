@@ -4,7 +4,7 @@
 #include <Piece.h>
 #include <Square.h>
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <string>
 
 namespace simplechess
@@ -54,10 +54,10 @@ namespace simplechess
 			 * \throws std::invalid_argument in the following
 			 * circumstances:
 			 * - \p piece is not a pawn.
-			 * - \p promotedType is not one of \ref TYPE_ROOK, \ref
-			 *   TYPE_BISHOP, \ref TYPE_KNIGHT or \ref TYPE_QUEEN.
+			 * - \p promotedType is not one of \ref Rook, \ref
+			 *   Bishop, \ref Knight or \ref Queen.
 			 *
-			 * \param piece Piece being moved (must be of type \ref TYPE_PAWN).
+			 * \param piece Piece being moved (must be of type \ref Pawn).
 			 * \param src Original square of the pawn.
 			 * \param dst Final square of the pawn.
 			 * \param promotedType The new type of the promoted pawn.
@@ -104,7 +104,7 @@ namespace simplechess
 			 * \return The piece type to which the pawn being moved is promoted
 			 * or an empty optional if no pawn is being promoted in this move.
 			 */
-			const boost::optional<PieceType>& promoted() const;
+			const std::optional<PieceType>& promoted() const;
 
 			/**
 			 * \brief Less-than comparison operator.
@@ -140,12 +140,12 @@ namespace simplechess
 					const Piece& piece,
 					const Square& src,
 					const Square& dst,
-					const boost::optional<PieceType>& promotedType);
+					const std::optional<PieceType>& promotedType);
 
 			Piece mPiece;
 			Square mSrc;
 			Square mDst;
-			boost::optional<PieceType> mPromotedType;
+			std::optional<PieceType> mPromotedType;
 	};
 }
 

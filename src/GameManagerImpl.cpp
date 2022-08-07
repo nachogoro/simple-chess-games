@@ -47,24 +47,24 @@ Game GameManagerImpl::createGameFromFen(const std::string& fen) const
 	const details::FenParser parsedState = details::FenParser::parse(fen);
 
 	// We can infer the prior move if there is an en passant target
-	const boost::optional<Square> epSquare = parsedState.enPassantTarget();
-	boost::optional<PieceMove> lastMove;
+	const std::optional<Square> epSquare = parsedState.enPassantTarget();
+	std::optional<PieceMove> lastMove;
 	if (epSquare)
 	{
 		const Piece pawn(
-				TYPE_PAWN,
+				PieceType::Pawn,
 				(epSquare->rank() == 3)
-					? COLOR_WHITE
-					: COLOR_BLACK);
+					? Color::White
+					: Color::Black);
 
 		const Square src = Square::fromRankAndFile(
-				((pawn.color() == COLOR_WHITE)
+				((pawn.color() == Color::White)
 					? 2
 					: 7),
 				epSquare->file());
 
 		const Square dst = Square::fromRankAndFile(
-				((pawn.color() == COLOR_WHITE)
+				((pawn.color() == Color::White)
 					? 4
 					: 5),
 				epSquare->file());
@@ -108,7 +108,7 @@ Game GameManagerImpl::createGameFromFen(const std::string& fen) const
 					lastMove->src()));
 
 	const uint16_t fullMoveCounterDecrease
-		= (parsedState.activeColor() == COLOR_WHITE)
+		= (parsedState.activeColor() == Color::White)
 			? 1
 			: 0;
 
@@ -139,7 +139,7 @@ Game GameManagerImpl::makeMove(
 		const PieceMove& move,
 		bool offerDraw=false) const
 {
-	if (game.gameState() != GAME_STATE_PLAYING)
+	if (game.gameState() != GameState::Playing)
 	{
 		throw IllegalStateException("Attempted to make a move in finished game");
 	}
@@ -175,13 +175,13 @@ Game GameManagerImpl::makeMove(
 
 Game GameManagerImpl::claimDraw(const Game& game) const
 {
-	if (game.gameState() != GAME_STATE_PLAYING)
+	if (game.gameState() != GameState::Playing)
 	{
 		throw IllegalStateException(
 				"Draws cannot be claimed in finished games");
 	}
 
-	const boost::optional<DrawReason> reason = game.reasonToClaimDraw();
+	const std::optional<DrawReason> reason = game.reasonToClaimDraw();
 
 	if (!reason)
 	{
@@ -190,7 +190,7 @@ Game GameManagerImpl::claimDraw(const Game& game) const
 	}
 
 	return GameBuilder::build(
-			GAME_STATE_DRAWN,
+			GameState::Drawn,
 			reason,
 			game.history(),
 			{},
@@ -199,15 +199,15 @@ Game GameManagerImpl::claimDraw(const Game& game) const
 
 Game GameManagerImpl::resign(const Game& game, Color resigningPlayer) const
 {
-	if (game.gameState() != GAME_STATE_PLAYING)
+	if (game.gameState() != GameState::Playing)
 	{
 		throw IllegalStateException("Cannot resign finished games");
 	}
 
 	return GameBuilder::build(
-			(resigningPlayer == COLOR_WHITE)
-				? GAME_STATE_BLACK_WON
-				: GAME_STATE_WHITE_WON,
+			(resigningPlayer == Color::White)
+				? GameState::BlackWon
+				: GameState::WhiteWon,
 			{},
 			game.history(),
 			{},

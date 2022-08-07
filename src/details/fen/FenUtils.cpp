@@ -23,18 +23,18 @@ namespace internal
 boost::bimap<char, Piece> FenUtils::sPieceMap
 	= internal::makeBimap<char, Piece>(
 			{
-				{'P', {TYPE_PAWN, COLOR_WHITE}},
-				{'R', {TYPE_ROOK, COLOR_WHITE}},
-				{'N', {TYPE_KNIGHT, COLOR_WHITE}},
-				{'B', {TYPE_BISHOP, COLOR_WHITE}},
-				{'Q', {TYPE_QUEEN, COLOR_WHITE}},
-				{'K', {TYPE_KING, COLOR_WHITE}},
-				{'p', {TYPE_PAWN, COLOR_BLACK}},
-				{'r', {TYPE_ROOK, COLOR_BLACK}},
-				{'n', {TYPE_KNIGHT, COLOR_BLACK}},
-				{'b', {TYPE_BISHOP, COLOR_BLACK}},
-				{'q', {TYPE_QUEEN, COLOR_BLACK}},
-				{'k', {TYPE_KING, COLOR_BLACK}},
+				{'P', {PieceType::Pawn,   Color::White}},
+				{'R', {PieceType::Rook,   Color::White}},
+				{'N', {PieceType::Knight, Color::White}},
+				{'B', {PieceType::Bishop, Color::White}},
+				{'Q', {PieceType::Queen,  Color::White}},
+				{'K', {PieceType::King,   Color::White}},
+				{'p', {PieceType::Pawn,   Color::Black}},
+				{'r', {PieceType::Rook,   Color::Black}},
+				{'n', {PieceType::Knight, Color::Black}},
+				{'b', {PieceType::Bishop, Color::Black}},
+				{'q', {PieceType::Queen,  Color::Black}},
+				{'k', {PieceType::King,   Color::Black}},
 			});
 
 char FenUtils::pieceToString(const Piece& piece)
@@ -78,7 +78,7 @@ std::string FenUtils::generateFen(
 		const Board& board,
 		const Color activeColor,
 		const uint8_t castlingRights,
-		const boost::optional<Square>& epTarget,
+		const std::optional<Square>& epTarget,
 		const uint16_t halfmoveClock,
 		const uint16_t fullmoveClock)
 {
@@ -107,7 +107,7 @@ std::string FenUtils::generateFen(
 		{
 			const Square square = Square::fromRankAndFile(rank, file);
 
-			const boost::optional<Piece> piece = board.pieceAt(square);
+			const std::optional<Piece> piece = board.pieceAt(square);
 
 			if (!piece)
 			{
@@ -140,7 +140,7 @@ std::string FenUtils::generateFen(
 
 	// 2. Active color. "w" means White moves next, "b" means Black moves next.
 	ss << " ";
-	ss << ((activeColor == COLOR_WHITE)
+	ss << ((activeColor == Color::White)
 		? "w"
 		: "b");
 
@@ -156,22 +156,22 @@ std::string FenUtils::generateFen(
 	}
 	else
 	{
-		if ((castlingRights & CASTLING_RIGHT_WHITE_KINGSIDE) != 0)
+		if ((castlingRights & CastlingRight::WhiteKingSide) != 0)
 		{
 			ss << "K";
 		}
 
-		if ((castlingRights & CASTLING_RIGHT_WHITE_QUEENSIDE) != 0)
+		if ((castlingRights & CastlingRight::WhiteQueenSide) != 0)
 		{
 			ss << "Q";
 		}
 
-		if ((castlingRights & CASTLING_RIGHT_BLACK_KINGSIDE) != 0)
+		if ((castlingRights & CastlingRight::BlackKingSide) != 0)
 		{
 			ss << "k";
 		}
 
-		if ((castlingRights & CASTLING_RIGHT_BLACK_QUEENSIDE) != 0)
+		if ((castlingRights & CastlingRight::BlackQueenSide) != 0)
 		{
 			ss << "q";
 		}
