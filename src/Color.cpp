@@ -1,4 +1,4 @@
-#include "Color.h"
+#include <simplechess/Color.h>
 
 using namespace simplechess;
 

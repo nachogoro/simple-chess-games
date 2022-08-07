@@ -1,4 +1,4 @@
-#include "Piece.h"
+#include <simplechess/Piece.h>
 
 using namespace simplechess;
 

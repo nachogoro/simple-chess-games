@@ -1,8 +1,8 @@
 #ifndef DRAW_EVALUATOR_H_B4AF96CF_8DE1_4557_96AD_BF906AE79F49
 #define DRAW_EVALUATOR_H_B4AF96CF_8DE1_4557_96AD_BF906AE79F49
 
-#include <Game.h>
-#include <GameStage.h>
+#include <simplechess/Game.h>
+#include <simplechess/GameStage.h>
 
 #include <optional>
 

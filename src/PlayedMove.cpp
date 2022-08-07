@@ -1,4 +1,4 @@
-#include "PlayedMove.h"
+#include <simplechess/PlayedMove.h>
 
 #include <details/BoardAnalyzer.h>
 #include <details/MoveValidator.h>

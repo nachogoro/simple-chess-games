@@ -1,7 +1,7 @@
 #ifndef GAME_STATE_DETECTOR_H_19318747_4966_4AD2_A8A4_173A832713DD
 #define GAME_STATE_DETECTOR_H_19318747_4966_4AD2_A8A4_173A832713DD
 
-#include <Game.h>
+#include <simplechess/Game.h>
 #include <map>
 
 namespace simplechess

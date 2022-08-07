@@ -1,4 +1,4 @@
-#include "Exceptions.h"
+#include <simplechess/Exceptions.h>
 
 using namespace simplechess;
 

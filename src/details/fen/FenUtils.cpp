@@ -1,6 +1,6 @@
 #include "FenUtils.h"
 
-#include <GameStage.h>
+#include <simplechess/GameStage.h>
 
 #include <boost/algorithm/string.hpp>
 

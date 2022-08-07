@@ -1,9 +1,9 @@
 #ifndef KING_MOVE_H_3C6B8719_3428_462A_9B07_106DEC6038D8
 #define KING_MOVE_H_3C6B8719_3428_462A_9B07_106DEC6038D8
 
-#include <Board.h>
-#include <PieceMove.h>
-#include <Square.h>
+#include <simplechess/Board.h>
+#include <simplechess/PieceMove.h>
+#include <simplechess/Square.h>
 
 #include <set>
 

@@ -1,9 +1,9 @@
 #ifndef GAME_MANAGER_H_83ECD5A4_C290_4A1B_8127_33357F92414E
 #define GAME_MANAGER_H_83ECD5A4_C290_4A1B_8127_33357F92414E
 
-#include <Color.h>
-#include <Game.h>
-#include <PieceMove.h>
+#include <simplechess/Color.h>
+#include <simplechess/Game.h>
+#include <simplechess/PieceMove.h>
 
 #include <optional>
 

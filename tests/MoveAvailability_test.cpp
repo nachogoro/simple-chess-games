@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "GameManager.h"
+#include <simplechess/GameManager.h>
 
 #include <boost/optional/optional_io.hpp>
 

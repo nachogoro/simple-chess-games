@@ -1,9 +1,9 @@
 #ifndef BOARD_ANALYZER_H_9FC5BA38_BA75_4088_AB11_9AF9248ACD36
 #define BOARD_ANALYZER_H_9FC5BA38_BA75_4088_AB11_9AF9248ACD36
 
-#include <Board.h>
-#include <Color.h>
-#include <Square.h>
+#include <simplechess/Board.h>
+#include <simplechess/Color.h>
+#include <simplechess/Square.h>
 
 #include <optional>
 

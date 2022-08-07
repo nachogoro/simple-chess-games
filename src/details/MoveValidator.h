@@ -1,11 +1,11 @@
 #ifndef MOVE_VALIDATOR_H_D8B8A755_7C97_4A23_9956_2E4322D4672F
 #define MOVE_VALIDATOR_H_D8B8A755_7C97_4A23_9956_2E4322D4672F
 
-#include <Board.h>
-#include <Color.h>
-#include <GameStage.h>
-#include <PieceMove.h>
-#include <Square.h>
+#include <simplechess/Board.h>
+#include <simplechess/Color.h>
+#include <simplechess/GameStage.h>
+#include <simplechess/PieceMove.h>
+#include <simplechess/Square.h>
 
 #include <optional>
 

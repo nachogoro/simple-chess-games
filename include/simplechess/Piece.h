@@ -1,7 +1,7 @@
 #ifndef PIECE_H_F9AD4EA8_033F_4911_BDF4_6FCAA1DA336D
 #define PIECE_H_F9AD4EA8_033F_4911_BDF4_6FCAA1DA336D
 
-#include <Color.h>
+#include <simplechess/Color.h>
 
 namespace simplechess
 {

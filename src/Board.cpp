@@ -1,4 +1,4 @@
-#include <Board.h>
+#include <simplechess/Board.h>
 #include <details/BoardAnalyzer.h>
 
 using namespace simplechess;

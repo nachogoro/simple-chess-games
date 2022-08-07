@@ -1,9 +1,9 @@
 #ifndef ALGEBRAIC_NOTATION_GENERATOR_H_D2B88175_AF8F_49B0_99A5_05630DE54230
 #define ALGEBRAIC_NOTATION_GENERATOR_H_D2B88175_AF8F_49B0_99A5_05630DE54230
 
-#include <Board.h>
-#include <PieceMove.h>
-#include <PlayedMove.h>
+#include <simplechess/Board.h>
+#include <simplechess/PieceMove.h>
+#include <simplechess/PlayedMove.h>
 
 #include <string>
 

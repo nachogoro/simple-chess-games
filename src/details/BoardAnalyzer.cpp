@@ -3,7 +3,7 @@
 #include "Builders.h"
 #include "details/MoveValidator.h"
 
-#include <Exceptions.h>
+#include <simplechess/Exceptions.h>
 
 #include <algorithm>
 #include <cstdlib>

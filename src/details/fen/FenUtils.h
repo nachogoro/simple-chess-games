@@ -1,10 +1,10 @@
 #ifndef FEN_UTILS_H_74319100_580E_47C2_8610_E38B9948AA96
 #define FEN_UTILS_H_74319100_580E_47C2_8610_E38B9948AA96
 
-#include <Board.h>
-#include <Color.h>
-#include <Piece.h>
-#include <Square.h>
+#include <simplechess/Board.h>
+#include <simplechess/Color.h>
+#include <simplechess/Piece.h>
+#include <simplechess/Square.h>
 
 #include <boost/bimap.hpp>
 

@@ -1,10 +1,10 @@
 #ifndef GAME_H_AA82C7D6_D956_405F_95B0_8A23678A5041
 #define GAME_H_AA82C7D6_D956_405F_95B0_8A23678A5041
 
-#include <Exceptions.h>
-#include <GameStage.h>
-#include <PieceMove.h>
-#include <Square.h>
+#include <simplechess/Exceptions.h>
+#include <simplechess/GameStage.h>
+#include <simplechess/PieceMove.h>
+#include <simplechess/Square.h>
 
 #include <optional>
 

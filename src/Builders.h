@@ -1,8 +1,8 @@
 #ifndef BUILDERS_H_E5875D9E_C927_464E_BC23_2AA288A34B41
 #define BUILDERS_H_E5875D9E_C927_464E_BC23_2AA288A34B41
 
-#include <Game.h>
-#include <GameStage.h>
+#include <simplechess/Game.h>
+#include <simplechess/GameStage.h>
 
 /**
  * This file contains all the builders to create objects from the public

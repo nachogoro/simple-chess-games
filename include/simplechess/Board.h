@@ -1,9 +1,9 @@
 #ifndef BOARD_H_060630C0_3ADF_4CCD_B96C_1728BF67C017
 #define BOARD_H_060630C0_3ADF_4CCD_B96C_1728BF67C017
 
-#include <Piece.h>
-#include <PieceMove.h>
-#include <Square.h>
+#include <simplechess/Piece.h>
+#include <simplechess/PieceMove.h>
+#include <simplechess/Square.h>
 
 #include <optional>
 

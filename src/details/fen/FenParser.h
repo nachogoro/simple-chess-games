@@ -1,11 +1,11 @@
 #ifndef FEN_PARSER_H_7EC60DCF_6D80_4E54_BEEF_61971B784511
 #define FEN_PARSER_H_7EC60DCF_6D80_4E54_BEEF_61971B784511
 
-#include <Board.h>
-#include <Color.h>
-#include <GameStage.h>
-#include <Piece.h>
-#include <Square.h>
+#include <simplechess/Board.h>
+#include <simplechess/Color.h>
+#include <simplechess/GameStage.h>
+#include <simplechess/Piece.h>
+#include <simplechess/Square.h>
 
 #include <optional>
 

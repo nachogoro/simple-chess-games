@@ -1,4 +1,4 @@
-#include "GameStage.h"
+#include <simplechess/GameStage.h>
 
 #include "details/BoardAnalyzer.h"
 
