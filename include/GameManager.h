@@ -92,7 +92,7 @@ namespace simplechess
 			 * - The Game has already concluded (its state is not
 			 *   GAME_STATE_PLAYING).
 			 * - The current player cannot claim a draw (\ref
-			 *   reasonToClaimDraw() is empty)
+			 *   Game.reasonToClaimDraw() is empty)
 			 *
 			 * \param game Game to be drawn.
 			 * \return A new copy of the Game, identical to the current one but
