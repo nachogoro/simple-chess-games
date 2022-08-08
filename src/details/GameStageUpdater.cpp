@@ -33,33 +33,30 @@ GameStage GameStageUpdater::makeMove(
 		}
 	}
 
-	if (move.piece().type() == PieceType::Rook)
+	// If the move starts or ends in a rook's original square, castling rights
+	// are lost
+	if (move.src() == Square::fromString("a1")
+			|| move.dst() == Square::fromString("a1"))
 	{
-		// If a rook moves or is captured, clear the castling rights of that
-		// side. It might already be cleared, but that's not an issue
-		if (move.src() == Square::fromString("a1")
-				|| move.dst() == Square::fromString("a1"))
-		{
-			updatedCastlingRights &= ~CastlingRight::WhiteQueenSide;
-		}
+		updatedCastlingRights &= ~CastlingRight::WhiteQueenSide;
+	}
 
-		if (move.src() == Square::fromString("h1")
-				|| move.dst() == Square::fromString("h1"))
-		{
-			updatedCastlingRights &= ~CastlingRight::WhiteKingSide;
-		}
+	if (move.src() == Square::fromString("h1")
+			|| move.dst() == Square::fromString("h1"))
+	{
+		updatedCastlingRights &= ~CastlingRight::WhiteKingSide;
+	}
 
-		if (move.src() == Square::fromString("a8")
-				|| move.dst() == Square::fromString("a8"))
-		{
-			updatedCastlingRights &= ~CastlingRight::BlackQueenSide;
-		}
+	if (move.src() == Square::fromString("a8")
+			|| move.dst() == Square::fromString("a8"))
+	{
+		updatedCastlingRights &= ~CastlingRight::BlackQueenSide;
+	}
 
-		if (move.src() == Square::fromString("h8")
-				|| move.dst() == Square::fromString("h8"))
-		{
-			updatedCastlingRights &= ~CastlingRight::BlackKingSide;
-		}
+	if (move.src() == Square::fromString("h8")
+			|| move.dst() == Square::fromString("h8"))
+	{
+		updatedCastlingRights &= ~CastlingRight::BlackKingSide;
 	}
 
 	return GameStageBuilder::build(
