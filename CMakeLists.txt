@@ -53,6 +53,7 @@ set_target_properties(simple-chess-games PROPERTIES PUBLIC_HEADER include/simple
 set_target_properties(simple-chess-games PROPERTIES PUBLIC_HEADER include/simplechess/PlayedMove.h)
 set_target_properties(simple-chess-games PROPERTIES PUBLIC_HEADER include/simplechess/Square.h)
 target_include_directories(simple-chess-games PRIVATE include)
+target_link_libraries(simple-chess-games PRIVATE Boost::algorithm Boost::bimap)
 
 set_target_properties(simple-chess-games-static PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(simple-chess-games-static PROPERTIES PUBLIC_HEADER include/simplechess/Board.h)
@@ -66,6 +67,7 @@ set_target_properties(simple-chess-games-static PROPERTIES PUBLIC_HEADER include
 set_target_properties(simple-chess-games-static PROPERTIES PUBLIC_HEADER include/simplechess/PlayedMove.h)
 set_target_properties(simple-chess-games-static PROPERTIES PUBLIC_HEADER include/simplechess/Square.h)
 target_include_directories(simple-chess-games-static PRIVATE include)
+target_link_libraries(simple-chess-games-static PRIVATE Boost::algorithm Boost::bimap)
 
 include(GNUInstallDirs)
 
@@ -78,6 +80,17 @@ FetchContent_Declare(
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
+
+# Boost
+FetchContent_Declare(
+  Boost
+  URL https://github.com/boostorg/boost/releases/download/boost-1.82.0/boost-1.82.0.tar.xz
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+set(BOOST_ENABLE_CMAKE ON)
+# Only build the libraries we need
+set(BOOST_INCLUDE_LIBRARIES algorithm bimap optional)
+FetchContent_MakeAvailable(Boost)
 
 install(TARGETS simple-chess-games
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -97,7 +110,7 @@ add_executable(run_tests
 	tests/MoveCounter_test.cpp
 	tests/MovesOnBoard_test.cpp
 	tests/Resignation_test.cpp)
-target_link_libraries(run_tests gtest_main simple-chess-games)
+target_link_libraries(run_tests gtest_main simple-chess-games Boost::optional)
 
 include(GoogleTest)
 include_directories(include)
