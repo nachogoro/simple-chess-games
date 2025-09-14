@@ -1,9 +1,10 @@
 .python-version
 compile_commands.json
-build/
+build-*/
 Release/
 Debug/
 bin/
+dist/
 
 # Swap
 [._]*.s[a-v][a-z]
@@ -60,3 +61,4 @@ CTestTestfile.cmake
 _deps
 *_include.cmake
 *_tests.cmake
+.cache

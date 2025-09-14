@@ -1,73 +1,123 @@
 cmake_minimum_required(VERSION 3.14)
 project(simple-chess-games VERSION 0.0.1 DESCRIPTION "Simple library to play chess games")
-set (libsrc
-	src/Board.cpp
-	src/Builders.cpp
-	src/Color.cpp
-	src/Exceptions.cpp
-	src/Game.cpp
-	src/GameManager.cpp
-	src/GameManagerImpl.cpp
-	src/GameStage.cpp
-	src/Piece.cpp
-	src/PieceMove.cpp
-	src/PlayedMove.cpp
-	src/Square.cpp
-	src/details/AlgebraicNotationGenerator.cpp
-	src/details/BoardAnalyzer.cpp
-	src/details/DrawEvaluator.cpp
-	src/details/GameStageUpdater.cpp
-	src/details/GameStateDetector.cpp
-	src/details/MoveValidator.cpp
-	src/details/fen/FenParser.cpp
-	src/details/fen/FenUtils.cpp
-	src/details/moves/BishopMove.cpp
-	src/details/moves/KingMove.cpp
-	src/details/moves/KnightMove.cpp
-	src/details/moves/PawnMove.cpp
-	src/details/moves/QueenMove.cpp
-	src/details/moves/RookMove.cpp)
 
-# Shared library (from objlib)
-add_library(simple-chess-games SHARED ${libsrc})
-# Static library (from objlib)
-add_library(simple-chess-games-static STATIC ${libsrc})
+# Core chess engine sources
+set(core_sources
+	src/core/Board.cpp
+	src/core/Builders.cpp
+	src/core/Color.cpp
+	src/core/Exceptions.cpp
+	src/core/Game.cpp
+	src/core/GameStage.cpp
+	src/core/Piece.cpp
+	src/core/PieceMove.cpp
+	src/core/PlayedMove.cpp
+	src/core/SimpleChess.cpp
+	src/core/Square.cpp
+	src/core/details/AlgebraicNotationGenerator.cpp
+	src/core/details/BoardAnalyzer.cpp
+	src/core/details/DrawEvaluator.cpp
+	src/core/details/GameStageUpdater.cpp
+	src/core/details/GameStateDetector.cpp
+	src/core/details/MoveValidator.cpp
+	src/core/details/fen/FenParser.cpp
+	src/core/details/fen/FenUtils.cpp
+	src/core/details/moves/BishopMove.cpp
+	src/core/details/moves/KingMove.cpp
+	src/core/details/moves/KnightMove.cpp
+	src/core/details/moves/PawnMove.cpp
+	src/core/details/moves/QueenMove.cpp
+	src/core/details/moves/RookMove.cpp)
+
+# C interface sources
+set(c_interface_sources
+	src/c_interface/simplechess.cpp
+	src/c_interface/conversion_utils.cpp)
 
 set(CMAKE_CXX_STANDARD 17)
-set(COMMON_FLAGS -Wall -Wextra -Wpedantic -Werror)
-
-# Enable debug
-set(CMAKE_BUILD_TYPE Debug)
-
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set_target_properties(simple-chess-games PROPERTIES VERSION ${PROJECT_VERSION})
-set_target_properties(simple-chess-games PROPERTIES PUBLIC_HEADER include/simplechess/Board.h)
-set_target_properties(simple-chess-games PROPERTIES PUBLIC_HEADER include/simplechess/Color.h)
-set_target_properties(simple-chess-games PROPERTIES PUBLIC_HEADER include/simplechess/Exceptions.h)
-set_target_properties(simple-chess-games PROPERTIES PUBLIC_HEADER include/simplechess/Game.h)
-set_target_properties(simple-chess-games PROPERTIES PUBLIC_HEADER include/simplechess/GameManager.h)
-set_target_properties(simple-chess-games PROPERTIES PUBLIC_HEADER include/simplechess/GameStage.h)
-set_target_properties(simple-chess-games PROPERTIES PUBLIC_HEADER include/simplechess/Piece.h)
-set_target_properties(simple-chess-games PROPERTIES PUBLIC_HEADER include/simplechess/PieceMove.h)
-set_target_properties(simple-chess-games PROPERTIES PUBLIC_HEADER include/simplechess/PlayedMove.h)
-set_target_properties(simple-chess-games PROPERTIES PUBLIC_HEADER include/simplechess/Square.h)
-target_include_directories(simple-chess-games PRIVATE include)
+# Set default build type if not specified
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
+endif()
+
+# Common warning flags for all build types
+set(COMMON_WARNING_FLAGS -Wall -Wextra -Wpedantic -Werror)
+
+# Configure compiler flags based on build type
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    # Debug: No optimizations, debug symbols
+    set(COMMON_FLAGS ${COMMON_WARNING_FLAGS} -g -O0)
+    message(STATUS "Debug build: No optimizations, debug symbols enabled")
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    # Release: Maximum optimizations for runtime performance
+    set(COMMON_FLAGS ${COMMON_WARNING_FLAGS} -O3 -DNDEBUG)
+    message(STATUS "Release build: Optimized for runtime performance")
+else()
+    # Fallback for other build types
+    set(COMMON_FLAGS ${COMMON_WARNING_FLAGS})
+    message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+endif()
+
+# Enable fPIC for all targets (required for shared libraries)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+# ===== OBJECT LIBRARIES (compiled once, reused) =====
+
+# Core engine object library - compiled once with fPIC
+add_library(core-objects OBJECT ${core_sources})
+target_include_directories(core-objects PUBLIC include)
+target_link_libraries(core-objects PRIVATE Boost::algorithm Boost::bimap)
+target_compile_options(core-objects PRIVATE ${COMMON_FLAGS})
+
+# C interface object library
+add_library(c-interface-objects OBJECT ${c_interface_sources})
+target_include_directories(c-interface-objects PUBLIC include)
+target_link_libraries(c-interface-objects PRIVATE Boost::algorithm Boost::bimap)
+target_compile_options(c-interface-objects PRIVATE ${COMMON_FLAGS})
+
+# ===== C++ LIBRARY =====
+
+# Shared C++ library
+add_library(simple-chess-games SHARED $<TARGET_OBJECTS:core-objects>)
+target_include_directories(simple-chess-games PUBLIC include)
 target_link_libraries(simple-chess-games PRIVATE Boost::algorithm Boost::bimap)
 
-set_target_properties(simple-chess-games-static PROPERTIES VERSION ${PROJECT_VERSION})
-set_target_properties(simple-chess-games-static PROPERTIES PUBLIC_HEADER include/simplechess/Board.h)
-set_target_properties(simple-chess-games-static PROPERTIES PUBLIC_HEADER include/simplechess/Color.h)
-set_target_properties(simple-chess-games-static PROPERTIES PUBLIC_HEADER include/simplechess/Exceptions.h)
-set_target_properties(simple-chess-games-static PROPERTIES PUBLIC_HEADER include/simplechess/Game.h)
-set_target_properties(simple-chess-games-static PROPERTIES PUBLIC_HEADER include/simplechess/GameManager.h)
-set_target_properties(simple-chess-games-static PROPERTIES PUBLIC_HEADER include/simplechess/GameStage.h)
-set_target_properties(simple-chess-games-static PROPERTIES PUBLIC_HEADER include/simplechess/Piece.h)
-set_target_properties(simple-chess-games-static PROPERTIES PUBLIC_HEADER include/simplechess/PieceMove.h)
-set_target_properties(simple-chess-games-static PROPERTIES PUBLIC_HEADER include/simplechess/PlayedMove.h)
-set_target_properties(simple-chess-games-static PROPERTIES PUBLIC_HEADER include/simplechess/Square.h)
-target_include_directories(simple-chess-games-static PRIVATE include)
+# Static C++ library
+add_library(simple-chess-games-static STATIC $<TARGET_OBJECTS:core-objects>)
+target_include_directories(simple-chess-games-static PUBLIC include)
 target_link_libraries(simple-chess-games-static PRIVATE Boost::algorithm Boost::bimap)
+
+# Set properties for C++ libraries
+set_target_properties(simple-chess-games PROPERTIES
+	VERSION ${PROJECT_VERSION}
+	PUBLIC_HEADER "include/cpp/simplechess/Board.h;include/cpp/simplechess/Color.h;include/cpp/simplechess/Exceptions.h;include/cpp/simplechess/Game.h;include/cpp/simplechess/SimpleChess.h;include/cpp/simplechess/GameStage.h;include/cpp/simplechess/Piece.h;include/cpp/simplechess/PieceMove.h;include/cpp/simplechess/PlayedMove.h;include/cpp/simplechess/Square.h")
+
+set_target_properties(simple-chess-games-static PROPERTIES
+	VERSION ${PROJECT_VERSION}
+	PUBLIC_HEADER "include/cpp/simplechess/Board.h;include/cpp/simplechess/Color.h;include/cpp/simplechess/Exceptions.h;include/cpp/simplechess/Game.h;include/cpp/simplechess/SimpleChess.h;include/cpp/simplechess/GameStage.h;include/cpp/simplechess/Piece.h;include/cpp/simplechess/PieceMove.h;include/cpp/simplechess/PlayedMove.h;include/cpp/simplechess/Square.h")
+
+# ===== C LIBRARY =====
+
+# Shared C library (includes both core and C interface)
+add_library(simple-chess-games-c SHARED $<TARGET_OBJECTS:core-objects> $<TARGET_OBJECTS:c-interface-objects>)
+target_include_directories(simple-chess-games-c PUBLIC include)
+target_link_libraries(simple-chess-games-c PRIVATE Boost::algorithm Boost::bimap)
+
+# Static C library
+add_library(simple-chess-games-c-static STATIC $<TARGET_OBJECTS:core-objects> $<TARGET_OBJECTS:c-interface-objects>)
+target_include_directories(simple-chess-games-c-static PUBLIC include)
+target_link_libraries(simple-chess-games-c-static PRIVATE Boost::algorithm Boost::bimap)
+
+# Set properties for C libraries
+set_target_properties(simple-chess-games-c PROPERTIES
+	VERSION ${PROJECT_VERSION}
+	PUBLIC_HEADER "include/c/simplechess/simplechess.h")
+
+set_target_properties(simple-chess-games-c-static PROPERTIES
+	VERSION ${PROJECT_VERSION}
+	PUBLIC_HEADER "include/c/simplechess/simplechess.h")
 
 include(GNUInstallDirs)
 
@@ -75,7 +125,8 @@ include(GNUInstallDirs)
 include(FetchContent)
 FetchContent_Declare(
   googletest
-  URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
+  URL https://github.com/google/googletest/archive/refs/tags/v1.17.0.zip
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -84,7 +135,7 @@ FetchContent_MakeAvailable(googletest)
 # Boost
 FetchContent_Declare(
   Boost
-  URL https://github.com/boostorg/boost/releases/download/boost-1.82.0/boost-1.82.0.tar.xz
+  URL https://github.com/boostorg/boost/releases/download/boost-1.89.0/boost-1.89.0-cmake.tar.gz
   DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 set(BOOST_ENABLE_CMAKE ON)
@@ -92,27 +143,63 @@ set(BOOST_ENABLE_CMAKE ON)
 set(BOOST_INCLUDE_LIBRARIES algorithm bimap optional)
 FetchContent_MakeAvailable(Boost)
 
-install(TARGETS simple-chess-games
+# Install targets
+install(TARGETS simple-chess-games simple-chess-games-c
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-install(TARGETS simple-chess-games-static
-	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+install(TARGETS simple-chess-games-static simple-chess-games-c-static
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-enable_testing()
-add_executable(run_tests
-	tests/AlgebraicNotation_test.cpp
-	tests/DrawDetection_test.cpp
-	tests/FenGeneration_test.cpp
-	tests/GameCreation_test.cpp
-	tests/MoveAvailability_test.cpp
-	tests/MoveCounter_test.cpp
-	tests/MovesOnBoard_test.cpp
-	tests/Resignation_test.cpp)
-target_link_libraries(run_tests gtest_main simple-chess-games Boost::optional)
+# Install directory structure for headers
+install(DIRECTORY include/cpp DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY include/c DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-include(GoogleTest)
-include_directories(include)
-include_directories(src)
-gtest_discover_tests(run_tests)
+# Option to build tests (enabled by default)
+option(BUILD_TESTS "Build test executables" ON)
+
+if(BUILD_TESTS)
+    message(STATUS "Building tests enabled")
+    enable_testing()
+else()
+    message(STATUS "Building tests disabled - skipping for faster compilation")
+endif()
+
+if(BUILD_TESTS)
+    # C++ Tests
+    add_executable(run_cpp_tests
+        tests/cpp/AlgebraicNotation_test.cpp
+        tests/cpp/DrawDetection_test.cpp
+        tests/cpp/FenGeneration_test.cpp
+        tests/cpp/GameCreation_test.cpp
+        tests/cpp/MoveAvailability_test.cpp
+        tests/cpp/MoveCounter_test.cpp
+        tests/cpp/MovesOnBoard_test.cpp
+        tests/cpp/Resignation_test.cpp)
+    target_include_directories(run_cpp_tests PRIVATE include)
+    target_include_directories(run_cpp_tests PRIVATE src/core)
+    target_include_directories(run_cpp_tests PRIVATE tests/cpp)
+    target_link_libraries(run_cpp_tests gtest_main simple-chess-games Boost::optional)
+
+    # C Interface Tests
+    add_executable(run_c_tests
+        tests/c/AlgebraicNotation_test.cpp
+        tests/c/GameCreation_test.cpp
+        tests/c/FenGeneration_test.cpp
+        tests/c/DrawDetection_test.cpp
+        tests/c/Resignation_test.cpp
+        tests/c/MoveCounter_test.cpp
+        tests/c/MoveAvailability_test.cpp
+        tests/c/MovesOnBoard_test.cpp)
+    target_include_directories(run_c_tests PRIVATE include)
+    target_include_directories(run_c_tests PRIVATE tests/c)
+    target_link_libraries(run_c_tests gtest_main simple-chess-games-c)
+
+    include(GoogleTest)
+    gtest_discover_tests(run_cpp_tests)
+    gtest_discover_tests(run_c_tests)
+
+    # Backward compatibility - run_tests now runs C++ tests
+    add_custom_target(run_tests DEPENDS run_cpp_tests)
+endif()
