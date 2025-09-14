@@ -82,20 +82,16 @@ namespace simplechess
 		 * move) have been played (or will have been played after next move)
 		 * since the last capture or pawn move.
 		 *
-		 * TODO cover the case in which the 50th is not yet made
-		 *
 		 * \note See FIDE rules 9.3.1 and 9.3.2.
 		 */
 		FiftyMoveRule,
 
 		/**
-		 * \brief At least fifty full moves (i.e. each side has played their
-		 * move) have been played (or will have been played after next move)
-		 * since the last capture or pawn move.
+		 * \brief At least seventy-five full moves (i.e. each side has played their
+		 * move) have been played since the last capture or pawn move.
 		 *
-		 * TODO test the case in which the 75th is checkmate.
-		 *
-		 * \note See FIDE rule 9.6.2.
+		 * \note See FIDE rule 9.6.2. If the 75th move results in checkmate,
+		 * the checkmate takes precedence over the draw rule.
 		 */
 		SeventyFiveMoveRule
 	};

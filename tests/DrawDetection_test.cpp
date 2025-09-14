@@ -250,30 +250,43 @@ TEST(DrawDetectionTest, NFoldRepetition) {
 TEST(DrawDetectionTest, FiftyMoveRule) {
 	const GameManager gameMgr;
 	const Game startingGame = gameMgr.createGameFromFen(
-			"3k4/2b5/8/3r4/8/8/3K4/7B w - - 99 1");
+			"3k4/2b5/8/3r4/8/8/3K4/7B w - - 98 1");
 
 	EXPECT_EQ(startingGame.gameState(), GameState::Playing);
 	EXPECT_EQ(!!startingGame.reasonToClaimDraw(), false);
 
-	const Game fiftyFullMoves = gameMgr.makeMove(startingGame, 
+	// Available when the move would be the 50th
+	const Game oneBeforeFifty = gameMgr.makeMove(startingGame,
 			PieceMove::regularMove(
 				{PieceType::King, Color::White},
 				Square::fromRankAndFile(2, 'd'),
 				Square::fromRankAndFile(2, 'c')));
 
-	EXPECT_EQ(fiftyFullMoves.gameState(), GameState::Playing);
-	EXPECT_EQ(!!fiftyFullMoves.reasonToClaimDraw(), true);
-	EXPECT_EQ(*fiftyFullMoves.reasonToClaimDraw(), DrawReason::FiftyMoveRule);
+	EXPECT_EQ(oneBeforeFifty.gameState(), GameState::Playing);
+	EXPECT_EQ(!!oneBeforeFifty.reasonToClaimDraw(), true);
+	EXPECT_EQ(*oneBeforeFifty.reasonToClaimDraw(), DrawReason::FiftyMoveRule);
 
-	const Game fiftyOneFullMoves = gameMgr.makeMove(fiftyFullMoves, 
+	// Test not automatically claimed at fifty
+	const Game exactlyFifty = gameMgr.makeMove(oneBeforeFifty,
 			PieceMove::regularMove(
 				{PieceType::Bishop, Color::Black},
 				Square::fromRankAndFile(7, 'c'),
 				Square::fromRankAndFile(6, 'b')));
 
-	EXPECT_EQ(fiftyOneFullMoves.gameState(), GameState::Playing);
-	EXPECT_EQ(!!fiftyOneFullMoves.reasonToClaimDraw(), true);
-	EXPECT_EQ(*fiftyOneFullMoves.reasonToClaimDraw(), DrawReason::FiftyMoveRule);
+	EXPECT_EQ(exactlyFifty.gameState(), GameState::Playing);
+	EXPECT_EQ(!!exactlyFifty.reasonToClaimDraw(), true);
+	EXPECT_EQ(*exactlyFifty.reasonToClaimDraw(), DrawReason::FiftyMoveRule);
+
+	// Not automatically claimed after fifty
+	const Game afterFifty = gameMgr.makeMove(exactlyFifty,
+			PieceMove::regularMove(
+				{PieceType::Bishop, Color::White},
+				Square::fromRankAndFile(1, 'h'),
+				Square::fromRankAndFile(2, 'g')));
+
+	EXPECT_EQ(afterFifty.gameState(), GameState::Playing);
+	EXPECT_EQ(!!afterFifty.reasonToClaimDraw(), true);
+	EXPECT_EQ(*afterFifty.reasonToClaimDraw(), DrawReason::FiftyMoveRule);
 }
 
 TEST(DrawDetectionTest, SeventyFiveMoveRule) {
@@ -285,7 +298,7 @@ TEST(DrawDetectionTest, SeventyFiveMoveRule) {
 	EXPECT_EQ(!!startingGame.reasonToClaimDraw(), true);
 	EXPECT_EQ(*startingGame.reasonToClaimDraw(), DrawReason::FiftyMoveRule);
 
-	const Game seventyFiveFullMoves = gameMgr.makeMove(startingGame, 
+	const Game seventyFiveFullMoves = gameMgr.makeMove(startingGame,
 			PieceMove::regularMove(
 				{PieceType::King, Color::White},
 				Square::fromRankAndFile(2, 'd'),
@@ -293,4 +306,25 @@ TEST(DrawDetectionTest, SeventyFiveMoveRule) {
 
 	EXPECT_EQ(seventyFiveFullMoves.gameState(), GameState::Drawn);
 	EXPECT_EQ(seventyFiveFullMoves.drawReason(), DrawReason::SeventyFiveMoveRule);
+}
+
+TEST(DrawDetectionTest, SeventyFiveMoveRuleCheckmateOverride) {
+	const GameManager gameMgr;
+	// Position where black can deliver checkmate on the 75th move
+	const Game startingGame = gameMgr.createGameFromFen(
+			"1r3k2/8/8/8/8/8/4PPPP/6K1 b - - 149 1");
+
+	EXPECT_EQ(startingGame.gameState(), GameState::Playing);
+	EXPECT_EQ(!!startingGame.reasonToClaimDraw(), true);
+	EXPECT_EQ(*startingGame.reasonToClaimDraw(), DrawReason::FiftyMoveRule);
+
+	// The 75th move delivers checkmate - checkmate should take precedence over draw
+	const Game checkmateOn75th = gameMgr.makeMove(startingGame,
+			PieceMove::regularMove(
+				{PieceType::Rook, Color::Black},
+				Square::fromRankAndFile(8, 'b'),
+				Square::fromRankAndFile(1, 'b')));
+
+	// Checkmate takes precedence over the 75-move rule
+	EXPECT_EQ(checkmateOn75th.gameState(), GameState::BlackWon);
 }

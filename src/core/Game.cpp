@@ -14,15 +14,6 @@
 
 using namespace simplechess;
 
-// TODO Compute things only once (e.g. verifying the kind of check a move would
-// imply, or the available moves from a position).
-//
-// TODO In order to be able to move to the public header include/ vs
-// implementation src/ directories, make public facing objects simply contain
-// pre-computed information passed to them through their constructor, and leave
-// all "computing" code (e.g. makeMove()) to a singleton object making use of
-// the pImpl idiom
-
 Game::Game(
 		const GameState gameState,
 		const std::optional<DrawReason>& drawReason,

@@ -184,7 +184,7 @@ std::optional<DrawReason> DrawEvaluator::reasonToDraw(
 		return { DrawReason::OfferedAndAccepted };
 	}
 
-	if (stage.halfMovesSinceLastCaptureOrPawnAdvance() >= 100)
+	if (stage.halfMovesSinceLastCaptureOrPawnAdvance() >= 99)
 	{
 		return { DrawReason::FiftyMoveRule };
 	}
