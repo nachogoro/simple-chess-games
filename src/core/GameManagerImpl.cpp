@@ -11,6 +11,77 @@ using namespace simplechess;
 
 namespace internal
 {
+	void validateGamePosition(const Board& board, Color activeColor, uint8_t castlingRights)
+	{
+		// 1. Validate that there is exactly one King per side
+		uint8_t whiteKings = 0;
+		uint8_t blackKings = 0;
+
+		for (const auto& entry : board.occupiedSquares())
+		{
+			if (entry.second.type() == PieceType::King)
+			{
+				if (entry.second.color() == Color::White)
+				{
+					whiteKings++;
+				}
+				else
+				{
+					blackKings++;
+				}
+			}
+		}
+
+		if (whiteKings != 1 || blackKings != 1)
+		{
+			throw std::invalid_argument("Invalid number of kings on board");
+		}
+
+		// 2. Validate that the color to move cannot be checking the opposite King
+		if (details::BoardAnalyzer::isInCheck(board, oppositeColor(activeColor)))
+		{
+			throw std::invalid_argument("Color to move is already checking");
+		}
+
+		// 3. Validate castling rights consistency
+		const Piece whiteKing = {PieceType::King, Color::White};
+		const Piece blackKing = {PieceType::King, Color::Black};
+		const Piece whiteRook = {PieceType::Rook, Color::White};
+		const Piece blackRook = {PieceType::Rook, Color::Black};
+
+		if ((castlingRights & static_cast<uint8_t>(CastlingRight::WhiteKingSide))
+				&& (*board.pieceAt(Square::fromString("e1")) != whiteKing
+					|| *board.pieceAt(Square::fromString("h1")) != whiteRook))
+		{
+			throw std::invalid_argument(
+					"Kingside castling right for white is inconsistent with board state");
+		}
+
+		if ((castlingRights & static_cast<uint8_t>(CastlingRight::WhiteQueenSide))
+				&& (*board.pieceAt(Square::fromString("e1")) != whiteKing
+					|| *board.pieceAt(Square::fromString("a1")) != whiteRook))
+		{
+			throw std::invalid_argument(
+					"Queenside castling right for white is inconsistent with board state");
+		}
+
+		if ((castlingRights & static_cast<uint8_t>(CastlingRight::BlackKingSide))
+				&& (*board.pieceAt(Square::fromString("e8")) != blackKing
+					|| *board.pieceAt(Square::fromString("h8")) != blackRook))
+		{
+			throw std::invalid_argument(
+					"Kingside castling right for black is inconsistent with board state");
+		}
+
+		if ((castlingRights & static_cast<uint8_t>(CastlingRight::BlackQueenSide))
+				&& (*board.pieceAt(Square::fromString("e8")) != blackKing
+					|| *board.pieceAt(Square::fromString("a8")) != blackRook))
+		{
+			throw std::invalid_argument(
+					"Queenside castling right for black is inconsistent with board state");
+		}
+	}
+
 	std::map<std::string, uint8_t> getPreviouslyReachedPositionsMap(
 			const std::vector<std::pair<GameStage, PlayedMove>>& history)
 	{
@@ -72,8 +143,8 @@ Game GameManagerImpl::createGameFromFen(const std::string& fen) const
 		lastMove = { PieceMove::regularMove(pawn, src, dst) };
 	}
 
-	// TODO validate here everything related to move counters, number of
-	// kings, consistency of the en passant field, etc
+	// Validate the parsed position
+	internal::validateGamePosition(parsedState.board(), parsedState.activeColor(), parsedState.castlingRights());
 
 	if (!lastMove)
 	{
@@ -107,6 +178,9 @@ Game GameManagerImpl::createGameFromFen(const std::string& fen) const
 					lastMove->piece(),
 					lastMove->dst(),
 					lastMove->src()));
+
+	// Validate the original position too
+	internal::validateGamePosition(originalBoardState, oppositeColor(parsedState.activeColor()), parsedState.castlingRights());
 
 	const uint16_t fullMoveCounterDecrease
 		= (parsedState.activeColor() == Color::White)
