@@ -25,7 +25,7 @@ namespace simplechess
 				uint8_t castlingRights,
 				uint16_t halfmoveClock,
 				uint16_t fullmoveClock,
-				const std::optional<PlayedMove>& move);
+				const std::optional<Square>& enPassantTarget);
 	};
 
 	class GameBuilder
@@ -34,7 +34,8 @@ namespace simplechess
 			static Game build(
 					GameState gameState,
 					const std::optional<DrawReason>& drawReason,
-					const std::vector<GameStage>& history,
+					const std::vector<std::pair<GameStage, PlayedMove>>& history,
+					const GameStage& currentStage,
 					const std::set<PieceMove>& allAvailableMoves,
 					const std::optional<DrawReason>& reasonToClaimDraw);
 	};

@@ -4,11 +4,13 @@
 #include <cpp/simplechess/Exceptions.h>
 #include <cpp/simplechess/GameStage.h>
 #include <cpp/simplechess/PieceMove.h>
+#include <cpp/simplechess/PlayedMove.h>
 #include <cpp/simplechess/Square.h>
 
 #include <optional>
 
 #include <set>
+#include <utility>
 #include <vector>
 
 namespace simplechess
@@ -128,19 +130,16 @@ namespace simplechess
 			DrawReason drawReason() const;
 
 			/**
-			 * \brief Returns the history of the game as a sequence of \ref
-			 * GameStage.
+			 * \brief Returns the history of the game as pairs of position and move.
 			 *
-			 * The latest reached position, along with the move which reached
-			 * it, are the last element in the vector.
+			 * Each pair contains the GameStage (position) and the PlayedMove made
+			 * FROM that position, which transitions to the next position. The vector
+			 * excludes the current stage of the game (as no move has been played yet
+			 * from the current position).
 			 *
-			 * \note The most reliable way of getting the move counter of a
-			 * certain stage is not to rely on the position on this vector but
-			 * instead use the appropriate method in \ref GameStage.
-			 *
-			 * \return The history of the game.
+			 * \return The history of the game as position-move pairs.
 			 */
-			const std::vector<GameStage>& history() const;
+			const std::vector<std::pair<GameStage, PlayedMove>>& history() const;
 
 			/**
 			 * \brief Returns the latest stage of the game.
@@ -224,13 +223,15 @@ namespace simplechess
 			Game(
 					GameState gameState,
 					const std::optional<DrawReason>& drawReason,
-					const std::vector<GameStage>& history,
+					const std::vector<std::pair<GameStage, PlayedMove>>& history,
+					const GameStage& currentStage,
 					const std::set<PieceMove>& allAvailableMoves,
 					const std::optional<DrawReason>& reasonToClaimDraw);
 
 			GameState mGameState;
 			std::optional<DrawReason> mReasonGameWasDrawn;
-			std::vector<GameStage> mHistory;
+			std::vector<std::pair<GameStage, PlayedMove>> mHistory;
+			GameStage mCurrentStage;
 			std::set<PieceMove> mAllAvailableMoves;
 			std::optional<DrawReason> mReasonToClaimDraw;
 	};

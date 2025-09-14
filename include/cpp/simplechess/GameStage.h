@@ -5,6 +5,7 @@
 #include <cpp/simplechess/Color.h>
 #include <cpp/simplechess/Piece.h>
 #include <cpp/simplechess/PlayedMove.h>
+#include <cpp/simplechess/Square.h>
 
 #include <optional>
 
@@ -58,11 +59,6 @@ namespace simplechess
 			 */
 			const Board& board() const;
 
-			/**
-			 * \brief Returns the latest move played at this stage.
-			 * \return The latest move played at this stage.
-			 */
-			const std::optional<PlayedMove>& move() const;
 
 			/**
 			 * \brief Returns the \ref Color which is to move next.
@@ -106,6 +102,24 @@ namespace simplechess
 			 */
 			const std::string& fen() const;
 
+			/**
+			 * \brief Returns the en passant target square if available.
+			 *
+			 * If a pawn has just made a two-square move, this is the position
+			 * "behind" the pawn (e.g. if a white pawn moved from e2 to e4,
+			 * this would be e3).
+			 *
+			 * \return The en passant target square, or empty if none.
+			 */
+			std::optional<Square> enPassantTarget() const;
+
+			/**
+			 * \brief Returns the check status for the active player.
+			 *
+			 * \return The check status for the active player.
+			 */
+			CheckType checkStatus() const;
+
 		private:
 			friend class GameStageBuilder;
 
@@ -120,8 +134,9 @@ namespace simplechess
 			 * or pawn advance.
 			 * \param fullmoveClock The number of the full move, starting at 1
 			 * and being incremented after black's move.
-			 * \param move The latest move played to reach this point. Should
-			 * be empty if no move has been played yet.
+			 * \param fen The FEN string representation of this position.
+			 * \param enPassantTarget The en passant target square, if any.
+			 * \param checkStatus The check status for the active player.
 			 */
 			GameStage(const Board& board,
 					Color activeColor,
@@ -129,7 +144,8 @@ namespace simplechess
 					uint16_t halfmoveClock,
 					uint16_t fullmoveClock,
 					const std::string& fen,
-					const std::optional<PlayedMove>& move);
+					const std::optional<Square>& enPassantTarget,
+					CheckType checkStatus);
 
 		private:
 			Board mBoard;
@@ -137,8 +153,9 @@ namespace simplechess
 			uint8_t mCastlingRights;
 			uint16_t mHalfmoveClock;
 			uint16_t mFullmoveClock;
-			std::optional<PlayedMove> mMove;
 			std::string mFen;
+			std::optional<Square> mEnPassantTarget;
+			CheckType mCheckStatus;
 	};
 }
 

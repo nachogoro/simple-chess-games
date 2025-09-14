@@ -12,11 +12,11 @@ using namespace simplechess;
 namespace internal
 {
 	std::map<std::string, uint8_t> getPreviouslyReachedPositionsMap(
-			const std::vector<GameStage>& history)
+			const std::vector<std::pair<GameStage, PlayedMove>>& history)
 	{
 		std::map<std::string, uint8_t> result;
 
-		for (const auto& stage : history)
+		for (const auto& [stage, move] : history)
 		{
 			const std::string repetitionFen
 				= details::FenUtils::fenForRepetitions(stage.fen());
@@ -83,14 +83,15 @@ Game GameManagerImpl::createGameFromFen(const std::string& fen) const
 			parsedState.castlingRights(),
 			parsedState.halfMovesSinceLastCaptureOrPawnAdvance(),
 			parsedState.fullMoveCounter(),
-			{});
+			parsedState.enPassantTarget());
 
 		const details::GameStateInformation information
-			= details::GameStateDetector::detect(currentStage, {});
+			= details::GameStateDetector::detect(currentStage, false, {});
 
 		return GameBuilder::build(
 				information.gameState,
 				information.reasonItWasDrawn,
+				{},
 				{currentStage},
 				information.availableMoves,
 				information.reasonToClaimDraw);
@@ -113,23 +114,23 @@ Game GameManagerImpl::createGameFromFen(const std::string& fen) const
 			: 0;
 
 	const GameStage originalStage = GameStageBuilder::build(
-			originalBoardState,
-			oppositeColor(parsedState.activeColor()),
-			parsedState.castlingRights(),
-			0, // Unknown, filler value
-			static_cast<uint16_t>(
-				parsedState.fullMoveCounter() - fullMoveCounterDecrease),
-			{});
+		originalBoardState,
+		oppositeColor(parsedState.activeColor()),
+		parsedState.castlingRights(),
+		0, // Reset halfmove clock
+		static_cast<uint16_t>(parsedState.fullMoveCounter() - fullMoveCounterDecrease),
+		std::nullopt); // No en passant target
 
 	const details::GameStateInformation information
-		= details::GameStateDetector::detect(originalStage, {});
+		= details::GameStateDetector::detect(originalStage, false, {});
 
 	const Game originalGame = GameBuilder::build(
-			information.gameState,
-			information.reasonItWasDrawn,
-			{originalStage},
-			information.availableMoves,
-			information.reasonToClaimDraw);
+		information.gameState,
+		information.reasonItWasDrawn,
+		{}, // empty history
+		originalStage,
+		information.availableMoves,
+		information.reasonToClaimDraw);
 
 	return makeMove(originalGame, *lastMove, false);
 }
@@ -160,15 +161,22 @@ Game GameManagerImpl::makeMove(
 	const details::GameStateInformation information
 		= details::GameStateDetector::detect(
 				nextStage,
+				offerDraw,
 				internal::getPreviouslyReachedPositionsMap(game.history()));
 
-	std::vector<GameStage> nextHistory = game.history();
-	nextHistory.push_back(nextStage);
+	auto nextHistory = game.history();
+	nextHistory.push_back(
+			{game.currentStage(),
+			PlayedMoveBuilder::build(
+					game.currentStage().board(),
+					move,
+					offerDraw)});
 
-	return  GameBuilder::build(
+	return GameBuilder::build(
 			information.gameState,
 			information.reasonItWasDrawn,
 			nextHistory,
+			nextStage,
 			information.availableMoves,
 			information.reasonToClaimDraw);
 }
@@ -193,6 +201,7 @@ Game GameManagerImpl::claimDraw(const Game& game) const
 			GameState::Drawn,
 			reason,
 			game.history(),
+			game.currentStage(),
 			{},
 			{});
 }
@@ -210,6 +219,7 @@ Game GameManagerImpl::resign(const Game& game, Color resigningPlayer) const
 				: GameState::WhiteWon,
 			{},
 			game.history(),
+			game.currentStage(),
 			{},
 			{});
 }

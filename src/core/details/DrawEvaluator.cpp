@@ -122,14 +122,13 @@ namespace internal
 
 std::optional<DrawReason> DrawEvaluator::reasonToDraw(
 		const GameStage& stage,
-		const std::map<std::string, uint8_t>& previouslyReachedPositions)
+		const std::map<std::string, uint8_t>& previouslyReachedPositions,
+		bool drawOffered)
 {
 	const std::set<PieceMove> allPossibleMoves
 		= MoveValidator::allAvailableMoves(
 				stage.board(),
-				stage.move()
-					? MoveValidator::enPassantTarget(stage.move()->pieceMove())
-					: std::optional<Square>{},
+				stage.enPassantTarget(),
 				stage.castlingRights(),
 				stage.activeColor());
 
@@ -140,14 +139,16 @@ std::optional<DrawReason> DrawEvaluator::reasonToDraw(
 			stage,
 			inCheck,
 			allPossibleMoves,
-			previouslyReachedPositions);
+			previouslyReachedPositions,
+			drawOffered);
 }
 
 std::optional<DrawReason> DrawEvaluator::reasonToDraw(
 		const GameStage& stage,
 		const bool isInCheck,
 		const std::set<PieceMove> allPossibleMoves,
-		const std::map<std::string, uint8_t>& previouslyReachedPositions)
+		const std::map<std::string, uint8_t>& previouslyReachedPositions,
+		bool drawOffered)
 {
 	if (stage.halfMovesSinceLastCaptureOrPawnAdvance() >= 150)
 	{
@@ -178,7 +179,7 @@ std::optional<DrawReason> DrawEvaluator::reasonToDraw(
 		return { DrawReason::InsufficientMaterial };
 	}
 
-	if (stage.move() && stage.move()->isDrawOffered())
+	if (drawOffered)
 	{
 		return { DrawReason::OfferedAndAccepted };
 	}

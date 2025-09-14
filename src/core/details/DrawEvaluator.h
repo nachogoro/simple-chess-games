@@ -38,7 +38,8 @@ namespace simplechess
 				 */
 				static std::optional<DrawReason> reasonToDraw(
 						const GameStage& stage,
-						const std::map<std::string, uint8_t>& previouslyReachedPositions);
+						const std::map<std::string, uint8_t>& previouslyReachedPositions,
+						bool drawOffered = false);
 
 				/**
 				 * \brief Returns a reason why a game at this stage could be
@@ -69,7 +70,8 @@ namespace simplechess
 						const GameStage& stage,
 						bool isInCheck,
 						const std::set<PieceMove> allAvailableMoves,
-						const std::map<std::string, uint8_t>& previouslyReachedPositions);
+						const std::map<std::string, uint8_t>& previouslyReachedPositions,
+						bool drawOffered);
 		};
 	}
 }

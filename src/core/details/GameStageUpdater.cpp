@@ -2,6 +2,8 @@
 
 #include "../Builders.h"
 #include "BoardAnalyzer.h"
+#include "MoveValidator.h"
+#include "fen/FenUtils.h"
 
 using namespace simplechess;
 using namespace simplechess::details;
@@ -59,16 +61,22 @@ GameStage GameStageUpdater::makeMove(
 		updatedCastlingRights &= ~CastlingRight::BlackKingSide;
 	}
 
+	const Board nextBoard = details::BoardAnalyzer::makeMoveOnBoard(stage.board(), move);
+	const Color nextActiveColor = oppositeColor(stage.activeColor());
+	const uint16_t nextHalfmoveClock = (move.piece().type() == PieceType::Pawn || playedMove.capturedPiece())
+		? 0
+		: stage.halfMovesSinceLastCaptureOrPawnAdvance() + 1;
+	const uint16_t nextFullmoveCounter = stage.fullMoveCounter()
+		+ ((stage.activeColor() == Color::Black) ? 1 : 0);
+
+	// Calculate en passant target
+	const std::optional<Square> enPassantTarget = MoveValidator::enPassantTarget({move});
+
 	return GameStageBuilder::build(
-			details::BoardAnalyzer::makeMoveOnBoard(stage.board(), move),
-			oppositeColor(stage.activeColor()),
-			updatedCastlingRights,
-			(move.piece().type() == PieceType::Pawn || playedMove.capturedPiece())
-				? 0
-				: stage.halfMovesSinceLastCaptureOrPawnAdvance() + 1,
-			stage.fullMoveCounter()
-				+ ((stage.activeColor() == Color::Black)
-					? 1
-					: 0),
-			playedMove);
+		nextBoard,
+		nextActiveColor,
+		updatedCastlingRights,
+		nextHalfmoveClock,
+		nextFullmoveCounter,
+		enPassantTarget);
 }

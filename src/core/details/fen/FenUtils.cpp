@@ -1,5 +1,8 @@
 #include "FenUtils.h"
 
+#include "../../../core/Builders.h"
+#include "FenParser.h"
+
 #include <cpp/simplechess/GameStage.h>
 
 #include <boost/algorithm/string.hpp>
@@ -200,4 +203,17 @@ std::string FenUtils::generateFen(
 	ss << " " << fullmoveClock;
 
 	return ss.str();
+}
+
+GameStage FenUtils::fromFenString(const std::string& fen)
+{
+	const FenParser parsedFen = FenParser::parse(fen);
+
+	return GameStageBuilder::build(
+		parsedFen.board(),
+		parsedFen.activeColor(),
+		parsedFen.castlingRights(),
+		parsedFen.halfMovesSinceLastCaptureOrPawnAdvance(),
+		parsedFen.fullMoveCounter(),
+		parsedFen.enPassantTarget());
 }

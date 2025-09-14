@@ -12,9 +12,9 @@ TEST(GameCreationTest, RegularGameCreation) {
 
 	EXPECT_THROW_CUSTOM(game.drawReason(), IllegalStateException);
 
-	const std::vector<GameStage>& history = game.history();
+	const auto& history = game.history();
 
-	EXPECT_EQ(history.size(), 1);
+	EXPECT_EQ(history.size(), 0);
 	EXPECT_EQ(game.activeColor(), Color::White);
 	EXPECT_EQ(game.reasonToClaimDraw(), std::optional<DrawReason>());
 
@@ -54,7 +54,7 @@ TEST(GameCreationTest, RegularGameCreation) {
 		{Square::fromRankAndFile(2, 'h'), {PieceType::Pawn,   Color::White}},
 	};
 
-	EXPECT_EQ(history[history.size() - 1].board().occupiedSquares(), expectedPositions);
+	EXPECT_EQ(game.currentStage().board().occupiedSquares(), expectedPositions);
 }
 
 TEST(GameCreationTest, GameCreationFromPosition1) {
@@ -66,9 +66,9 @@ TEST(GameCreationTest, GameCreationFromPosition1) {
 
 	EXPECT_THROW_CUSTOM(game.drawReason(), IllegalStateException);
 
-	const std::vector<GameStage>& history = game.history();
+	const auto& history = game.history();
 
-	EXPECT_EQ(history.size(), 1);
+	EXPECT_EQ(history.size(), 0);
 	EXPECT_EQ(game.activeColor(), Color::Black);
 	EXPECT_EQ(game.reasonToClaimDraw(), std::optional<DrawReason>());
 
@@ -84,7 +84,7 @@ TEST(GameCreationTest, GameCreationFromPosition1) {
 		{Square::fromRankAndFile(3, 'e'), {PieceType::King,   Color::White}},
 	};
 
-	EXPECT_EQ(history[history.size() - 1].board().occupiedSquares(), expectedPositions);
+	EXPECT_EQ(game.currentStage().board().occupiedSquares(), expectedPositions);
 
 }
 

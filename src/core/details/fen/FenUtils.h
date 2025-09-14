@@ -1,10 +1,7 @@
 #ifndef FEN_UTILS_H_74319100_580E_47C2_8610_E38B9948AA96
 #define FEN_UTILS_H_74319100_580E_47C2_8610_E38B9948AA96
 
-#include <cpp/simplechess/Board.h>
-#include <cpp/simplechess/Color.h>
-#include <cpp/simplechess/Piece.h>
-#include <cpp/simplechess/Square.h>
+#include <cpp/simplechess/GameStage.h>
 
 #include <boost/bimap.hpp>
 
@@ -53,7 +50,17 @@ namespace simplechess
 				 */
 				static std::string fenForRepetitions(const std::string& fen);
 
-				// TODO document
+				/**
+				 * \brief Generate a FEN string from chess position components.
+				 *
+				 * \param board The board state.
+				 * \param activeColor The active color.
+				 * \param castlingRights The castling rights.
+				 * \param epTarget The en passant target square.
+				 * \param halfmoveClock The halfmove clock.
+				 * \param fullmoveClock The fullmove clock.
+				 * \return The FEN string representation.
+				 */
 				static std::string generateFen(
 						const Board& board,
 						const Color activeColor,
@@ -61,6 +68,15 @@ namespace simplechess
 						const std::optional<Square>& epTarget,
 						const uint16_t halfmoveClock,
 						const uint16_t fullmoveClock);
+
+				/**
+				 * \brief Create a GameStage from a FEN string.
+				 *
+				 * \param fen The FEN string to parse.
+				 * \return A GameStage representing the position described by the FEN string.
+				 * \throws std::invalid_argument if the FEN string is invalid.
+				 */
+				static GameStage fromFenString(const std::string& fen);
 
 			private:
 				static boost::bimap<char, Piece> sPieceMap;

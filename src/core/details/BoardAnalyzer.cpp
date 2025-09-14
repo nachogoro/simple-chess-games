@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <stdexcept>
 
 using namespace simplechess;
 using namespace simplechess::details;
@@ -125,7 +126,7 @@ const Square& BoardAnalyzer::kingSquare(const Board& board, Color color)
 		}
 	}
 
-	throw IllegalStateException("At least one king is missing from the board!");
+	throw std::invalid_argument("At least one king is missing from the board!");
 }
 
 Board BoardAnalyzer::makeMoveOnBoard(

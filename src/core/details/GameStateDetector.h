@@ -54,6 +54,7 @@ namespace simplechess
 				 */
 				static GameStateInformation detect(
 						const GameStage& stage,
+						bool drawOffered,
 						const std::map<std::string, uint8_t>& previouslyReachedPositions);
 		};
 	}

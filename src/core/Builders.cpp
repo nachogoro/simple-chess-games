@@ -14,32 +14,45 @@ GameStage GameStageBuilder::build(
 		const uint8_t castlingRights,
 		const uint16_t halfmoveClock,
 		const uint16_t fullmoveClock,
-		const std::optional<PlayedMove>& move)
+		const std::optional<Square>& enPassantTarget)
 {
+	// Generate FEN string
 	const std::string fen = details::FenUtils::generateFen(
+		board,
+		activeColor,
+		castlingRights,
+		enPassantTarget,
+		halfmoveClock,
+		fullmoveClock);
+
+	// Calculate check status
+	const bool isInCheck = details::BoardAnalyzer::isInCheck(board, activeColor);
+	CheckType checkStatus = CheckType::NoCheck;
+	if (isInCheck) {
+		const std::set<PieceMove> availableMoves = details::MoveValidator::allAvailableMoves(
 			board,
-			activeColor,
+			enPassantTarget,
 			castlingRights,
-			move
-				? details::MoveValidator::enPassantTarget({move->pieceMove()})
-				: std::nullopt,
-			halfmoveClock,
-			fullmoveClock);
+			activeColor);
+		checkStatus = (availableMoves.empty()) ? CheckType::CheckMate : CheckType::Check;
+	}
 
 	return GameStage(
-			board,
-			activeColor,
-			castlingRights,
-			halfmoveClock,
-			fullmoveClock,
-			fen,
-			move);
+		board,
+		activeColor,
+		castlingRights,
+		halfmoveClock,
+		fullmoveClock,
+		fen,
+		enPassantTarget,
+		checkStatus);
 }
 
 Game GameBuilder::build(
 		const GameState gameState,
 		const std::optional<DrawReason>& drawReason,
-		const std::vector<GameStage>& history,
+		const std::vector<std::pair<GameStage, PlayedMove>>& history,
+		const GameStage& currentStage,
 		const std::set<PieceMove>& allAvailableMoves,
 		const std::optional<DrawReason>& reasonToClaimDraw)
 {
@@ -47,6 +60,7 @@ Game GameBuilder::build(
 		gameState,
 		drawReason,
 		history,
+		currentStage,
 		allAvailableMoves,
 		reasonToClaimDraw };
 }

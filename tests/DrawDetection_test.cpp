@@ -18,6 +18,7 @@ TEST(DrawDetectionTest, OfferDraw) {
 
 	EXPECT_EQ(!!startingGame.reasonToClaimDraw(), false);
 	EXPECT_EQ(updated.gameState(), GameState::Playing);
+	EXPECT_EQ(!!updated.reasonToClaimDraw(), true);
 	EXPECT_EQ(*updated.reasonToClaimDraw(), DrawReason::OfferedAndAccepted);
 }
 

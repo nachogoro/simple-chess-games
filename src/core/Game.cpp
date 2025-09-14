@@ -26,12 +26,14 @@ using namespace simplechess;
 Game::Game(
 		const GameState gameState,
 		const std::optional<DrawReason>& drawReason,
-		const std::vector<GameStage>& history,
+		const std::vector<std::pair<GameStage, PlayedMove>>& history,
+		const GameStage& currentStage,
 		const std::set<PieceMove>& allAvailableMoves,
 		const std::optional<DrawReason>& reasonToClaimDraw)
 	: mGameState(gameState),
 	  mReasonGameWasDrawn(drawReason),
 	  mHistory(history),
+	  mCurrentStage(currentStage),
 	  mAllAvailableMoves(allAvailableMoves),
 	  mReasonToClaimDraw(reasonToClaimDraw)
 {
@@ -45,7 +47,7 @@ Game::Game(
 
 const GameStage& Game::currentStage() const
 {
-	return mHistory[mHistory.size() - 1];
+	return mCurrentStage;
 }
 
 GameState Game::gameState() const
@@ -64,7 +66,7 @@ DrawReason Game::drawReason() const
 	return *mReasonGameWasDrawn;
 }
 
-const std::vector<GameStage>& Game::history() const
+const std::vector<std::pair<GameStage, PlayedMove>>& Game::history() const
 {
 	return mHistory;
 }

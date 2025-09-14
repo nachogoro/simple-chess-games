@@ -14,21 +14,7 @@ namespace internal
 	std::optional<Square> enPassantTarget(
 			const GameStage& stage)
 	{
-		const std::optional<PlayedMove>& move = stage.move();
-
-		if (move
-				&& move->pieceMove().piece().type() == PieceType::Pawn
-				&& abs(move->pieceMove().dst().rank()
-					- move->pieceMove().src().rank()) == 2)
-		{
-			return { Square::fromRankAndFile(
-					((move->pieceMove().piece().color() == Color::White)
-					 ? 3
-					 : 6),
-					move->pieceMove().dst().file()) };
-		}
-
-		return {};
+		return stage.enPassantTarget();
 	}
 
 	boost::tuple<GameState, std::optional<DrawReason>> inferGameStateFromStage(
@@ -69,6 +55,7 @@ namespace internal
 
 GameStateInformation GameStateDetector::detect(
 		const GameStage& stage,
+		bool drawOffered,
 		const std::map<std::string, uint8_t>& previouslyReachedPositions)
 {
 	const bool inCheck = BoardAnalyzer::isInCheck(
@@ -93,7 +80,8 @@ GameStateInformation GameStateDetector::detect(
 				stage,
 				inCheck,
 				availableMoves,
-				previouslyReachedPositions);
+				previouslyReachedPositions,
+				drawOffered);
 
 	const boost::tuple<GameState, std::optional<DrawReason>> gameState
 		= internal::inferGameStateFromStage(
