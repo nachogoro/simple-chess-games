@@ -12,7 +12,7 @@ using namespace conversion_utils;
 
 chess_game_manager_t chess_create_manager(void) {
     try {
-        return new chess_game_manager();
+        return reinterpret_cast<chess_game_manager_t>(new GameManager());
     } catch (...) {
         return nullptr;
     }
@@ -20,7 +20,7 @@ chess_game_manager_t chess_create_manager(void) {
 
 void chess_destroy_manager(chess_game_manager_t manager) {
     if (manager) {
-        delete manager;
+        delete reinterpret_cast<GameManager*>(manager);
     }
 }
 
@@ -30,7 +30,8 @@ bool chess_create_new_game(chess_game_manager_t manager, chess_game_t* game_out)
     }
 
     try {
-        Game cpp_game = manager->manager->createNewGame();
+        GameManager* gameManager = reinterpret_cast<GameManager*>(manager);
+        Game cpp_game = gameManager->createNewGame();
         *game_out = cpp_to_c_game(cpp_game);
         return true;
     } catch (...) {
@@ -44,7 +45,8 @@ bool chess_create_game_from_fen(chess_game_manager_t manager, const char* fen, c
     }
 
     try {
-        Game cpp_game = manager->manager->createGameFromFen(std::string(fen));
+        GameManager* gameManager = reinterpret_cast<GameManager*>(manager);
+        Game cpp_game = gameManager->createGameFromFen(std::string(fen));
         *game_out = cpp_to_c_game(cpp_game);
         return true;
     } catch (...) {
@@ -62,6 +64,8 @@ bool chess_make_move(chess_game_manager_t manager,
     }
 
     try {
+        GameManager* gameManager = reinterpret_cast<GameManager*>(manager);
+
         // Reconstruct C++ Game from C game history
         Game cpp_game = c_to_cpp_game(manager, *current_game);
 
@@ -69,7 +73,7 @@ bool chess_make_move(chess_game_manager_t manager,
         PieceMove cpp_move = c_to_cpp_move(*move);
 
         // Make the move using C++ GameManager
-        Game new_cpp_game = manager->manager->makeMove(cpp_game, cpp_move, offer_draw);
+        Game new_cpp_game = gameManager->makeMove(cpp_game, cpp_move, offer_draw);
 
         // Convert result back to C format
         *result_game = cpp_to_c_game(new_cpp_game);
@@ -88,11 +92,13 @@ bool chess_claim_draw(chess_game_manager_t manager,
     }
 
     try {
+        GameManager* gameManager = reinterpret_cast<GameManager*>(manager);
+
         // Reconstruct C++ Game from C game history
         Game cpp_game = c_to_cpp_game(manager, *current_game);
 
         // Claim draw using C++ GameManager
-        Game new_cpp_game = manager->manager->claimDraw(cpp_game);
+        Game new_cpp_game = gameManager->claimDraw(cpp_game);
 
         // Convert result back to C format
         *result_game = cpp_to_c_game(new_cpp_game);
@@ -112,6 +118,8 @@ bool chess_resign(chess_game_manager_t manager,
     }
 
     try {
+        GameManager* gameManager = reinterpret_cast<GameManager*>(manager);
+
         // Reconstruct C++ Game from C game history
         Game cpp_game = c_to_cpp_game(manager, *current_game);
 
@@ -119,7 +127,7 @@ bool chess_resign(chess_game_manager_t manager,
         Color cpp_color = c_to_cpp_color(resigning_player);
 
         // Resign using C++ GameManager
-        Game new_cpp_game = manager->manager->resign(cpp_game, cpp_color);
+        Game new_cpp_game = gameManager->resign(cpp_game, cpp_color);
 
         // Convert result back to C format
         *result_game = cpp_to_c_game(new_cpp_game);
@@ -263,16 +271,21 @@ chess_move_list_t chess_get_moves_for_piece(const chess_position_t* position, ch
     }
 
     try {
-        // Create a temporary game manager and reconstruct game from position
+        // Convert position to FEN and create a game from it
+        char fen_buffer[90];
+        if (!conversion_utils::chess_position_to_fen(*position, fen_buffer, sizeof(fen_buffer))) {
+            return result;
+        }
+
         auto temp_manager = std::make_unique<GameManager>();
+        Game temp_game = temp_manager->createGameFromFen(std::string(fen_buffer));
 
-        // For now, we need to reconstruct the game from the position
-        // This is a limitation - we'd need a way to create a game from a position directly
-        // As a simplified approach, we'll return an empty list since this requires
-        // the full game context which isn't available from just the position
+        // Get moves for the specific square from the game
+        Square cpp_square = c_to_cpp_square(square);
+        std::set<PieceMove> moves = temp_game.availableMovesForPiece(cpp_square);
 
-        // TODO: This could be improved by adding a method to create a Game from a position
-        // or by storing additional context in chess_position_t
+        // Convert to C format
+        result = cpp_to_c_move_list(moves);
 
         return result;
     } catch (...) {
@@ -287,11 +300,26 @@ chess_move_list_t chess_get_all_moves_(const chess_position_t* position) {
         return result;
     }
 
-    // This would require reconstructing the full game state from the position
-    // For now, return empty list as this requires complex position analysis
-    // TODO: Implement position-based move generation
+    try {
+        // Convert position to FEN and create a game from it
+        char fen_buffer[90];
+        if (!conversion_utils::chess_position_to_fen(*position, fen_buffer, sizeof(fen_buffer))) {
+            return result;
+        }
 
-    return result;
+        auto temp_manager = std::make_unique<GameManager>();
+        Game temp_game = temp_manager->createGameFromFen(std::string(fen_buffer));
+
+        // Get all available moves from the game
+        const std::set<PieceMove>& moves = temp_game.allAvailableMoves();
+
+        // Convert to C format
+        result = cpp_to_c_move_list(moves);
+
+        return result;
+    } catch (...) {
+        return result;
+    }
 }
 
 bool chess_get_fen_for_position(const chess_position_t* position, char* out_buffer) {
@@ -299,9 +327,6 @@ bool chess_get_fen_for_position(const chess_position_t* position, char* out_buff
         return false;
     }
 
-    // This would require constructing FEN from the chess_position_t
-    // For now, return false as this requires complex FEN generation
-    // TODO: Implement position-to-FEN conversion
-
-    return false;
+    // Use our new position-to-FEN conversion function
+    return conversion_utils::chess_position_to_fen(*position, out_buffer, 90); // Assume 90 char buffer
 }

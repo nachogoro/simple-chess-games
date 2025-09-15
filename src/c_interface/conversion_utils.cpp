@@ -1,9 +1,12 @@
 #include "conversion_utils.h"
 #include <cpp/simplechess/Board.h>
 #include <cpp/simplechess/GameStage.h>
+#include "../core/Builders.h"
+#include "../core/details/fen/FenUtils.h"
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <cctype>
 #include <stdexcept>
 
 namespace conversion_utils {
@@ -130,10 +133,15 @@ chess_position_t cpp_to_c_position(const simplechess::Game& game) {
     result.can_castle_queenside[CHESS_COLOR_WHITE] = (castlingRights & simplechess::CastlingRight::WhiteQueenSide) != 0;
     result.can_castle_queenside[CHESS_COLOR_BLACK] = (castlingRights & simplechess::CastlingRight::BlackQueenSide) != 0;
 
-    // En passant - need to parse from FEN or determine from last move
-    // For now, set as not available (this would need more sophisticated parsing)
-    result.has_en_passant = false;
-    result.en_passant_target = {0, 'a'}; // Default value
+    // En passant - now available from GameStage after refactoring
+    const auto& enPassantSquare = currentStage.enPassantTarget();
+    if (enPassantSquare.has_value()) {
+        result.has_en_passant = true;
+        result.en_passant_target = cpp_to_c_square(enPassantSquare.value());
+    } else {
+        result.has_en_passant = false;
+        result.en_passant_target = {0, 'a'}; // Default value
+    }
 
     result.halfmove_clock = currentStage.halfMovesSinceLastCaptureOrPawnAdvance();
     result.fullmove_number = currentStage.fullMoveCounter();
@@ -256,15 +264,50 @@ simplechess::PieceMove c_to_cpp_move(chess_move_t move) {
     }
 }
 
-// Game reconstruction from history - simplified approach
+
+// Game reconstruction from history using refactored architecture
 simplechess::Game c_to_cpp_game(chess_game_manager_t manager, const chess_game_t& c_game) {
     if (!manager) {
         throw std::invalid_argument("Invalid game manager");
     }
 
-    // For now, create a new game as a fallback
-    // TODO: Implement proper reconstruction from chess_stage_t history
-    return manager->manager->createNewGame();
+    simplechess::GameManager* gameManager = reinterpret_cast<simplechess::GameManager*>(manager);
+
+    try {
+        // If no history, create game from current position FEN
+        if (c_game.history_count == 0) {
+            // Extract FEN from current position and create game
+            char fen_buffer[90];
+            if (!chess_position_to_fen(c_game.position, fen_buffer, sizeof(fen_buffer))) {
+                // Fallback to new game if FEN extraction fails
+                return gameManager->createNewGame();
+            }
+            return gameManager->createGameFromFen(std::string(fen_buffer));
+        }
+
+        // Reconstruct game by replaying moves from initial position
+        // Get initial position from first stage in history
+        char initial_fen[90];
+        if (!chess_position_to_fen(c_game.history[0].position, initial_fen, sizeof(initial_fen))) {
+            return gameManager->createNewGame();
+        }
+
+        simplechess::Game current_game = gameManager->createGameFromFen(std::string(initial_fen));
+
+        // Replay all moves in history
+        for (int i = 1; i < c_game.history_count; i++) {
+            const chess_stage_t& stage = c_game.history[i];
+            if (stage.has_move) {
+                simplechess::PieceMove cpp_move = c_to_cpp_move(stage.move);
+                current_game = gameManager->makeMove(current_game, cpp_move, stage.draw_offer);
+            }
+        }
+
+        return current_game;
+    } catch (...) {
+        // Fallback to new game on any error
+        return gameManager->createNewGame();
+    }
 }
 
 // Memory management helpers
@@ -289,6 +332,88 @@ void free_stage_history(chess_stage_t* history, int count) {
 
     // chess_stage_t contains plain data structures, so just free the array
     free(history);
+}
+
+// Additional conversion functions for FEN refactoring
+simplechess::Board c_to_cpp_board(const chess_position_t& position) {
+    std::map<simplechess::Square, simplechess::Piece> piecePositions;
+
+    for (int index = 0; index < CHESS_BOARD_SIZE; index++) {
+        if (position.occupied[index]) {
+            int rank = (index / 8) + 1;
+            char file = (index % 8) + 'a';
+
+            simplechess::Square square = simplechess::Square::fromRankAndFile(rank, file);
+            simplechess::Piece piece = c_to_cpp_piece(position.pieces[index]);
+
+            piecePositions.emplace(square, piece);
+        }
+    }
+
+    return simplechess::BoardBuilder::build(piecePositions);
+}
+
+uint8_t c_to_cpp_castling_rights(const chess_position_t& position) {
+    uint8_t rights = 0;
+
+    if (position.can_castle_kingside[CHESS_COLOR_WHITE]) {
+        rights |= simplechess::CastlingRight::WhiteKingSide;
+    }
+    if (position.can_castle_queenside[CHESS_COLOR_WHITE]) {
+        rights |= simplechess::CastlingRight::WhiteQueenSide;
+    }
+    if (position.can_castle_kingside[CHESS_COLOR_BLACK]) {
+        rights |= simplechess::CastlingRight::BlackKingSide;
+    }
+    if (position.can_castle_queenside[CHESS_COLOR_BLACK]) {
+        rights |= simplechess::CastlingRight::BlackQueenSide;
+    }
+
+    return rights;
+}
+
+std::optional<simplechess::Square> c_to_cpp_en_passant_target(const chess_position_t& position) {
+    if (!position.has_en_passant) {
+        return std::nullopt;
+    }
+
+    return simplechess::Square::fromRankAndFile(
+        position.en_passant_target.rank,
+        position.en_passant_target.file
+    );
+}
+
+// Utility function to convert position to FEN - now using core FEN utilities
+bool chess_position_to_fen(const chess_position_t& position, char* fen_buffer, size_t buffer_size) {
+    if (!fen_buffer || buffer_size < 90) return false; // FEN strings are at most 90 characters
+
+    try {
+        // Convert C position to C++ components
+        simplechess::Board board = c_to_cpp_board(position);
+        simplechess::Color activeColor = c_to_cpp_color(position.active_color);
+        uint8_t castlingRights = c_to_cpp_castling_rights(position);
+        std::optional<simplechess::Square> epTarget = c_to_cpp_en_passant_target(position);
+
+        // Use core FEN generation utility
+        std::string fen = simplechess::details::FenUtils::generateFen(
+            board,
+            activeColor,
+            castlingRights,
+            epTarget,
+            position.halfmove_clock,
+            position.fullmove_number
+        );
+
+        // Copy to output buffer
+        if (fen.length() >= buffer_size) return false;
+
+        strncpy(fen_buffer, fen.c_str(), buffer_size - 1);
+        fen_buffer[buffer_size - 1] = '\0';
+
+        return true;
+    } catch (...) {
+        return false;
+    }
 }
 
 } // namespace conversion_utils

@@ -11,11 +11,9 @@
 #include <set>
 #include <memory>
 
-// Forward declaration of the opaque handle structure
-struct chess_game_manager {
-    std::unique_ptr<simplechess::GameManager> manager;
-    chess_game_manager() : manager(std::make_unique<simplechess::GameManager>()) {}
-};
+// Forward declarations
+// The opaque handle chess_game_manager_t is defined in the C header as a pointer to an opaque struct
+// We cast GameManager* to/from chess_game_manager_t as needed
 
 namespace conversion_utils {
 
@@ -43,7 +41,12 @@ simplechess::PieceMove c_to_cpp_move(chess_move_t move);
 simplechess::Game c_to_cpp_game(chess_game_manager_t manager, const chess_game_t& c_game);
 
 // Utility functions
-std::string chess_position_to_fen(const chess_position_t& position);
+bool chess_position_to_fen(const chess_position_t& position, char* fen_buffer, size_t buffer_size);
+
+// Additional conversion functions for FEN refactoring
+simplechess::Board c_to_cpp_board(const chess_position_t& position);
+uint8_t c_to_cpp_castling_rights(const chess_position_t& position);
+std::optional<simplechess::Square> c_to_cpp_en_passant_target(const chess_position_t& position);
 
 // Memory management helpers
 void free_c_game_memory(chess_game_t* game);

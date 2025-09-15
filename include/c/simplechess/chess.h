@@ -161,6 +161,8 @@ void chess_move_to_string(const chess_move_t* move, char* out_str); // out_str m
 chess_move_list_t chess_get_moves_for_piece(const chess_position_t* position, chess_square_t square);
 chess_move_list_t chess_get_all_moves_(const chess_position_t* position);
 bool chess_get_fen_for_position(const chess_position_t* position, char* out_buffer);
+chess_piece_t chess_get_piece_at(const chess_position_t* position, chess_square_t square);
+bool chess_is_square_occupied(const chess_position_t* position, chess_square_t square);
 
 #ifdef __cplusplus
 }
