@@ -131,18 +131,32 @@ install(DIRECTORY include/c DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Tests
 enable_testing()
-add_executable(run_tests
-	tests/AlgebraicNotation_test.cpp
-	tests/DrawDetection_test.cpp
-	tests/FenGeneration_test.cpp
-	tests/GameCreation_test.cpp
-	tests/MoveAvailability_test.cpp
-	tests/MoveCounter_test.cpp
-	tests/MovesOnBoard_test.cpp
-	tests/Resignation_test.cpp)
-target_include_directories(run_tests PRIVATE include)
-target_include_directories(run_tests PRIVATE src)
-target_link_libraries(run_tests gtest_main simple-chess-games Boost::optional)
+
+# C++ Tests
+add_executable(run_cpp_tests
+	tests/cpp/AlgebraicNotation_test.cpp
+	tests/cpp/DrawDetection_test.cpp
+	tests/cpp/FenGeneration_test.cpp
+	tests/cpp/GameCreation_test.cpp
+	tests/cpp/MoveAvailability_test.cpp
+	tests/cpp/MoveCounter_test.cpp
+	tests/cpp/MovesOnBoard_test.cpp
+	tests/cpp/Resignation_test.cpp)
+target_include_directories(run_cpp_tests PRIVATE include)
+target_include_directories(run_cpp_tests PRIVATE src)
+target_include_directories(run_cpp_tests PRIVATE tests/cpp)
+target_link_libraries(run_cpp_tests gtest_main simple-chess-games Boost::optional)
+
+# C Interface Tests
+add_executable(run_c_tests
+	tests/c/AlgebraicNotation_test.cpp)
+target_include_directories(run_c_tests PRIVATE include)
+target_include_directories(run_c_tests PRIVATE src)
+target_link_libraries(run_c_tests gtest_main simple-chess-games-c)
 
 include(GoogleTest)
-gtest_discover_tests(run_tests)
+gtest_discover_tests(run_cpp_tests)
+gtest_discover_tests(run_c_tests)
+
+# Backward compatibility - run_tests now runs C++ tests
+add_custom_target(run_tests DEPENDS run_cpp_tests)

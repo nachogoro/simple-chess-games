@@ -109,7 +109,7 @@ namespace simplechess
 			/**
 			 * \brief Less-than comparison operator.
 			 *
-			 * The order established by  this operator is meaningless, as this
+			 * The order established by this operator is meaningless, as this
 			 * method is only necessary to allow objects of this class to be
 			 * used in std::set collections or as keys in std::map.
 			 *

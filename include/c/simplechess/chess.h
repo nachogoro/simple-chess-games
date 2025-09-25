@@ -65,6 +65,16 @@ typedef struct {
     bool is_promotion;
 } chess_move_t;
 
+#define CHESS_MAX_ALGEBRAIC_NOTATION_LENGTH 16
+typedef struct {
+    chess_move_t piece_move;             // The abstract piece movement
+    char algebraic_notation[CHESS_MAX_ALGEBRAIC_NOTATION_LENGTH];  // String representation (e.g. "Nf3", "Qxh7+")
+    chess_piece_t captured_piece;        // Captured piece (if any)
+    bool has_captured_piece;             // Whether a piece was captured
+    chess_check_type_t check_type;       // Type of check delivered
+    bool draw_offered;                   // Whether a draw was offered with this move
+} chess_played_move_t;
+
 #define CHESS_MAX_MOVES 256
 typedef struct {
     chess_move_t moves[CHESS_MAX_MOVES];
@@ -93,9 +103,8 @@ typedef struct {
 // Historical position access
 typedef struct {
     chess_position_t position;
-    chess_move_t move;      // Move that led to this position (invalid for initial position)
-    bool has_move;          // Whether this stage has an associated move
-    bool draw_offer;        // Whether the move included a draw offer
+    chess_played_move_t played_move;     // Played move that led to this position (invalid for initial position)
+    bool has_move;                       // Whether this stage has an associated move
 } chess_stage_t;
 
 typedef struct {
@@ -154,7 +163,6 @@ int chess_square_to_index(chess_square_t square);  // Returns 0-63 for array ind
 chess_square_t chess_square_from_index(int index);
 
 // Move utilities
-bool chess_move_is_valid_format(const chess_move_t* move);
 void chess_move_to_string(const chess_move_t* move, char* out_str); // out_str must be 6+ chars
 
 // Position utilities
@@ -163,6 +171,17 @@ chess_move_list_t chess_get_all_moves_(const chess_position_t* position);
 bool chess_get_fen_for_position(const chess_position_t* position, char* out_buffer);
 chess_piece_t chess_get_piece_at(const chess_position_t* position, chess_square_t square);
 bool chess_is_square_occupied(const chess_position_t* position, chess_square_t square);
+
+// Move notation utilities
+bool chess_get_move_algebraic_notation(chess_game_manager_t manager,
+                                       const chess_game_t* game,
+                                       int history_index,
+                                       char* out_buffer); // out_buffer must be 10+ chars
+
+// Direct access to algebraic notation from played move
+bool chess_get_played_move_notation(const chess_game_t* game,
+                                    int history_index,
+                                    char* out_buffer); // out_buffer must be 16+ chars
 
 #ifdef __cplusplus
 }

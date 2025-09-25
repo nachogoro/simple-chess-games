@@ -1,2 +1,2 @@
 ./build.sh
-cd build ; ./run_tests ; cd ..
+cd build ; ./run_c_tests ; cd ..

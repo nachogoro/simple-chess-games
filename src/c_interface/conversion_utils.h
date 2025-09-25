@@ -26,6 +26,7 @@ chess_check_type_t cpp_to_c_check_type(simplechess::CheckType check_type);
 chess_square_t cpp_to_c_square(const simplechess::Square& square);
 chess_piece_t cpp_to_c_piece(const simplechess::Piece& piece);
 chess_move_t cpp_to_c_move(const simplechess::PieceMove& move);
+chess_played_move_t cpp_to_c_played_move(const simplechess::PlayedMove& played_move);
 chess_move_list_t cpp_to_c_move_list(const std::set<simplechess::PieceMove>& moves);
 chess_position_t cpp_to_c_position(const simplechess::Game& game);
 chess_game_t cpp_to_c_game(const simplechess::Game& game);
