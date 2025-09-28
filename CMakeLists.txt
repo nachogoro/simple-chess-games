@@ -145,15 +145,19 @@ target_include_directories(run_cpp_tests PRIVATE tests/cpp)
 target_link_libraries(run_cpp_tests gtest_main simple-chess-games Boost::optional)
 
 # C Interface Tests
-#add_executable(run_c_tests
-#	tests/c/AlgebraicNotation_test.cpp)
-#target_include_directories(run_c_tests PRIVATE include)
-#target_include_directories(run_c_tests PRIVATE src)
-#target_link_libraries(run_c_tests gtest_main simple-chess-games-c)
+add_executable(run_c_tests
+	tests/c/AlgebraicNotation_test.cpp
+	tests/c/GameCreation_test.cpp
+	tests/c/FenGeneration_test.cpp
+	tests/c/DrawDetection_test.cpp
+	tests/c/Resignation_test.cpp)
+target_include_directories(run_c_tests PRIVATE include)
+target_include_directories(run_c_tests PRIVATE tests/c)
+target_link_libraries(run_c_tests gtest_main simple-chess-games-c)
 
 include(GoogleTest)
 gtest_discover_tests(run_cpp_tests)
-#gtest_discover_tests(run_c_tests)
+gtest_discover_tests(run_c_tests)
 
 # Backward compatibility - run_tests now runs C++ tests
 add_custom_target(run_tests DEPENDS run_cpp_tests)

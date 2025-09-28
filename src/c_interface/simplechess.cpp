@@ -27,13 +27,13 @@ game_t* simple_chess_make_move(const game_t* game, piece_move_t move) {
 	if (!game) return nullptr;
 
 	try {
-		return simple_chess_make_move(game, move, false);
+		return simple_chess_make_move_with_draw_offer(game, move, false);
 	} catch (...) {
 		return nullptr;
 	}
 }
 
-game_t* simple_chess_make_move(const game_t* game, piece_move_t move, bool offer_draw) {
+game_t* simple_chess_make_move_with_draw_offer(const game_t* game, piece_move_t move, bool offer_draw) {
 	if (!game) return nullptr;
 
 	try {

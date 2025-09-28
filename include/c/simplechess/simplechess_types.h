@@ -2,6 +2,11 @@
 #define SIMPLE_CHESS_TYPES_H_30BE77B0_9C5F_11F0_9652_6FBB5A814FD9
 
 #include <stdint.h>
+#include <stdbool.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 enum color_t {
 	ColorWhite,
@@ -109,5 +114,9 @@ struct game_t {
 	bool is_draw_claimable;
 	draw_reason_t reason_to_claim_draw;
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
