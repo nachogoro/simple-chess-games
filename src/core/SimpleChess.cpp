@@ -1,4 +1,4 @@
-#include "GameManagerImpl.h"
+#include <cpp/simplechess/SimpleChess.h>
 
 #include "Builders.h"
 #include "details/BoardAnalyzer.h"
@@ -106,14 +106,14 @@ namespace internal
 	}
 }
 
-Game GameManagerImpl::createNewGame() const
+Game simplechess::createNewGame()
 {
 	const std::string fenOfInitialPosition
 		= "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 	return createGameFromFen(fenOfInitialPosition);
 }
 
-Game GameManagerImpl::createGameFromFen(const std::string& fen) const
+Game simplechess::createGameFromFen(const std::string& fen)
 {
 	const details::FenParser parsedState = details::FenParser::parse(fen);
 
@@ -209,10 +209,10 @@ Game GameManagerImpl::createGameFromFen(const std::string& fen) const
 	return makeMove(originalGame, *lastMove, false);
 }
 
-Game GameManagerImpl::makeMove(
+Game simplechess::makeMove(
 		const Game& game,
 		const PieceMove& move,
-		bool offerDraw=false) const
+		bool offerDraw)
 {
 	if (game.gameState() != GameState::Playing)
 	{
@@ -255,7 +255,7 @@ Game GameManagerImpl::makeMove(
 			information.reasonToClaimDraw);
 }
 
-Game GameManagerImpl::claimDraw(const Game& game) const
+Game simplechess::claimDraw(const Game& game)
 {
 	if (game.gameState() != GameState::Playing)
 	{
@@ -280,7 +280,7 @@ Game GameManagerImpl::claimDraw(const Game& game) const
 			{});
 }
 
-Game GameManagerImpl::resign(const Game& game, Color resigningPlayer) const
+Game simplechess::resign(const Game& game, Color resigningPlayer)
 {
 	if (game.gameState() != GameState::Playing)
 	{

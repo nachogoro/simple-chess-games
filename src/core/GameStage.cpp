@@ -20,7 +20,6 @@ GameStage::GameStage(
 	  mEnPassantTarget(enPassantTarget),
 	  mCheckStatus(checkStatus)
 {
-	// Validation is now done at game creation time in GameManagerImpl::createGameFromFen
 	// This constructor assumes the position is valid since it's only called from validated contexts
 }
 

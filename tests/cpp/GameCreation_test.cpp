@@ -5,8 +5,7 @@
 using namespace simplechess;
 
 TEST(GameCreationTest, RegularGameCreation) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createNewGame();
+	const Game game = createNewGame();
 
 	EXPECT_EQ(game.gameState(), GameState::Playing);
 
@@ -58,8 +57,7 @@ TEST(GameCreationTest, RegularGameCreation) {
 }
 
 TEST(GameCreationTest, GameCreationFromPosition1) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"5rk1/3Q1p1p/6p1/8/3B4/4K3/8/8 b - - 0 1");
 
 	EXPECT_EQ(game.gameState(), GameState::Playing);
@@ -89,16 +87,14 @@ TEST(GameCreationTest, GameCreationFromPosition1) {
 }
 
 TEST(GameCreationTest, GameCreationFromPositionInCheckmate) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"6kr/5Q1p/3N2p1/8/8/4K3/8/8 b - - 0 1");
 
 	EXPECT_EQ(game.gameState(), GameState::WhiteWon);
 }
 
 TEST(GameCreationTest, GameCreationFromPositionInStalemate) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"7k/5Qr1/5Q2/5B2/8/4K3/8/8 b - - 0 1");
 
 	EXPECT_EQ(game.gameState(), GameState::Drawn);
@@ -107,18 +103,18 @@ TEST(GameCreationTest, GameCreationFromPositionInStalemate) {
 
 TEST(GameCreationTest, GameCreationWithTooManyKings) {
 	EXPECT_THROW_CUSTOM(
-			GameManager().createGameFromFen("5kk1/5Qr1/5Q2/5B2/8/4K3/8/8 b - - 0 1"),
+			createGameFromFen("5kk1/5Qr1/5Q2/5B2/8/4K3/8/8 b - - 0 1"),
 			std::invalid_argument);
 }
 
 TEST(GameCreationTest, GameCreationWithTooFewKings) {
 	EXPECT_THROW_CUSTOM(
-			GameManager().createGameFromFen("8/5Qr1/5Q2/5B2/8/4K3/8/8 b - - 0 1"),
+			createGameFromFen("8/5Qr1/5Q2/5B2/8/4K3/8/8 b - - 0 1"),
 			std::invalid_argument);
 }
 
 TEST(GameCreationTest, GameCreationActiveSideAlreadyChecking) {
 	EXPECT_THROW_CUSTOM(
-			GameManager().createGameFromFen("k4n2/5n1K/8/8/8/8/8/6r1 b - - 0 1"),
+			createGameFromFen("k4n2/5n1K/8/8/8/8/8/6r1 b - - 0 1"),
 			std::invalid_argument);
 }

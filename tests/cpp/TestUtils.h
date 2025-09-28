@@ -1,4 +1,4 @@
-#include <cpp/simplechess/GameManager.h>
+#include <cpp/simplechess/SimpleChess.h>
 
 #include <gtest/gtest.h>
 

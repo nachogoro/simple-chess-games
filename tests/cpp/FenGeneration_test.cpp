@@ -5,11 +5,10 @@
 using namespace simplechess;
 
 TEST(FenGenerationTest, BlackMoveNoCapture) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"rnbqkbnr/ppp2ppp/8/3pp1B1/4P3/3P4/PPP2PPP/RN1QKBNR b KQkq - 3 5");
 
-	const Game result = gameMgr.makeMove(
+	const Game result = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Queen, Color::Black},
@@ -21,11 +20,10 @@ TEST(FenGenerationTest, BlackMoveNoCapture) {
 }
 
 TEST(FenGenerationTest, BlackMoveWithCapture) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"8/pB1K4/7N/8/1RnP1P1q/4P3/4k3/8 b - - 15 26");
 
-	const Game result = gameMgr.makeMove(
+	const Game result = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Queen, Color::Black},
@@ -37,11 +35,10 @@ TEST(FenGenerationTest, BlackMoveWithCapture) {
 }
 
 TEST(FenGenerationTest, BlackPawnMove) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"8/1B1K4/7N/8/1RnP1P1q/4P3/p3k3/8 b - - 15 26");
 
-	const Game result = gameMgr.makeMove(
+	const Game result = makeMove(
 			game,
 			PieceMove::pawnPromotion(
 				{PieceType::Pawn, Color::Black},
@@ -54,11 +51,10 @@ TEST(FenGenerationTest, BlackPawnMove) {
 }
 
 TEST(FenGenerationTest, WhiteMoveNoCapture) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"rnbqkbnr/ppp2ppp/8/3pp1B1/4P3/3P4/PPP2PPP/RN1QKBNR w KQkq - 3 5");
 
-	const Game result = gameMgr.makeMove(
+	const Game result = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Knight, Color::White},
@@ -70,11 +66,10 @@ TEST(FenGenerationTest, WhiteMoveNoCapture) {
 }
 
 TEST(FenGenerationTest, WhiteMoveWithCapture) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"8/pB1K4/7N/8/1RnP1P1q/4P3/4k3/8 w - - 1 30");
 
-	const Game result = gameMgr.makeMove(
+	const Game result = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Rook, Color::White},
@@ -86,11 +81,10 @@ TEST(FenGenerationTest, WhiteMoveWithCapture) {
 }
 
 TEST(FenGenerationTest, WhitePawnMove) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"8/pB1K4/7N/8/1RnP1P1q/4P3/4k3/8 w - - 12 29");
 
-	const Game result = gameMgr.makeMove(
+	const Game result = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Pawn, Color::White},
@@ -102,11 +96,10 @@ TEST(FenGenerationTest, WhitePawnMove) {
 }
 
 TEST(FenGenerationTest, EnPassantTaken) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"rnbqkbnr/pppp1ppp/8/8/3Pp3/2N5/PPP1PPPP/R1BQKBNR b KQkq d3 0 1");
 
-	const Game result = gameMgr.makeMove(
+	const Game result = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Pawn, Color::Black},
@@ -118,11 +111,10 @@ TEST(FenGenerationTest, EnPassantTaken) {
 }
 
 TEST(FenGenerationTest, EnPassantIgnored) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"rnbqkbnr/pppp1ppp/8/8/3Pp3/2N5/PPP1PPPP/R1BQKBNR b KQkq d3 0 1");
 
-	const Game result = gameMgr.makeMove(
+	const Game result = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Pawn, Color::Black},
@@ -134,11 +126,10 @@ TEST(FenGenerationTest, EnPassantIgnored) {
 }
 
 TEST(FenGenerationTest, EnPassantIsCreated) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"rnbqkbnr/pppp1ppp/8/4p3/8/4P3/PPPP1PPP/RNBQKBNR w KQkq e6 0 2");
 
-	const Game result = gameMgr.makeMove(
+	const Game result = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Pawn, Color::White},
@@ -150,11 +141,10 @@ TEST(FenGenerationTest, EnPassantIsCreated) {
 }
 
 TEST(FenGenerationTest, WhiteKingSideCastling) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"rn1qkbnr/pp2pppp/2p5/1B1p4/4P1b1/5N2/PPPP1PPP/RNBQK2R w KQkq - 1 6");
 
-	const Game result = gameMgr.makeMove(
+	const Game result = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::King, Color::White},
@@ -166,11 +156,10 @@ TEST(FenGenerationTest, WhiteKingSideCastling) {
 }
 
 TEST(FenGenerationTest, WhiteQueensideCastling) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"rnbq1rk1/ppp2ppp/5n2/3pp3/1b2P3/2NP1Q2/PPPB1PPP/R3KBNR w KQ - 9 10");
 
-	const Game result = gameMgr.makeMove(
+	const Game result = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::King, Color::White},
@@ -182,11 +171,10 @@ TEST(FenGenerationTest, WhiteQueensideCastling) {
 }
 
 TEST(FenGenerationTest, BlackKingsideCastling) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"3rk2r/8/8/8/8/8/8/3RK2R b Kk - 0 41");
 
-	const Game result = gameMgr.makeMove(
+	const Game result = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::King, Color::Black},
@@ -198,11 +186,10 @@ TEST(FenGenerationTest, BlackKingsideCastling) {
 }
 
 TEST(FenGenerationTest, BlackQueensideCastling) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 7 52");
 
-	const Game result = gameMgr.makeMove(
+	const Game result = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::King, Color::Black},

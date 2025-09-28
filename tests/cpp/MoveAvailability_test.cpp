@@ -1,13 +1,13 @@
 #include <gtest/gtest.h>
-#include <cpp/simplechess/GameManager.h>
+
+#include <cpp/simplechess/SimpleChess.h>
 
 #include <boost/optional/optional_io.hpp>
 
 using namespace simplechess;
 
 TEST(MoveAvailabilityTest, RegularGameMoves) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createNewGame();
+	const Game game = createNewGame();
 
 	const std::set<PieceMove> expectedAvailableMoves =
 	{
@@ -118,8 +118,7 @@ TEST(MoveAvailabilityTest, RegularGameMoves) {
 }
 
 TEST(MoveAvailabilityTest, KnightMovesUnobstructed) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"7k/8/8/8/3N4/8/8/K7 w - - 0 1");
 
 	const std::set<PieceMove> expectedAvailableMoves =
@@ -188,8 +187,7 @@ TEST(MoveAvailabilityTest, KnightMovesUnobstructed) {
 TEST(MoveAvailabilityTest, KnightMovesObstructedAttempt) {
 	// This test proves that the knight is unaffected by pieces "on its path"
 	// to its destination squares
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"7k/8/8/2rrr3/2rNr3/2rrr3/8/K7 w - - 0 1");
 
 	const std::set<PieceMove> expectedAvailableMoves =
@@ -256,8 +254,7 @@ TEST(MoveAvailabilityTest, KnightMovesObstructedAttempt) {
 }
 
 TEST(MoveAvailabilityTest, BishopMovesUnobstructed) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"3k4/8/8/3BB3/8/8/8/3K4 w - - 0 1");
 
 	const std::set<PieceMove> expectedAvailableMoves =
@@ -424,8 +421,7 @@ TEST(MoveAvailabilityTest, BishopMovesUnobstructed) {
 }
 
 TEST(MoveAvailabilityTest, BishopMovesObstructed) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"7k/r5r1/3r4/8/1r1B2r1/8/1r3r2/2K5 w - - 0 1");
 
 	const std::set<PieceMove> expectedAvailableMoves =
@@ -492,8 +488,7 @@ TEST(MoveAvailabilityTest, BishopMovesObstructed) {
 }
 
 TEST(MoveAvailabilityTest, RookMovesUnobstructed) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"4k3/8/8/3R4/8/8/8/4K3 w - - 0 1");
 
 	const std::set<PieceMove> expectedAvailableMoves =
@@ -600,8 +595,7 @@ TEST(MoveAvailabilityTest, RookMovesUnobstructed) {
 }
 
 TEST(MoveAvailabilityTest, RookMovesObstructed) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"7k/r5r1/3r4/8/1r1R2r1/8/1r3r2/2K5 w - - 0 1");
 
 	const std::set<PieceMove> expectedAvailableMoves =
@@ -668,8 +662,7 @@ TEST(MoveAvailabilityTest, RookMovesObstructed) {
 }
 
 TEST(MoveAvailabilityTest, QueenMovesUnobstructed) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"4k3/8/8/3Q4/8/8/8/4K3 w - - 0 1");
 
 	const std::set<PieceMove> expectedAvailableMoves =
@@ -841,8 +834,7 @@ TEST(MoveAvailabilityTest, QueenMovesUnobstructed) {
 }
 
 TEST(MoveAvailabilityTest, QueenMovesObstructed) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"7k/r5r1/3r4/8/1r1Q2r1/8/1r3r2/2K5 w - - 0 1");
 
 	const std::set<PieceMove> expectedAvailableMoves =
@@ -959,8 +951,7 @@ TEST(MoveAvailabilityTest, QueenMovesObstructed) {
 }
 
 TEST(MoveAvailabilityTest, WhiteCastlingUnobstructed) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"1k6/8/8/8/8/8/8/R3K2R w KQ - 0 1");
 
 	const std::set<PieceMove> expectedAvailableMoves =
@@ -1077,8 +1068,7 @@ TEST(MoveAvailabilityTest, WhiteCastlingUnobstructed) {
 }
 
 TEST(MoveAvailabilityTest, WhiteCastlingQueensideObstructed) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"1k6/8/8/6b1/8/8/8/R3K2R w KQ - 0 1");
 
 	const std::set<PieceMove> expectedAvailableMoves =
@@ -1187,8 +1177,7 @@ TEST(MoveAvailabilityTest, WhiteCastlingQueensideObstructed) {
 }
 
 TEST(MoveAvailabilityTest, WhiteCastlingBothObstructed) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"1k6/8/8/6q1/8/8/8/R3K2R w KQ - 0 1");
 
 	const std::set<PieceMove> expectedAvailableMoves =
@@ -1293,8 +1282,7 @@ TEST(MoveAvailabilityTest, WhiteCastlingBothObstructed) {
 }
 
 TEST(MoveAvailabilityTest, WhiteCastlingUnavailable) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"1k6/8/8/8/8/8/8/R3K2R w - - 0 1");
 
 	const PieceMove kingSideCastling = PieceMove::regularMove(
@@ -1313,8 +1301,7 @@ TEST(MoveAvailabilityTest, WhiteCastlingUnavailable) {
 }
 
 TEST(MoveAvailabilityTest, BlackCastlingInCheck) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"4k2r/8/8/8/8/2K5/8/4R3 b k - 0 1");
 
 	const PieceMove kingSideCastling = PieceMove::regularMove(
@@ -1333,8 +1320,7 @@ TEST(MoveAvailabilityTest, BlackCastlingInCheck) {
 }
 
 TEST(MoveAvailabilityTest, EnPassantAvailable) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"rnbqkbnr/pppp1ppp/8/8/4pP2/4P3/PPPP2PP/RNBQKBNR b KQkq f3 0 1");
 
 	const PieceMove enPassant = PieceMove::regularMove(
@@ -1347,8 +1333,7 @@ TEST(MoveAvailabilityTest, EnPassantAvailable) {
 }
 
 TEST(MoveAvailabilityTest, EnPassantWouldLeaveInCheck) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"2k5/6b1/8/3pP3/8/8/1K6/8 w - d6 0 1");
 
 	const PieceMove enPassant = PieceMove::regularMove(
@@ -1361,8 +1346,7 @@ TEST(MoveAvailabilityTest, EnPassantWouldLeaveInCheck) {
 }
 
 TEST(MoveAvailabilityTest, PawnPromotion) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"2k1n3/5Pb1/8/3p4/8/K7/8/8 w - - 0 1");
 
 	const PieceMove promotionQueen = PieceMove::pawnPromotion(

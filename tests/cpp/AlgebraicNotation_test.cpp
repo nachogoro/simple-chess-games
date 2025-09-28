@@ -5,11 +5,10 @@
 using namespace simplechess;
 
 TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckNoAmbiguity) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"r1bqkb1r/pppppppp/2n5/8/4n1Q1/2N5/PPPP1PPP/R1B1KBNR w KQkq - 0 1");
 
-	const auto updatedGame = gameMgr.makeMove(
+	const auto updatedGame = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Knight, Color::White},
@@ -20,11 +19,10 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckNoAmbiguity) {
 }
 
 TEST(AlgebraicNotationTest, PieceMoveCaptureNoCheckNoAmbiguity) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"r1bqkb1r/pppppppp/2n5/8/2n1P1Q1/2N5/PPP2PPP/R1B1KBNR w KQkq - 0 1");
 
-	const auto updatedGame = gameMgr.makeMove(
+	const auto updatedGame = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Bishop, Color::White},
@@ -35,11 +33,10 @@ TEST(AlgebraicNotationTest, PieceMoveCaptureNoCheckNoAmbiguity) {
 }
 
 TEST(AlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguity) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"q1q5/q4k2/2P5/3r4/2P1B3/5K2/Q7/8 b - - 1 1");
 
-	const auto updatedGame = gameMgr.makeMove(
+	const auto updatedGame = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Queen, Color::Black},
@@ -50,11 +47,10 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguity) {
 }
 
 TEST(AlgebraicNotationTest, PieceMoveCaptureCheckNoAmbiguity) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"q7/1P3k2/8/3r4/2P1B2q/5K2/Q7/8 b - - 1 1");
 
-	const auto updatedGame = gameMgr.makeMove(
+	const auto updatedGame = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Queen, Color::Black},
@@ -65,11 +61,10 @@ TEST(AlgebraicNotationTest, PieceMoveCaptureCheckNoAmbiguity) {
 }
 
 TEST(AlgebraicNotationTest, PieceMoveNoCaptureCheckMateNoAmbiguity) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"4k3/R6R/8/8/8/8/8/4K3 w - - 0 1");
 
-	const auto updatedGame = gameMgr.makeMove(
+	const auto updatedGame = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Rook, Color::White},
@@ -80,11 +75,10 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureCheckMateNoAmbiguity) {
 }
 
 TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankAmbiguity) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"8/4k3/8/8/8/6K1/8/R6R w - - 0 1");
 
-	const auto updatedGame = gameMgr.makeMove(
+	const auto updatedGame = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Rook, Color::White},
@@ -95,11 +89,10 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankAmbiguity) {
 }
 
 TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankNoAmbiguity) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"8/4k3/8/8/8/6K1/8/R6R w - - 0 1");
 
-	const auto updatedGame = gameMgr.makeMove(
+	const auto updatedGame = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Rook, Color::White},
@@ -110,11 +103,10 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankNoAmbiguity) {
 }
 
 TEST(AlgebraicNotationTest, PieceMoveCaptureNoCheckSameFileAmbiguity) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"b4k2/8/2P5/8/b7/8/8/5K2 b - - 0 1");
 
-	const auto updatedGame = gameMgr.makeMove(
+	const auto updatedGame = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Bishop, Color::Black},
@@ -125,11 +117,10 @@ TEST(AlgebraicNotationTest, PieceMoveCaptureNoCheckSameFileAmbiguity) {
 }
 
 TEST(AlgebraicNotationTest, PieceMoveCaptureCheckSameFileSameRankAmbiguity) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"b3bk2/8/2P5/8/b7/5K2/8/8 b - - 0 1");
 
-	const auto updatedGame = gameMgr.makeMove(
+	const auto updatedGame = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Bishop, Color::Black},
@@ -140,11 +131,10 @@ TEST(AlgebraicNotationTest, PieceMoveCaptureCheckSameFileSameRankAmbiguity) {
 }
 
 TEST(AlgebraicNotationTest, PawnPromotionNoCaptureNoCheck) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"2rk4/1P6/8/5K2/8/8/8/8 w - - 0 1");
 
-	const auto updatedGame = gameMgr.makeMove(
+	const auto updatedGame = makeMove(
 			game,
 			PieceMove::pawnPromotion(
 				{PieceType::Pawn, Color::White},
@@ -156,11 +146,10 @@ TEST(AlgebraicNotationTest, PawnPromotionNoCaptureNoCheck) {
 }
 
 TEST(AlgebraicNotationTest, PawnPromotionCaptureCheck) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"2rk4/1P6/8/5K2/8/8/8/8 w - - 0 1");
 
-	const auto updatedGame = gameMgr.makeMove(
+	const auto updatedGame = makeMove(
 			game,
 			PieceMove::pawnPromotion(
 				{PieceType::Pawn, Color::White},
@@ -172,11 +161,10 @@ TEST(AlgebraicNotationTest, PawnPromotionCaptureCheck) {
 }
 
 TEST(AlgebraicNotationTest, PawnRegularMoveCaptureAmbiguityNoCheck) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"k7/8/8/3p1p2/4N3/8/8/7K b - - 0 1");
 
-	const auto updatedGame = gameMgr.makeMove(
+	const auto updatedGame = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Pawn, Color::Black},
@@ -187,11 +175,10 @@ TEST(AlgebraicNotationTest, PawnRegularMoveCaptureAmbiguityNoCheck) {
 }
 
 TEST(AlgebraicNotationTest, PawnRegularMoveCaptureNoAmbiguityNoCheck) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"k7/8/8/6pp/7N/8/8/7K b - - 0 1");
 
-	const auto updatedGame = gameMgr.makeMove(
+	const auto updatedGame = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Pawn, Color::Black},
@@ -202,11 +189,10 @@ TEST(AlgebraicNotationTest, PawnRegularMoveCaptureNoAmbiguityNoCheck) {
 }
 
 TEST(AlgebraicNotationTest, PawnEnPassantCaptureNoAmbiguityNoCheck) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"7k/8/8/Pp6/8/7K/8/8 w - b6 0 1");
 
-	const auto updatedGame = gameMgr.makeMove(
+	const auto updatedGame = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Pawn, Color::White},
@@ -217,11 +203,10 @@ TEST(AlgebraicNotationTest, PawnEnPassantCaptureNoAmbiguityNoCheck) {
 }
 
 TEST(AlgebraicNotationTest, PawnEnPassantCaptureAmbiguityNoCheck) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"7k/8/8/PpP5/8/7K/8/8 w - b6 0 1");
 
-	const auto updatedGame = gameMgr.makeMove(
+	const auto updatedGame = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Pawn, Color::White},
@@ -232,11 +217,10 @@ TEST(AlgebraicNotationTest, PawnEnPassantCaptureAmbiguityNoCheck) {
 }
 
 TEST(AlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguityDrawOffer) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"8/8/3K4/8/Q7/8/p7/1k6 w - - 0 1");
 
-	const auto updatedGame = gameMgr.makeMove(
+	const auto updatedGame = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::Queen, Color::White},
@@ -247,11 +231,10 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguityDrawOffer) {
 }
 
 TEST(AlgebraicNotationTest, CastlingKingsideNoCheck) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"8/8/8/8/6k1/8/4PP1P/4K2R w K - 0 1");
 
-	const auto updatedGame = gameMgr.makeMove(
+	const auto updatedGame = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::King, Color::White},
@@ -262,11 +245,10 @@ TEST(AlgebraicNotationTest, CastlingKingsideNoCheck) {
 }
 
 TEST(AlgebraicNotationTest, CastlingQueensideCheckmate) {
-	const GameManager gameMgr;
-	const Game game = gameMgr.createGameFromFen(
+	const Game game = createGameFromFen(
 			"r3k1K1/1q6/8/8/8/8/8/8 b q - 0 1");
 
-	const auto updatedGame = gameMgr.makeMove(
+	const auto updatedGame = makeMove(
 			game,
 			PieceMove::regularMove(
 				{PieceType::King, Color::Black},

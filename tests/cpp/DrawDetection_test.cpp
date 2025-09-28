@@ -5,8 +5,7 @@
 using namespace simplechess;
 
 TEST(DrawDetectionTest, OfferDraw) {
-	const GameManager gameMgr;
-	const Game startingGame = gameMgr.createNewGame();
+	const Game startingGame = createNewGame();
 
 	const PieceMove knightMove = PieceMove::regularMove(
 			{PieceType::Knight, Color::White},
@@ -14,7 +13,7 @@ TEST(DrawDetectionTest, OfferDraw) {
 			Square::fromRankAndFile(3, 'f'));
 
 	// Offer draw
-	const Game updated = gameMgr.makeMove(startingGame, knightMove, true);
+	const Game updated = makeMove(startingGame, knightMove, true);
 
 	EXPECT_EQ(!!startingGame.reasonToClaimDraw(), false);
 	EXPECT_EQ(updated.gameState(), GameState::Playing);
@@ -23,8 +22,7 @@ TEST(DrawDetectionTest, OfferDraw) {
 }
 
 TEST(DrawDetectionTest, OfferDrawAndAccept) {
-	const GameManager gameMgr;
-	const Game startingGame = gameMgr.createNewGame();
+	const Game startingGame = createNewGame();
 
 	const PieceMove knightMove = PieceMove::regularMove(
 			{PieceType::Knight, Color::White},
@@ -32,16 +30,15 @@ TEST(DrawDetectionTest, OfferDrawAndAccept) {
 			Square::fromRankAndFile(3, 'f'));
 
 	// Offer draw
-	const Game updated = gameMgr.makeMove(startingGame, knightMove, true);
-	const Game drawnGame = gameMgr.claimDraw(updated);
+	const Game updated = makeMove(startingGame, knightMove, true);
+	const Game drawnGame = claimDraw(updated);
 
 	EXPECT_EQ(drawnGame.gameState(), GameState::Drawn);
 	EXPECT_EQ(drawnGame.drawReason(), DrawReason::OfferedAndAccepted);
 }
 
 TEST(DrawDetectionTest, OfferDrawAndReject) {
-	const GameManager gameMgr;
-	const Game startingGame = gameMgr.createNewGame();
+	const Game startingGame = createNewGame();
 
 	const PieceMove whiteMove = PieceMove::regularMove(
 			{PieceType::Knight, Color::White},
@@ -54,10 +51,10 @@ TEST(DrawDetectionTest, OfferDrawAndReject) {
 			Square::fromRankAndFile(6, 'f'));
 
 	// Offer draw
-	const Game withDrawOffer = gameMgr.makeMove(startingGame, whiteMove, true);
+	const Game withDrawOffer = makeMove(startingGame, whiteMove, true);
 
 	// ... and ignore it
-	const Game withDrawRejected = gameMgr.makeMove(withDrawOffer, blackMove, false);
+	const Game withDrawRejected = makeMove(withDrawOffer, blackMove, false);
 
 	EXPECT_EQ(withDrawOffer.gameState(), GameState::Playing);
 	EXPECT_EQ(*withDrawOffer.reasonToClaimDraw(), DrawReason::OfferedAndAccepted);
@@ -66,8 +63,7 @@ TEST(DrawDetectionTest, OfferDrawAndReject) {
 }
 
 TEST(DrawDetectionTest, Stalemate) {
-	const GameManager gameMgr;
-	const Game startingGame = gameMgr.createGameFromFen(
+	const Game startingGame = createGameFromFen(
 			"8/5b2/1q6/3R3r/2K1N3/2P5/4k3/8 b - - 0 1");
 
 	const PieceMove causeStaleMate = PieceMove::regularMove(
@@ -75,7 +71,7 @@ TEST(DrawDetectionTest, Stalemate) {
 			Square::fromRankAndFile(5, 'h'),
 			Square::fromRankAndFile(4, 'h'));
 
-	const Game updated = gameMgr.makeMove(startingGame, causeStaleMate, false);
+	const Game updated = makeMove(startingGame, causeStaleMate, false);
 
 	EXPECT_EQ(!!startingGame.reasonToClaimDraw(), false);
 	EXPECT_EQ(updated.gameState(), GameState::Drawn);
@@ -83,8 +79,7 @@ TEST(DrawDetectionTest, Stalemate) {
 }
 
 TEST(DrawDetectionTest, InsufficientMaterialKingvsKing) {
-	const GameManager gameMgr;
-	const Game startingGame = gameMgr.createGameFromFen(
+	const Game startingGame = createGameFromFen(
 			"8/3k4/8/4p3/3K4/8/8/8 w - - 0 1");
 
 	EXPECT_EQ(startingGame.gameState(), GameState::Playing);
@@ -94,15 +89,14 @@ TEST(DrawDetectionTest, InsufficientMaterialKingvsKing) {
 			Square::fromRankAndFile(4, 'd'),
 			Square::fromRankAndFile(5, 'e'));
 
-	const Game withNoMaterial = gameMgr.makeMove(startingGame, pawnCapture);
+	const Game withNoMaterial = makeMove(startingGame, pawnCapture);
 
 	EXPECT_EQ(withNoMaterial.gameState(), GameState::Drawn);
 	EXPECT_EQ(withNoMaterial.drawReason(), DrawReason::InsufficientMaterial);
 }
 
 TEST(DrawDetectionTest, InsufficientMaterialKingvsKingAndBishop) {
-	const GameManager gameMgr;
-	const Game startingGame = gameMgr.createGameFromFen(
+	const Game startingGame = createGameFromFen(
 			"3k4/4R3/2B5/8/3K4/8/8/8 b - - 0 1");
 
 	EXPECT_EQ(startingGame.gameState(), GameState::Playing);
@@ -112,15 +106,14 @@ TEST(DrawDetectionTest, InsufficientMaterialKingvsKingAndBishop) {
 			Square::fromRankAndFile(8, 'd'),
 			Square::fromRankAndFile(7, 'e'));
 
-	const Game withNoMaterial = gameMgr.makeMove(startingGame, rookCapture);
+	const Game withNoMaterial = makeMove(startingGame, rookCapture);
 
 	EXPECT_EQ(withNoMaterial.gameState(), GameState::Drawn);
 	EXPECT_EQ(withNoMaterial.drawReason(), DrawReason::InsufficientMaterial);
 }
 
 TEST(DrawDetectionTest, InsufficientMaterialKingvsKingAndKnight) {
-	const GameManager gameMgr;
-	const Game startingGame = gameMgr.createGameFromFen(
+	const Game startingGame = createGameFromFen(
 			"3k4/3R4/2N5/8/3K4/8/8/8 b - - 0 1");
 
 	EXPECT_EQ(startingGame.gameState(), GameState::Playing);
@@ -130,15 +123,14 @@ TEST(DrawDetectionTest, InsufficientMaterialKingvsKingAndKnight) {
 			Square::fromRankAndFile(8, 'd'),
 			Square::fromRankAndFile(7, 'd'));
 
-	const Game withNoMaterial = gameMgr.makeMove(startingGame, rookCapture);
+	const Game withNoMaterial = makeMove(startingGame, rookCapture);
 
 	EXPECT_EQ(withNoMaterial.gameState(), GameState::Drawn);
 	EXPECT_EQ(withNoMaterial.drawReason(), DrawReason::InsufficientMaterial);
 }
 
 TEST(DrawDetectionTest, InsufficientMaterialKingAndBishopvsKingAndSameColoredBishop) {
-	const GameManager gameMgr;
-	const Game startingGame = gameMgr.createGameFromFen(
+	const Game startingGame = createGameFromFen(
 			"3k4/2b5/8/3r4/3K4/8/8/6B1 w - - 0 1");
 
 	EXPECT_EQ(startingGame.gameState(), GameState::Playing);
@@ -148,15 +140,14 @@ TEST(DrawDetectionTest, InsufficientMaterialKingAndBishopvsKingAndSameColoredBis
 			Square::fromRankAndFile(4, 'd'),
 			Square::fromRankAndFile(5, 'd'));
 
-	const Game withNoMaterial = gameMgr.makeMove(startingGame, rookCapture);
+	const Game withNoMaterial = makeMove(startingGame, rookCapture);
 
 	EXPECT_EQ(withNoMaterial.gameState(), GameState::Drawn);
 	EXPECT_EQ(withNoMaterial.drawReason(), DrawReason::InsufficientMaterial);
 }
 
 TEST(DrawDetectionTest, InsufficientMaterialKingAndBishopvsKingAndOppositeColorBishop) {
-	const GameManager gameMgr;
-	const Game startingGame = gameMgr.createGameFromFen(
+	const Game startingGame = createGameFromFen(
 			"3k4/2b5/8/3r4/3K4/8/8/7B w - - 0 1");
 
 	EXPECT_EQ(startingGame.gameState(), GameState::Playing);
@@ -166,22 +157,20 @@ TEST(DrawDetectionTest, InsufficientMaterialKingAndBishopvsKingAndOppositeColorB
 			Square::fromRankAndFile(4, 'd'),
 			Square::fromRankAndFile(5, 'd'));
 
-	const Game stillEnoughMaterial = gameMgr.makeMove(startingGame, rookCapture);
+	const Game stillEnoughMaterial = makeMove(startingGame, rookCapture);
 
 	EXPECT_EQ(stillEnoughMaterial.gameState(), GameState::Playing);
 }
 
 TEST(DrawDetectionTest, InvalidClaim) {
-	const GameManager gameMgr;
-	const Game startingGame = gameMgr.createNewGame();
+	const Game startingGame = createNewGame();
 
 	EXPECT_EQ(startingGame.gameState(), GameState::Playing);
-	EXPECT_THROW_CUSTOM(gameMgr.claimDraw(startingGame), IllegalStateException);
+	EXPECT_THROW_CUSTOM(claimDraw(startingGame), IllegalStateException);
 }
 
 TEST(DrawDetectionTest, NFoldRepetition) {
-	const GameManager gameMgr;
-	const Game startingGame = gameMgr.createNewGame();
+	const Game startingGame = createNewGame();
 
 	const PieceMove whiteKnightForward = PieceMove::regularMove(
 			{PieceType::Knight, Color::White},
@@ -203,35 +192,35 @@ TEST(DrawDetectionTest, NFoldRepetition) {
 			Square::fromRankAndFile(6, 'f'),
 			Square::fromRankAndFile(8, 'g'));
 
-	const Game move1 = gameMgr.makeMove(startingGame, whiteKnightForward);
+	const Game move1 = makeMove(startingGame, whiteKnightForward);
 	EXPECT_EQ(!!move1.reasonToClaimDraw(), false);
-	const Game move1Black = gameMgr.makeMove(move1, blackKnightForward);
+	const Game move1Black = makeMove(move1, blackKnightForward);
 	EXPECT_EQ(!!move1Black.reasonToClaimDraw(), false);
-	const Game move2 = gameMgr.makeMove(move1Black, whiteKnightBack);
+	const Game move2 = makeMove(move1Black, whiteKnightBack);
 	EXPECT_EQ(!!move2.reasonToClaimDraw(), false);
-	const Game move2Black = gameMgr.makeMove(move2, blackKnightBack);
+	const Game move2Black = makeMove(move2, blackKnightBack);
 	EXPECT_EQ(!!move2Black.reasonToClaimDraw(), false);
 
-	const Game move3 = gameMgr.makeMove(move2Black, whiteKnightForward);
+	const Game move3 = makeMove(move2Black, whiteKnightForward);
 	EXPECT_EQ(!!move3.reasonToClaimDraw(), false);
-	const Game move3Black = gameMgr.makeMove(move3, blackKnightForward);
+	const Game move3Black = makeMove(move3, blackKnightForward);
 	EXPECT_EQ(!!move3Black.reasonToClaimDraw(), false);
-	const Game move4 = gameMgr.makeMove(move3Black, whiteKnightBack);
+	const Game move4 = makeMove(move3Black, whiteKnightBack);
 	// At this point, black could play blackKnightBack, which would cause
 	// 3-fold repetition. Therefore, black can claim a draw at this point, even
 	// before making the move.
 	EXPECT_EQ(!!move4.reasonToClaimDraw(), true);
 
 	const Game fiveFold
-		= gameMgr.makeMove(
-				gameMgr.makeMove(
-					gameMgr.makeMove(
-						gameMgr.makeMove(
-							gameMgr.makeMove(
-								gameMgr.makeMove(
-									gameMgr.makeMove(
-										gameMgr.makeMove(
-											gameMgr.makeMove(
+		= makeMove(
+				makeMove(
+					makeMove(
+						makeMove(
+							makeMove(
+								makeMove(
+									makeMove(
+										makeMove(
+											makeMove(
 												move4,
 												blackKnightBack),
 											whiteKnightForward),
@@ -248,15 +237,14 @@ TEST(DrawDetectionTest, NFoldRepetition) {
 }
 
 TEST(DrawDetectionTest, FiftyMoveRule) {
-	const GameManager gameMgr;
-	const Game startingGame = gameMgr.createGameFromFen(
+	const Game startingGame = createGameFromFen(
 			"3k4/2b5/8/3r4/8/8/3K4/7B w - - 98 1");
 
 	EXPECT_EQ(startingGame.gameState(), GameState::Playing);
 	EXPECT_EQ(!!startingGame.reasonToClaimDraw(), false);
 
 	// Available when the move would be the 50th
-	const Game oneBeforeFifty = gameMgr.makeMove(startingGame,
+	const Game oneBeforeFifty = makeMove(startingGame,
 			PieceMove::regularMove(
 				{PieceType::King, Color::White},
 				Square::fromRankAndFile(2, 'd'),
@@ -267,7 +255,7 @@ TEST(DrawDetectionTest, FiftyMoveRule) {
 	EXPECT_EQ(*oneBeforeFifty.reasonToClaimDraw(), DrawReason::FiftyMoveRule);
 
 	// Test not automatically claimed at fifty
-	const Game exactlyFifty = gameMgr.makeMove(oneBeforeFifty,
+	const Game exactlyFifty = makeMove(oneBeforeFifty,
 			PieceMove::regularMove(
 				{PieceType::Bishop, Color::Black},
 				Square::fromRankAndFile(7, 'c'),
@@ -278,7 +266,7 @@ TEST(DrawDetectionTest, FiftyMoveRule) {
 	EXPECT_EQ(*exactlyFifty.reasonToClaimDraw(), DrawReason::FiftyMoveRule);
 
 	// Not automatically claimed after fifty
-	const Game afterFifty = gameMgr.makeMove(exactlyFifty,
+	const Game afterFifty = makeMove(exactlyFifty,
 			PieceMove::regularMove(
 				{PieceType::Bishop, Color::White},
 				Square::fromRankAndFile(1, 'h'),
@@ -290,15 +278,14 @@ TEST(DrawDetectionTest, FiftyMoveRule) {
 }
 
 TEST(DrawDetectionTest, SeventyFiveMoveRule) {
-	const GameManager gameMgr;
-	const Game startingGame = gameMgr.createGameFromFen(
+	const Game startingGame = createGameFromFen(
 			"3k4/2b5/8/3r4/8/8/3K4/7B w - - 149 1");
 
 	EXPECT_EQ(startingGame.gameState(), GameState::Playing);
 	EXPECT_EQ(!!startingGame.reasonToClaimDraw(), true);
 	EXPECT_EQ(*startingGame.reasonToClaimDraw(), DrawReason::FiftyMoveRule);
 
-	const Game seventyFiveFullMoves = gameMgr.makeMove(startingGame,
+	const Game seventyFiveFullMoves = makeMove(startingGame,
 			PieceMove::regularMove(
 				{PieceType::King, Color::White},
 				Square::fromRankAndFile(2, 'd'),
@@ -309,9 +296,8 @@ TEST(DrawDetectionTest, SeventyFiveMoveRule) {
 }
 
 TEST(DrawDetectionTest, SeventyFiveMoveRuleCheckmateOverride) {
-	const GameManager gameMgr;
 	// Position where black can deliver checkmate on the 75th move
-	const Game startingGame = gameMgr.createGameFromFen(
+	const Game startingGame = createGameFromFen(
 			"1r3k2/8/8/8/8/8/4PPPP/6K1 b - - 149 1");
 
 	EXPECT_EQ(startingGame.gameState(), GameState::Playing);
@@ -319,7 +305,7 @@ TEST(DrawDetectionTest, SeventyFiveMoveRuleCheckmateOverride) {
 	EXPECT_EQ(*startingGame.reasonToClaimDraw(), DrawReason::FiftyMoveRule);
 
 	// The 75th move delivers checkmate - checkmate should take precedence over draw
-	const Game checkmateOn75th = gameMgr.makeMove(startingGame,
+	const Game checkmateOn75th = makeMove(startingGame,
 			PieceMove::regularMove(
 				{PieceType::Rook, Color::Black},
 				Square::fromRankAndFile(8, 'b'),
