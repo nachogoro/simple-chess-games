@@ -15,23 +15,23 @@ namespace simplechess
 	class PlayedMoveBuilder;
 
 	/**
-	 * The different types of check which can be caused by a move.
+	 * \brief The different types of check which can be caused by a move.
 	 */
 	enum class CheckType
 	{
 		/**
-		 * No check whatsoever.
+		 * \brief No check whatsoever.
 		 */
 		NoCheck,
 
 		/**
-		 * Regular check (the other side still has valid moves to break the
+		 * \brief Regular check (the other side still has valid moves to break the
 		 * check).
 		 */
 		Check,
 
 		/**
-		 * Checkmate (the other side has no valid moves).
+		 * \brief Checkmate (the other side has no valid moves).
 		 */
 		CheckMate
 	};

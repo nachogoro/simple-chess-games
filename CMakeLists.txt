@@ -150,7 +150,10 @@ add_executable(run_c_tests
 	tests/c/GameCreation_test.cpp
 	tests/c/FenGeneration_test.cpp
 	tests/c/DrawDetection_test.cpp
-	tests/c/Resignation_test.cpp)
+	tests/c/Resignation_test.cpp
+	tests/c/MoveCounter_test.cpp
+	tests/c/MoveAvailability_test.cpp
+	tests/c/MovesOnBoard_test.cpp)
 target_include_directories(run_c_tests PRIVATE include)
 target_include_directories(run_c_tests PRIVATE tests/c)
 target_link_libraries(run_c_tests gtest_main simple-chess-games-c)
