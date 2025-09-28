@@ -54,6 +54,13 @@ namespace simplechess
 					const Board& board,
 					const PieceMove& move,
 					const bool drawOffered);
+
+			static PlayedMove build(
+					const PieceMove& pieceMove,
+					const std::optional<Piece>& capturedPiece,
+					bool drawOffered,
+					CheckType checkType,
+					const std::string& algebraicNotation);
 	};
 }
 

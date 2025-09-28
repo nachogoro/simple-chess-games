@@ -1,544 +1,436 @@
 #include "conversion_utils.h"
-#include <cpp/simplechess/Board.h>
-#include <cpp/simplechess/GameStage.h>
+#include "cpp/simplechess/SimpleChess.h"
 #include "../core/Builders.h"
 #include "../core/details/fen/FenUtils.h"
-#include <algorithm>
-#include <cstdlib>
 #include <cstring>
-#include <cctype>
-#include <stdexcept>
-
-namespace conversion_utils {
 
 // C++ to C conversions
-chess_color_t cpp_to_c_color(simplechess::Color color) {
-    return color == simplechess::Color::White ? CHESS_COLOR_WHITE : CHESS_COLOR_BLACK;
+color_t conversion_utils::c_color(simplechess::Color color) {
+	switch (color) {
+		case simplechess::Color::White:
+			return ColorWhite;
+		case simplechess::Color::Black:
+			return ColorBlack;
+	}
+
+	// Supress warning
+	return ColorWhite;
 }
 
-chess_piece_type_t cpp_to_c_piece_type(simplechess::PieceType type) {
-    switch (type) {
-        case simplechess::PieceType::Pawn:   return CHESS_PIECE_PAWN;
-        case simplechess::PieceType::Rook:   return CHESS_PIECE_ROOK;
-        case simplechess::PieceType::Knight: return CHESS_PIECE_KNIGHT;
-        case simplechess::PieceType::Bishop: return CHESS_PIECE_BISHOP;
-        case simplechess::PieceType::Queen:  return CHESS_PIECE_QUEEN;
-        case simplechess::PieceType::King:   return CHESS_PIECE_KING;
-    }
-    return CHESS_PIECE_PAWN; // Default fallback
+square_t conversion_utils::c_square(const simplechess::Square& square) {
+	square_t result;
+	result.rank = square.rank();
+	result.file = square.file();
+	result.color = c_color(square.color());
+	strncpy(result.as_string, square.toString().c_str(), 3);
+	return result;
 }
 
-chess_game_state_t cpp_to_c_game_state(simplechess::GameState state) {
-    switch (state) {
-        case simplechess::GameState::Playing:  return CHESS_GAME_PLAYING;
-        case simplechess::GameState::Drawn:    return CHESS_GAME_DRAWN;
-        case simplechess::GameState::WhiteWon: return CHESS_GAME_WHITE_WON;
-        case simplechess::GameState::BlackWon: return CHESS_GAME_BLACK_WON;
-    }
-    return CHESS_GAME_PLAYING; // Default fallback
+piece_type_t conversion_utils::c_piece_type(simplechess::PieceType type) {
+	switch (type) {
+		case simplechess::PieceType::Pawn:
+			return PieceTypePawn;
+		case simplechess::PieceType::Rook:
+			return PieceTypeRook;
+		case simplechess::PieceType::Knight:
+			return PieceTypeKnight;
+		case simplechess::PieceType::Bishop:
+			return PieceTypeBishop;
+		case simplechess::PieceType::Queen:
+			return PieceTypeQueen;
+		case simplechess::PieceType::King:
+			return PieceTypeKing;
+	}
+
+	// Suppress warning
+	return PieceTypePawn;
 }
 
-chess_draw_reason_t cpp_to_c_draw_reason(simplechess::DrawReason reason) {
-    switch (reason) {
-        case simplechess::DrawReason::StaleMate:           return CHESS_DRAW_STALEMATE;
-        case simplechess::DrawReason::InsufficientMaterial: return CHESS_DRAW_INSUFFICIENT_MATERIAL;
-        case simplechess::DrawReason::OfferedAndAccepted:  return CHESS_DRAW_OFFERED_ACCEPTED;
-        case simplechess::DrawReason::ThreeFoldRepetition: return CHESS_DRAW_THREEFOLD_REPETITION;
-        case simplechess::DrawReason::FiveFoldRepetition:  return CHESS_DRAW_FIVEFOLD_REPETITION;
-        case simplechess::DrawReason::FiftyMoveRule:       return CHESS_DRAW_FIFTY_MOVE;
-        case simplechess::DrawReason::SeventyFiveMoveRule: return CHESS_DRAW_SEVENTY_FIVE_MOVE;
-    }
-    return CHESS_DRAW_STALEMATE; // Default fallback
+piece_t conversion_utils::c_piece(const simplechess::Piece& piece) {
+	return {c_piece_type(piece.type()), c_color(piece.color())};
 }
 
-chess_check_type_t cpp_to_c_check_type(simplechess::CheckType check_type) {
-    switch (check_type) {
-        case simplechess::CheckType::NoCheck:  return CHESS_CHECK_NONE;
-        case simplechess::CheckType::Check:    return CHESS_CHECK_CHECK;
-        case simplechess::CheckType::CheckMate: return CHESS_CHECK_CHECKMATE;
-    }
-    return CHESS_CHECK_NONE; // Default fallback
+piece_move_t conversion_utils::c_piece_move(const simplechess::PieceMove& move) {
+	return {
+		c_piece(move.piece()),
+		c_square(move.src()),
+		c_square(move.dst()),
+		move.promoted().has_value(),
+		(move.promoted().has_value() ? c_piece_type(*move.promoted())
+		 : PieceTypePawn)
+	};
 }
 
-chess_square_t cpp_to_c_square(const simplechess::Square& square) {
-    chess_square_t result;
-    result.rank = square.rank();
-    result.file = square.file();
-    return result;
+check_type_t conversion_utils::c_check_type(simplechess::CheckType check)
+{
+	switch (check) {
+		case simplechess::CheckType::NoCheck:
+			return CheckTypeNone;
+		case simplechess::CheckType::Check:
+			return CheckTypeCheck;
+		case simplechess::CheckType::CheckMate:
+			return CheckTypeCheckMate;
+	}
+
+	// Suppress warning
+	return CheckTypeNone;
+};
+
+played_move_t conversion_utils::c_played_move(const simplechess::PlayedMove& move) {
+	played_move_t result;
+	result.move = c_piece_move(move.pieceMove());
+
+	result.is_capture = move.capturedPiece().has_value();
+	if (result.is_capture) {
+		result.captured_piece = c_piece(*move.capturedPiece());
+	}
+
+	result.check_type = c_check_type(move.checkType());
+	result.offers_draw = move.isDrawOffered();
+	strncpy(result.in_algebraic_notation, move.inAlgebraicNotation().c_str(), sizeof(result.in_algebraic_notation));
+	return result;
 }
 
-chess_piece_t cpp_to_c_piece(const simplechess::Piece& piece) {
-    chess_piece_t result;
-    result.type = cpp_to_c_piece_type(piece.type());
-    result.color = cpp_to_c_color(piece.color());
-    return result;
+castling_right_t conversion_utils::c_castling_rights(simplechess::CastlingRight right) {
+	switch (right) {
+		case simplechess::CastlingRight::WhiteKingSide:
+			return CastlingRightWhiteKingSide;
+		case simplechess::CastlingRight::WhiteQueenSide:
+			return CastlingRightWhiteQueenSide;
+		case simplechess::CastlingRight::BlackKingSide:
+			return CastlingRightBlackKingSide;
+		case simplechess::CastlingRight::BlackQueenSide:
+			return CastlingRightBlackQueenSide;
+	}
+	// Suppress warning
+	return CastlingRightWhiteKingSide;
 }
 
-chess_move_t cpp_to_c_move(const simplechess::PieceMove& move) {
-    chess_move_t result;
-    result.piece = cpp_to_c_piece(move.piece());
-    result.from = cpp_to_c_square(move.src());
-    result.to = cpp_to_c_square(move.dst());
-    result.is_promotion = move.promoted().has_value();
-    if (result.is_promotion) {
-        result.promotion = cpp_to_c_piece_type(move.promoted().value());
-    } else {
-        result.promotion = CHESS_PIECE_PAWN; // Default value
-    }
-    return result;
+uint8_t conversion_utils::c_castling_rights(uint8_t rights) {
+	uint8_t result{0};
+
+	if (rights & simplechess::CastlingRight::WhiteKingSide)
+		result |= CastlingRightWhiteKingSide;
+	if (rights & simplechess::CastlingRight::WhiteQueenSide)
+		result |= CastlingRightWhiteQueenSide;
+	if (rights & simplechess::CastlingRight::BlackKingSide)
+		result |= CastlingRightBlackKingSide;
+	if (rights & simplechess::CastlingRight::BlackQueenSide)
+		result |= CastlingRightBlackQueenSide;
+
+	return result;
 }
 
-chess_played_move_t cpp_to_c_played_move(const simplechess::PlayedMove& played_move) {
-    chess_played_move_t result = {};
+board_t conversion_utils::c_board(const simplechess::Board& board) {
+	board_t result;
+	for (int i = 0; i < 64; ++i) {
+		uint8_t row = 1 + (i / 8);
+		char col = 'a' + (i % 8);
+		const auto square = simplechess::Square::fromRankAndFile(row, col);
 
-    // Convert the underlying piece move
-    result.piece_move = cpp_to_c_move(played_move.pieceMove());
-
-    // Copy algebraic notation
-    const std::string& notation = played_move.inAlgebraicNotation();
-    strncpy(result.algebraic_notation, notation.c_str(), CHESS_MAX_ALGEBRAIC_NOTATION_LENGTH - 1);
-    result.algebraic_notation[CHESS_MAX_ALGEBRAIC_NOTATION_LENGTH - 1] = '\0';
-
-    // Handle captured piece
-    const auto& captured = played_move.capturedPiece();
-    if (captured.has_value()) {
-        result.has_captured_piece = true;
-        result.captured_piece = cpp_to_c_piece(captured.value());
-    } else {
-        result.has_captured_piece = false;
-        result.captured_piece = {CHESS_PIECE_PAWN, CHESS_COLOR_WHITE}; // Default value
-    }
-
-    // Convert check type
-    result.check_type = cpp_to_c_check_type(played_move.checkType());
-
-    // Draw offer flag
-    result.draw_offered = played_move.isDrawOffered();
-
-    return result;
+		const auto piece = board.pieceAt(square);
+		result.occupied[i] = piece.has_value();
+		if (piece) {
+			result.piece_at[i] = c_piece(*piece);
+		}
+	}
+	return result;
 }
 
-chess_move_list_t cpp_to_c_move_list(const std::set<simplechess::PieceMove>& moves) {
-    chess_move_list_t result;
-    result.count = std::min(static_cast<int>(moves.size()), CHESS_MAX_MOVES);
-
-    int i = 0;
-    for (const auto& move : moves) {
-        if (i >= CHESS_MAX_MOVES) break;
-        result.moves[i] = cpp_to_c_move(move);
-        i++;
-    }
-
-    return result;
+game_stage_t conversion_utils::c_game_stage(const simplechess::GameStage& stage) {
+	game_stage_t result;
+	result.board = c_board(stage.board());
+	result.active_color = c_color(stage.activeColor());
+	result.castling_rights = c_castling_rights(stage.castlingRights());
+	result.half_moves_since_last_capture_or_pawn_advance = stage.halfMovesSinceLastCaptureOrPawnAdvance();
+	result.full_moves = stage.fullMoveCounter();
+	result.has_en_passant_target = stage.enPassantTarget().has_value();
+	if (result.has_en_passant_target) {
+		result.en_passant_target = c_square(stage.enPassantTarget().value());
+	}
+	result.check_status = c_check_type(stage.checkStatus());
+	strncpy(result.fen, stage.fen().c_str(), sizeof(result.fen));
+	return result;
 }
 
-chess_position_t cpp_to_c_position(const simplechess::Game& game) {
-    chess_position_t result = {};
+game_state_t conversion_utils::c_game_state(simplechess::GameState state) {
+	switch(state) {
+		case simplechess::GameState::Playing:
+			return GameStatePlaying;
+		case simplechess::GameState::Drawn:
+			return GameStateDrawn;
+		case simplechess::GameState::WhiteWon:
+			return GameStateWhiteWon;
+		case simplechess::GameState::BlackWon:
+			return GameStateBlackWon;
+	}
 
-    // Clear the position first
-    for (int i = 0; i < CHESS_BOARD_SIZE; i++) {
-        result.occupied[i] = false;
-    }
-
-    // Get the current board from game's current stage
-    const auto& currentStage = game.currentStage();
-    const auto& board = currentStage.board();
-
-    // Fill in piece positions
-    const auto& occupiedSquares = board.occupiedSquares();
-    for (const auto& [square, piece] : occupiedSquares) {
-        int index = (square.rank() - 1) * 8 + (square.file() - 'a');
-        if (index >= 0 && index < CHESS_BOARD_SIZE) {
-            result.pieces[index] = cpp_to_c_piece(piece);
-            result.occupied[index] = true;
-        }
-    }
-
-    result.active_color = cpp_to_c_color(game.activeColor());
-
-    // Castling rights - extract from bitmask
-    uint8_t castlingRights = currentStage.castlingRights();
-    result.can_castle_kingside[CHESS_COLOR_WHITE] = (castlingRights & simplechess::CastlingRight::WhiteKingSide) != 0;
-    result.can_castle_kingside[CHESS_COLOR_BLACK] = (castlingRights & simplechess::CastlingRight::BlackKingSide) != 0;
-    result.can_castle_queenside[CHESS_COLOR_WHITE] = (castlingRights & simplechess::CastlingRight::WhiteQueenSide) != 0;
-    result.can_castle_queenside[CHESS_COLOR_BLACK] = (castlingRights & simplechess::CastlingRight::BlackQueenSide) != 0;
-
-    // En passant - now available from GameStage after refactoring
-    const auto& enPassantSquare = currentStage.enPassantTarget();
-    if (enPassantSquare.has_value()) {
-        result.has_en_passant = true;
-        result.en_passant_target = cpp_to_c_square(enPassantSquare.value());
-    } else {
-        result.has_en_passant = false;
-        result.en_passant_target = {0, 'a'}; // Default value
-    }
-
-    result.halfmove_clock = currentStage.halfMovesSinceLastCaptureOrPawnAdvance();
-    result.fullmove_number = currentStage.fullMoveCounter();
-
-    // Determine check status from game state
-    simplechess::GameState gameState = game.gameState();
-
-    if (gameState == simplechess::GameState::Playing) {
-        // Use the check status from the current stage
-        result.check_status = static_cast<chess_check_type_t>(currentStage.checkStatus());
-    } else if (gameState == simplechess::GameState::WhiteWon || gameState == simplechess::GameState::BlackWon) {
-        // Game ended with checkmate
-        result.check_status = CHESS_CHECK_CHECKMATE;
-    } else {
-        // Game drawn or other state
-        result.check_status = CHESS_CHECK_NONE;
-    }
-
-    return result;
+	// Suppress warning
+	return GameStatePlaying;
 }
 
-chess_game_t cpp_to_c_game(const simplechess::Game& game) {
-    chess_game_t result = {};
+draw_reason_t conversion_utils::c_draw_reason(simplechess::DrawReason reason) {
+	switch (reason) {
+		case simplechess::DrawReason::StaleMate:
+			return DrawReasonStaleMate;
+		case simplechess::DrawReason::InsufficientMaterial:
+			return DrawReasonInsufficientMaterial;
+		case simplechess::DrawReason::OfferedAndAccepted:
+			return DrawReasonOfferedAndAccepted;
+		case simplechess::DrawReason::ThreeFoldRepetition:
+			return DrawReasonThreeFoldRepetition;
+		case simplechess::DrawReason::FiveFoldRepetition:
+			return DrawReasonFiveFoldRepetition;
+		case simplechess::DrawReason::FiftyMoveRule:
+			return DrawReasonFiftyMoveRule;
+		case simplechess::DrawReason::SeventyFiveMoveRule:
+			return DrawReasonSeventyFiveMoveRule;
+	}
 
-    result.state = cpp_to_c_game_state(game.gameState());
+	// Suppress warning
+	return DrawReasonStaleMate;
+}
 
-    if (game.gameState() == simplechess::GameState::Drawn) {
-        result.draw_reason = cpp_to_c_draw_reason(game.drawReason());
-        result.has_draw_reason = true;
-    } else {
-        result.has_draw_reason = false;
-    }
+game_t* conversion_utils::c_game(const simplechess::Game& game) {
+	game_t* result = new game_t;
+	result->state = c_game_state(game.gameState());
+	if (game.gameState() == simplechess::GameState::Drawn)
+		result->draw_reason = c_draw_reason(game.drawReason());
 
-    result.position = cpp_to_c_position(game);
+	result->history_size = static_cast<uint16_t>(game.history().size());
+	result->history = new game_history_entry_t[result->history_size];
 
-    const auto& claimableDrawReason = game.reasonToClaimDraw();
-    if (claimableDrawReason.has_value()) {
-        result.claimable_draw = cpp_to_c_draw_reason(claimableDrawReason.value());
-        result.can_claim_draw = true;
-    } else {
-        result.can_claim_draw = false;
-    }
+	for (uint16_t i = 0; i < result->history_size; ++i) {
+		strncpy(result->history[i].fen, game.history()[i].first.fen().c_str(), sizeof(result->history[i].fen));
+		result->history[i].played_move = c_played_move(game.history()[i].second);
+	}
 
-    // Extract game history as chess_stage_t array
-    const auto& history = game.history();
-    result.history_count = static_cast<int>(history.size());
+	result->available_move_count = static_cast<uint16_t>(game.allAvailableMoves().size());
+	result->available_moves = new piece_move_t[result->available_move_count];
 
-    if (result.history_count > 0) {
-        // Allocate stage array
-        result.history = allocate_stage_history(result.history_count);
+	uint16_t i = 0;
+	for (const auto& pieceMove : game.allAvailableMoves()) {
+		result->available_moves[i] = c_piece_move(pieceMove);
+		++i;
+	}
 
-        for (int i = 0; i < result.history_count; i++) {
-            const auto& stage = history[i];
+	result->current_stage = c_game_stage(game.currentStage());
+	result->is_draw_claimable = game.reasonToClaimDraw().has_value();
+	if (result->is_draw_claimable) {
+		result->reason_to_claim_draw = c_draw_reason(*game.reasonToClaimDraw());
+	}
 
-            // Create a temporary game from this stage's FEN to get the exact position at that time
-            try {
-                simplechess::GameManager temp_manager;
-                simplechess::Game temp_game = temp_manager.createGameFromFen(stage.first.fen());
-                result.history[i].position = cpp_to_c_position(temp_game);
-            } catch (...) {
-                // Fallback to using current game position if FEN parsing fails
-                result.history[i].position = cpp_to_c_position(game);
-            }
-
-            // Store move information - each history entry contains the move that led to that position
-            // Exception: if this is the very first position of a game created from FEN (no moves made),
-            // then history[0] represents the initial state with no move
-            if (result.history_count == 1 && history.size() == 1) {
-                // This is a game created from FEN with no moves - check if there's actually a move
-                // If stage.second exists and is valid, this means there was a move made
-                try {
-                    const auto& played_move = stage.second;
-                    std::string notation = played_move.inAlgebraicNotation();
-                    // If we can get notation, this means there's a valid move
-                    result.history[i].has_move = true;
-                    result.history[i].played_move = cpp_to_c_played_move(played_move);
-                } catch (...) {
-                    // No valid move - this is just the initial position
-                    result.history[i].has_move = false;
-                    result.history[i].played_move = {}; // Zero-initialized
-                }
-            } else if (i == 0) {
-                // This should rarely happen - initial position in a multi-move game
-                result.history[i].has_move = false;
-                result.history[i].played_move = {}; // Zero-initialized
-            } else {
-                // Convert the move that led to this position
-                const auto& played_move = stage.second;
-                result.history[i].has_move = true;
-                result.history[i].played_move = cpp_to_c_played_move(played_move);
-            }
-        }
-    } else {
-        result.history = nullptr;
-    }
-
-    return result;
+	return result;
 }
 
 // C to C++ conversions
-simplechess::Color c_to_cpp_color(chess_color_t color) {
-    return color == CHESS_COLOR_WHITE ? simplechess::Color::White : simplechess::Color::Black;
+simplechess::Color conversion_utils::cpp_color(color_t color) {
+	switch (color) {
+		case ColorWhite:
+			return simplechess::Color::White;
+		case ColorBlack:
+			return simplechess::Color::Black;
+	}
+
+	// Suppress warning
+	return simplechess::Color::White;
 }
 
-simplechess::PieceType c_to_cpp_piece_type(chess_piece_type_t type) {
-    switch (type) {
-        case CHESS_PIECE_PAWN:   return simplechess::PieceType::Pawn;
-        case CHESS_PIECE_ROOK:   return simplechess::PieceType::Rook;
-        case CHESS_PIECE_KNIGHT: return simplechess::PieceType::Knight;
-        case CHESS_PIECE_BISHOP: return simplechess::PieceType::Bishop;
-        case CHESS_PIECE_QUEEN:  return simplechess::PieceType::Queen;
-        case CHESS_PIECE_KING:   return simplechess::PieceType::King;
-    }
-    return simplechess::PieceType::Pawn; // Default fallback
+simplechess::Square conversion_utils::cpp_square(const square_t& square) {
+	return simplechess::Square::fromRankAndFile(
+			std::clamp<uint8_t>(square.rank, 1, 8),
+			std::clamp<char>(std::tolower(square.file), 'a', 'h'));
 }
 
-simplechess::Square c_to_cpp_square(chess_square_t square) {
-    return simplechess::Square::fromRankAndFile(square.rank, square.file);
+simplechess::PieceType conversion_utils::cpp_piece_type(piece_type_t type) {
+	switch (type) {
+		case PieceTypePawn:
+			return simplechess::PieceType::Pawn;
+		case PieceTypeRook:
+			return simplechess::PieceType::Rook;
+		case PieceTypeKnight:
+			return simplechess::PieceType::Knight;
+		case PieceTypeBishop:
+			return simplechess::PieceType::Bishop;
+		case PieceTypeQueen:
+			return simplechess::PieceType::Queen;
+		case PieceTypeKing:
+			return simplechess::PieceType::King;
+	}
+
+	// Suppress warning
+	return simplechess::PieceType::Pawn;
 }
 
-simplechess::Piece c_to_cpp_piece(chess_piece_t piece) {
-    return simplechess::Piece(c_to_cpp_piece_type(piece.type), c_to_cpp_color(piece.color));
+simplechess::Piece conversion_utils::cpp_piece(const piece_t& piece) {
+	return simplechess::Piece(cpp_piece_type(piece.type), cpp_color(piece.color));
 }
 
-simplechess::PieceMove c_to_cpp_move(chess_move_t move) {
-    simplechess::Piece piece = c_to_cpp_piece(move.piece);
-    simplechess::Square from = c_to_cpp_square(move.from);
-    simplechess::Square to = c_to_cpp_square(move.to);
-
-    if (move.is_promotion) {
-        return simplechess::PieceMove::pawnPromotion(piece, from, to, c_to_cpp_piece_type(move.promotion));
-    } else {
-        return simplechess::PieceMove::regularMove(piece, from, to);
-    }
+simplechess::PieceMove conversion_utils::cpp_piece_move(const piece_move_t& move) {
+	if (move.is_promotion) {
+		return simplechess::PieceMove::pawnPromotion(
+				cpp_piece(move.piece),
+				cpp_square(move.src),
+				cpp_square(move.dst),
+				cpp_piece_type(move.promoted_to));
+	} else {
+		return simplechess::PieceMove::regularMove(
+				cpp_piece(move.piece),
+				cpp_square(move.src),
+				cpp_square(move.dst));
+	}
 }
 
+simplechess::CheckType conversion_utils::cpp_check_type(check_type_t check) {
+	switch (check) {
+		case CheckTypeNone:
+			return simplechess::CheckType::NoCheck;
+		case CheckTypeCheck:
+			return simplechess::CheckType::Check;
+		case CheckTypeCheckMate:
+			return simplechess::CheckType::CheckMate;
+	}
 
-// Game reconstruction from history using refactored architecture
-simplechess::Game c_to_cpp_game(chess_game_manager_t manager, const chess_game_t& c_game) {
-    if (!manager) {
-        throw std::invalid_argument("Invalid game manager");
-    }
-
-    simplechess::GameManager* gameManager = reinterpret_cast<simplechess::GameManager*>(manager);
-
-    try {
-        // If no history, create game from current position FEN
-        if (c_game.history_count == 0) {
-            // Extract FEN from current position and create game
-            char fen_buffer[90];
-            if (!chess_position_to_fen(c_game.position, fen_buffer, sizeof(fen_buffer))) {
-                // Fallback to new game if FEN extraction fails
-                return gameManager->createNewGame();
-            }
-            return gameManager->createGameFromFen(std::string(fen_buffer));
-        }
-
-        // Special case for exactly 1 history entry (most common case for getting algebraic notation)
-        if (c_game.history_count == 1 && c_game.history[0].has_move) {
-            // This means we have a game where one move was made
-            // We need to find the initial position and replay the move
-
-            // The key insight: the c_game.position represents the CURRENT position (after all moves)
-            // and c_game.history[0].position also represents a position after the move
-            // But neither gives us the STARTING position
-
-            // However, I can use the fact that moves in chess are usually reversible
-            // Let me try to work backwards from the current position
-
-            simplechess::PieceMove cpp_move = c_to_cpp_move(c_game.history[0].played_move.piece_move);
-
-            // For now, try a different approach: construct potential starting positions
-            // and see which one, when the move is applied, gives us the current position
-
-            // Extract the current position FEN
-            char current_fen[90];
-            if (!chess_position_to_fen(c_game.position, current_fen, sizeof(current_fen))) {
-                return gameManager->createNewGame();
-            }
-
-            // Try to reverse-engineer by testing common starting positions
-            // This is a heuristic approach that may work for test cases
-
-            // Try all the FENs from the test cases
-            std::vector<std::string> candidate_fens = {
-                "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", // Standard start
-                "r1bqkb1r/pppppppp/2n5/8/4n1Q1/2N5/PPPP1PPP/R1B1KBNR w KQkq - 0 1",
-                "r1bqkb1r/pppppppp/2n5/8/2n1P1Q1/2N5/PPP2PPP/R1B1KBNR w KQkq - 0 1",
-                "q1q5/q4k2/2P5/3r4/2P1B3/5K2/Q7/8 b - - 1 1",
-                "q7/1P3k2/8/3r4/2P1B2q/5K2/Q7/8 b - - 1 1",
-                "4k3/R6R/8/8/8/8/8/4K3 w - - 0 1",
-                "8/4k3/8/8/8/6K1/8/R6R w - - 0 1",
-                "b4k2/8/2P5/8/b7/8/8/5K2 b - - 0 1",
-                "b3bk2/8/2P5/8/b7/5K2/8/8 b - - 0 1",
-                "2rk4/1P6/8/5K2/8/8/8/8 w - - 0 1",
-                "k7/8/8/3p1p2/4N3/8/8/7K b - - 0 1",
-                "k7/8/8/6pp/7N/8/8/7K b - - 0 1",
-                "7k/8/8/Pp6/8/7K/8/8 w - b6 0 1",
-                "7k/8/8/PpP5/8/7K/8/8 w - b6 0 1",
-                "8/8/3K4/8/Q7/8/p7/1k6 w - - 0 1",
-                "8/8/8/8/6k1/8/4PP1P/4K2R w K - 0 1",
-                "r3k1K1/1q6/8/8/8/8/8/8 b q - 0 1"
-            };
-
-            // Try each candidate and see if making the move produces the current position
-            for (const std::string& candidate_fen : candidate_fens) {
-                try {
-                    simplechess::Game candidate_game = gameManager->createGameFromFen(candidate_fen);
-                    simplechess::Game result = gameManager->makeMove(candidate_game, cpp_move, c_game.history[0].played_move.draw_offered);
-
-                    // Check if this produces the same position
-                    char result_fen[90];
-                    if (chess_position_to_fen(cpp_to_c_position(result), result_fen, sizeof(result_fen))) {
-                        if (std::string(result_fen) == std::string(current_fen)) {
-                            // Found the right starting position!
-                            return result;
-                        }
-                    }
-                } catch (...) {
-                    // This candidate didn't work, try the next one
-                    continue;
-                }
-            }
-
-            // If no candidate worked, fall back to creating a game from current position
-            return gameManager->createGameFromFen(std::string(current_fen));
-        }
-
-        // For multiple moves, reconstruct by replaying
-        // Start with the first position and replay all moves that have has_move=true
-        char initial_fen[90];
-
-        // Find the first position without a move (if any)
-        int start_idx = 0;
-        for (int i = 0; i < c_game.history_count; i++) {
-            if (!c_game.history[i].has_move) {
-                start_idx = i;
-                break;
-            }
-        }
-
-        if (!chess_position_to_fen(c_game.history[start_idx].position, initial_fen, sizeof(initial_fen))) {
-            return gameManager->createNewGame();
-        }
-
-        simplechess::Game current_game = gameManager->createGameFromFen(std::string(initial_fen));
-
-        // Replay all moves in order
-        for (int i = start_idx + 1; i < c_game.history_count; i++) {
-            const chess_stage_t& stage = c_game.history[i];
-            if (stage.has_move) {
-                simplechess::PieceMove cpp_move = c_to_cpp_move(stage.played_move.piece_move);
-                current_game = gameManager->makeMove(current_game, cpp_move, stage.played_move.draw_offered);
-            }
-        }
-
-        return current_game;
-    } catch (...) {
-        // Fallback to new game on any error
-        return gameManager->createNewGame();
-    }
+	// Suppress warning
+	return simplechess::CheckType::NoCheck;
 }
 
-// Memory management helpers
-void free_c_game_memory(chess_game_t* game) {
-    if (!game) return;
+simplechess::PlayedMove conversion_utils::cpp_played_move(const played_move_t& move) {
+	const auto pieceMove = cpp_piece_move(move.move);
+	std::optional<simplechess::Piece> captured;
+	if (move.is_capture) {
+		captured = cpp_piece(move.captured_piece);
+	}
+	const bool drawOffered = move.offers_draw;
+	const auto checkType = cpp_check_type(move.check_type);
+	const std::string algebraic = move.in_algebraic_notation;
 
-    if (game->history) {
-        free_stage_history(game->history, game->history_count);
-        game->history = nullptr;
-    }
-
-    game->history_count = 0;
+	return simplechess::PlayedMoveBuilder::build(
+			pieceMove,
+			captured,
+			drawOffered,
+			checkType,
+			algebraic);
 }
 
-chess_stage_t* allocate_stage_history(int count) {
-    if (count <= 0) return nullptr;
-    return static_cast<chess_stage_t*>(malloc(count * sizeof(chess_stage_t)));
+simplechess::CastlingRight conversion_utils::cpp_castling_right(castling_right_t right) {
+	switch(right) {
+		case CastlingRightWhiteKingSide:
+			return simplechess::CastlingRight::WhiteKingSide;
+		case CastlingRightWhiteQueenSide:
+			return simplechess::CastlingRight::WhiteQueenSide;
+		case CastlingRightBlackKingSide:
+			return simplechess::CastlingRight::BlackKingSide;
+		case CastlingRightBlackQueenSide:
+			return simplechess::CastlingRight::BlackQueenSide;
+	}
+
+	// Suppress warning
+	return simplechess::CastlingRight::WhiteKingSide;
 }
 
-void free_stage_history(chess_stage_t* history, int count) {
-    if (!history) return;
+uint8_t conversion_utils::cpp_castling_rights(uint8_t rights) {
 
-    // chess_stage_t contains plain data structures, so just free the array
-    free(history);
+	uint8_t result;
+	if (rights & CastlingRightWhiteKingSide) {
+		result |= static_cast<uint8_t>(simplechess::CastlingRight::WhiteKingSide);
+	}
+	if (rights & CastlingRightWhiteQueenSide) {
+		result |= static_cast<uint8_t>(simplechess::CastlingRight::WhiteQueenSide);
+	}
+	if (rights & CastlingRightBlackKingSide) {
+		result |= static_cast<uint8_t>(simplechess::CastlingRight::BlackKingSide);
+	}
+	if (rights & CastlingRightBlackQueenSide) {
+		result |= static_cast<uint8_t>(simplechess::CastlingRight::BlackQueenSide);
+	}
+	return result;
 }
 
-// Additional conversion functions for FEN refactoring
-simplechess::Board c_to_cpp_board(const chess_position_t& position) {
-    std::map<simplechess::Square, simplechess::Piece> piecePositions;
-
-    for (int index = 0; index < CHESS_BOARD_SIZE; index++) {
-        if (position.occupied[index]) {
-            int rank = (index / 8) + 1;
-            char file = (index % 8) + 'a';
-
-            simplechess::Square square = simplechess::Square::fromRankAndFile(rank, file);
-            simplechess::Piece piece = c_to_cpp_piece(position.pieces[index]);
-
-            piecePositions.emplace(square, piece);
-        }
-    }
-
-    return simplechess::BoardBuilder::build(piecePositions);
+simplechess::Board conversion_utils::cpp_board(const board_t& board) {
+	std::map<simplechess::Square, simplechess::Piece> position;
+	for (uint8_t index = 0; index < 64; ++index) {
+		if (!board.occupied[index]) continue;
+		position.insert({
+				cpp_square(simple_chess_square_from_index(index)),
+				cpp_piece(board.piece_at[index])
+				});
+	}
+	return simplechess::BoardBuilder::build(position);
 }
 
-uint8_t c_to_cpp_castling_rights(const chess_position_t& position) {
-    uint8_t rights = 0;
-
-    if (position.can_castle_kingside[CHESS_COLOR_WHITE]) {
-        rights |= simplechess::CastlingRight::WhiteKingSide;
-    }
-    if (position.can_castle_queenside[CHESS_COLOR_WHITE]) {
-        rights |= simplechess::CastlingRight::WhiteQueenSide;
-    }
-    if (position.can_castle_kingside[CHESS_COLOR_BLACK]) {
-        rights |= simplechess::CastlingRight::BlackKingSide;
-    }
-    if (position.can_castle_queenside[CHESS_COLOR_BLACK]) {
-        rights |= simplechess::CastlingRight::BlackQueenSide;
-    }
-
-    return rights;
+simplechess::GameStage conversion_utils::cpp_game_stage(const game_stage_t& stage) {
+	return simplechess::details::FenUtils::fromFenString(stage.fen);
 }
 
-std::optional<simplechess::Square> c_to_cpp_en_passant_target(const chess_position_t& position) {
-    if (!position.has_en_passant) {
-        return std::nullopt;
-    }
+simplechess::GameState conversion_utils::cpp_game_state(game_state_t state) {
+	switch (state) {
+		case GameStatePlaying:
+			return simplechess::GameState::Playing;
+		case GameStateDrawn:
+			return simplechess::GameState::Drawn;
+		case GameStateWhiteWon:
+			return simplechess::GameState::WhiteWon;
+		case GameStateBlackWon:
+			return simplechess::GameState::BlackWon;
+	}
 
-    return simplechess::Square::fromRankAndFile(
-        position.en_passant_target.rank,
-        position.en_passant_target.file
-    );
+	// Suppress warning
+	return simplechess::GameState::Playing;
 }
 
-// Utility function to convert position to FEN - now using core FEN utilities
-bool chess_position_to_fen(const chess_position_t& position, char* fen_buffer, size_t buffer_size) {
-    if (!fen_buffer || buffer_size < 90) return false; // FEN strings are at most 90 characters
+simplechess::DrawReason conversion_utils::cpp_draw_reason(draw_reason_t reason) {
+	switch (reason) {
+		case DrawReasonStaleMate:
+			return simplechess::DrawReason::StaleMate;
+		case DrawReasonInsufficientMaterial:
+			return simplechess::DrawReason::InsufficientMaterial;
+		case DrawReasonOfferedAndAccepted:
+			return simplechess::DrawReason::OfferedAndAccepted;
+		case DrawReasonThreeFoldRepetition:
+			return simplechess::DrawReason::ThreeFoldRepetition;
+		case DrawReasonFiveFoldRepetition:
+			return simplechess::DrawReason::FiveFoldRepetition;
+		case DrawReasonFiftyMoveRule:
+			return simplechess::DrawReason::FiftyMoveRule;
+		case DrawReasonSeventyFiveMoveRule:
+			return simplechess::DrawReason::SeventyFiveMoveRule;
+	}
 
-    try {
-        // Convert C position to C++ components
-        simplechess::Board board = c_to_cpp_board(position);
-        simplechess::Color activeColor = c_to_cpp_color(position.active_color);
-        uint8_t castlingRights = c_to_cpp_castling_rights(position);
-        std::optional<simplechess::Square> epTarget = c_to_cpp_en_passant_target(position);
-
-        // Use core FEN generation utility
-        std::string fen = simplechess::details::FenUtils::generateFen(
-            board,
-            activeColor,
-            castlingRights,
-            epTarget,
-            position.halfmove_clock,
-            position.fullmove_number
-        );
-
-        // Copy to output buffer
-        if (fen.length() >= buffer_size) return false;
-
-        strncpy(fen_buffer, fen.c_str(), buffer_size - 1);
-        fen_buffer[buffer_size - 1] = '\0';
-
-        return true;
-    } catch (...) {
-        return false;
-    }
+	// Suppress warning
+	return simplechess::DrawReason::StaleMate;
 }
 
-} // namespace conversion_utils
+simplechess::Game conversion_utils::cpp_game(const game_t& game) {
+	const auto state = cpp_game_state(game.state);
+
+	const std::optional<simplechess::DrawReason> drawReason = (state == simplechess::GameState::Drawn)
+		? std::make_optional(cpp_draw_reason(game.draw_reason))
+		: std::nullopt;
+
+	std::vector<std::pair<simplechess::GameStage, simplechess::PlayedMove>> history;
+	for (uint16_t index = 0; index < game.history_size; ++index) {
+		history.push_back({
+				simplechess::details::FenUtils::fromFenString(game.history[index].fen),
+				cpp_played_move(game.history[index].played_move)});
+	}
+
+	simplechess::GameStage currentStage = cpp_game_stage(game.current_stage);
+	std::set<simplechess::PieceMove> allAvailableMoves;
+	for (uint16_t index = 0; index < game.available_move_count; ++index) {
+		allAvailableMoves.insert(cpp_piece_move(game.available_moves[index]));
+	}
+
+	std::optional<simplechess::DrawReason> reasonToClaimDraw;
+	if (game.is_draw_claimable) {
+		reasonToClaimDraw = cpp_draw_reason(game.reason_to_claim_draw);
+	}
+
+	return simplechess::GameBuilder::build(
+			state,
+			drawReason,
+			history,
+			currentStage,
+			allAvailableMoves,
+			reasonToClaimDraw);
+}

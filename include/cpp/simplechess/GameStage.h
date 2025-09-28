@@ -59,7 +59,6 @@ namespace simplechess
 			 */
 			const Board& board() const;
 
-
 			/**
 			 * \brief Returns the \ref Color which is to move next.
 			 *

@@ -30,16 +30,15 @@ set(core_sources
 	src/core/details/moves/RookMove.cpp)
 
 # C interface sources
-#set(c_interface_sources
-#	src/c_interface/chess_c_impl.cpp
-#	src/c_interface/conversion_utils.cpp)
+set(c_interface_sources
+	src/c_interface/simplechess.cpp
+	src/c_interface/conversion_utils.cpp)
 
 # All C++ sources
 set(cpp_library_sources ${core_sources})
 
 # All sources (core + both interfaces)
-# set(all_sources ${core_sources} ${cpp_interface_sources} ${c_interface_sources})
-set(all_sources ${core_sources} )
+set(all_sources ${core_sources} ${c_interface_sources})
 
 set(CMAKE_CXX_STANDARD 17)
 set(COMMON_FLAGS -Wall -Wextra -Wpedantic -Werror)
@@ -72,23 +71,23 @@ set_target_properties(simple-chess-games-static PROPERTIES
 # ===== C LIBRARY =====
 
 # Shared C library (includes both core and C interface)
-#add_library(simple-chess-games-c SHARED ${all_sources})
-#target_include_directories(simple-chess-games-c PUBLIC include)
-#target_link_libraries(simple-chess-games-c PRIVATE Boost::algorithm Boost::bimap)
-#
-## Static C library
-#add_library(simple-chess-games-c-static STATIC ${all_sources})
-#target_include_directories(simple-chess-games-c-static PUBLIC include)
-#target_link_libraries(simple-chess-games-c-static PRIVATE Boost::algorithm Boost::bimap)
-#
-## Set properties for C libraries
-#set_target_properties(simple-chess-games-c PROPERTIES
-#	VERSION ${PROJECT_VERSION}
-#	PUBLIC_HEADER "include/c/simplechess/chess.h")
-#
-#set_target_properties(simple-chess-games-c-static PROPERTIES
-#	VERSION ${PROJECT_VERSION}
-#	PUBLIC_HEADER "include/c/simplechess/chess.h")
+add_library(simple-chess-games-c SHARED ${all_sources})
+target_include_directories(simple-chess-games-c PUBLIC include)
+target_link_libraries(simple-chess-games-c PRIVATE Boost::algorithm Boost::bimap)
+
+# Static C library
+add_library(simple-chess-games-c-static STATIC ${all_sources})
+target_include_directories(simple-chess-games-c-static PUBLIC include)
+target_link_libraries(simple-chess-games-c-static PRIVATE Boost::algorithm Boost::bimap)
+
+# Set properties for C libraries
+set_target_properties(simple-chess-games-c PROPERTIES
+	VERSION ${PROJECT_VERSION}
+	PUBLIC_HEADER "include/c/simplechess/simplechess.h")
+
+set_target_properties(simple-chess-games-c-static PROPERTIES
+	VERSION ${PROJECT_VERSION}
+	PUBLIC_HEADER "include/c/simplechess/simplechess.h")
 
 include(GNUInstallDirs)
 
@@ -97,6 +96,7 @@ include(FetchContent)
 FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/refs/tags/v1.17.0.zip
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -114,17 +114,17 @@ set(BOOST_INCLUDE_LIBRARIES algorithm bimap optional)
 FetchContent_MakeAvailable(Boost)
 
 # Install targets
-install(TARGETS simple-chess-games #simple-chess-games-c
+install(TARGETS simple-chess-games simple-chess-games-c
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-install(TARGETS simple-chess-games-static #simple-chess-games-c-static
+install(TARGETS simple-chess-games-static simple-chess-games-c-static
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Install directory structure for headers
 install(DIRECTORY include/cpp DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-#install(DIRECTORY include/c DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY include/c DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Tests
 enable_testing()

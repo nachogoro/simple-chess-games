@@ -4,7 +4,6 @@
 #include "details/AlgebraicNotationGenerator.h"
 #include "details/BoardAnalyzer.h"
 #include "details/MoveValidator.h"
-#include "details/GameStageUpdater.h"
 
 using namespace simplechess;
 
@@ -106,7 +105,7 @@ PlayedMove PlayedMoveBuilder::build(
 			: CheckType::Check;
 	}
 
-	return PlayedMove(
+	return PlayedMoveBuilder::build(
 			move,
 			board.pieceAt(move.dst()),
 			drawOffered,
@@ -116,4 +115,20 @@ PlayedMove PlayedMoveBuilder::build(
 				move,
 				drawOffered,
 				checkType));
+}
+
+PlayedMove PlayedMoveBuilder::build(
+		const PieceMove& pieceMove,
+		const std::optional<Piece>& capturedPiece,
+		bool drawOffered,
+		CheckType checkType,
+		const std::string& algebraicNotation)
+{
+	return {
+		pieceMove,
+		capturedPiece,
+		drawOffered,
+		checkType,
+		algebraicNotation
+	};
 }
