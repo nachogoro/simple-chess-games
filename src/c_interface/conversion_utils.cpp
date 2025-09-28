@@ -192,13 +192,14 @@ draw_reason_t conversion_utils::c_draw_reason(simplechess::DrawReason reason) {
 }
 
 game_t* conversion_utils::c_game(const simplechess::Game& game) {
-	game_t* result = new game_t;
+	game_t* result = new game_t();
 	result->state = c_game_state(game.gameState());
 	if (game.gameState() == simplechess::GameState::Drawn)
 		result->draw_reason = c_draw_reason(game.drawReason());
 
 	result->history_size = static_cast<uint16_t>(game.history().size());
-	result->history = new game_history_entry_t[result->history_size];
+	if (result->history_size)
+		result->history = new game_history_entry_t[result->history_size];
 
 	for (uint16_t i = 0; i < result->history_size; ++i) {
 		strncpy(result->history[i].fen, game.history()[i].first.fen().c_str(), sizeof(result->history[i].fen));
@@ -206,7 +207,8 @@ game_t* conversion_utils::c_game(const simplechess::Game& game) {
 	}
 
 	result->available_move_count = static_cast<uint16_t>(game.allAvailableMoves().size());
-	result->available_moves = new piece_move_t[result->available_move_count];
+	if (result->available_move_count)
+		result->available_moves = new piece_move_t[result->available_move_count];
 
 	uint16_t i = 0;
 	for (const auto& pieceMove : game.allAvailableMoves()) {
@@ -215,9 +217,11 @@ game_t* conversion_utils::c_game(const simplechess::Game& game) {
 	}
 
 	result->current_stage = c_game_stage(game.currentStage());
-	result->is_draw_claimable = game.reasonToClaimDraw().has_value();
-	if (result->is_draw_claimable) {
-		result->reason_to_claim_draw = c_draw_reason(*game.reasonToClaimDraw());
+	if (game.gameState() == simplechess::GameState::Playing) {
+		result->is_draw_claimable = game.reasonToClaimDraw().has_value();
+		if (result->is_draw_claimable) {
+			result->reason_to_claim_draw = c_draw_reason(*game.reasonToClaimDraw());
+		}
 	}
 
 	return result;
