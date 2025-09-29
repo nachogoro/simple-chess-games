@@ -17,12 +17,10 @@ static inline piece_move_t create_move(piece_type_t piece_type, color_t color,
     // Initialize source square
     move.src.rank = src_rank;
     move.src.file = src_file;
-    move.src.color = (src_rank + src_file - 'a') % 2 == 0 ? ColorBlack : ColorWhite;
 
     // Initialize destination square
     move.dst.rank = dst_rank;
     move.dst.file = dst_file;
-    move.dst.color = (dst_rank + dst_file - 'a') % 2 == 0 ? ColorBlack : ColorWhite;
 
     move.is_promotion = false;
     move.promoted_to = PieceTypePawn; // dummy value
@@ -41,12 +39,10 @@ static inline piece_move_t create_promotion_move(color_t color,
     // Initialize source square
     move.src.rank = src_rank;
     move.src.file = src_file;
-    move.src.color = (src_rank + src_file - 'a') % 2 == 0 ? ColorBlack : ColorWhite;
 
     // Initialize destination square
     move.dst.rank = dst_rank;
     move.dst.file = dst_file;
-    move.dst.color = (dst_rank + dst_file - 'a') % 2 == 0 ? ColorBlack : ColorWhite;
 
     move.is_promotion = true;
     move.promoted_to = promoted_to;

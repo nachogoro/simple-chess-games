@@ -18,12 +18,7 @@ color_t conversion_utils::c_color(simplechess::Color color) {
 }
 
 square_t conversion_utils::c_square(const simplechess::Square& square) {
-	square_t result;
-	result.rank = square.rank();
-	result.file = square.file();
-	result.color = c_color(square.color());
-	strncpy(result.as_string, square.toString().c_str(), 3);
-	return result;
+	return {square.rank(), square.file()};
 }
 
 piece_type_t conversion_utils::c_piece_type(simplechess::PieceType type) {
