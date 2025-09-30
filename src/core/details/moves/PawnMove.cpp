@@ -38,8 +38,8 @@ std::set<PieceMove> simplechess::details::pawnMovesUnfiltered(
 		finalSquares.insert(oneAhead);
 	}
 
-	if (pawn.color() == Color::White && square.rank() == 2
-			|| pawn.color() == Color::Black && square.rank() == 7)
+	if ((pawn.color() == Color::White && square.rank() == 2)
+			|| (pawn.color() == Color::Black && square.rank() == 7))
 	{
 		// The pawn has never moved, might be able to move twice ahead
 		const Square twoAhead = Square::fromRankAndFile(

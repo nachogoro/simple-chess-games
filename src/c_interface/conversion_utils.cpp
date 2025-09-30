@@ -330,7 +330,7 @@ simplechess::CastlingRight conversion_utils::cpp_castling_right(castling_right_t
 
 uint8_t conversion_utils::cpp_castling_rights(uint8_t rights) {
 
-	uint8_t result;
+	uint8_t result = 0;
 	if (rights & CastlingRightWhiteKingSide) {
 		result |= static_cast<uint8_t>(simplechess::CastlingRight::WhiteKingSide);
 	}

@@ -34,12 +34,6 @@ set(c_interface_sources
 	src/c_interface/simplechess.cpp
 	src/c_interface/conversion_utils.cpp)
 
-# All C++ sources
-set(cpp_library_sources ${core_sources})
-
-# All sources (core + both interfaces)
-set(all_sources ${core_sources} ${c_interface_sources})
-
 set(CMAKE_CXX_STANDARD 17)
 set(COMMON_FLAGS -Wall -Wextra -Wpedantic -Werror)
 
@@ -47,15 +41,32 @@ set(COMMON_FLAGS -Wall -Wextra -Wpedantic -Werror)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Enable fPIC for all targets (required for shared libraries)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+# ===== OBJECT LIBRARIES (compiled once, reused) =====
+
+# Core engine object library - compiled once with fPIC
+add_library(core-objects OBJECT ${core_sources})
+target_include_directories(core-objects PUBLIC include)
+target_link_libraries(core-objects PRIVATE Boost::algorithm Boost::bimap)
+target_compile_options(core-objects PRIVATE ${COMMON_FLAGS})
+
+# C interface object library
+add_library(c-interface-objects OBJECT ${c_interface_sources})
+target_include_directories(c-interface-objects PUBLIC include)
+target_link_libraries(c-interface-objects PRIVATE Boost::algorithm Boost::bimap)
+target_compile_options(c-interface-objects PRIVATE ${COMMON_FLAGS})
+
 # ===== C++ LIBRARY =====
 
 # Shared C++ library
-add_library(simple-chess-games SHARED ${cpp_library_sources})
+add_library(simple-chess-games SHARED $<TARGET_OBJECTS:core-objects>)
 target_include_directories(simple-chess-games PUBLIC include)
 target_link_libraries(simple-chess-games PRIVATE Boost::algorithm Boost::bimap)
 
 # Static C++ library
-add_library(simple-chess-games-static STATIC ${cpp_library_sources})
+add_library(simple-chess-games-static STATIC $<TARGET_OBJECTS:core-objects>)
 target_include_directories(simple-chess-games-static PUBLIC include)
 target_link_libraries(simple-chess-games-static PRIVATE Boost::algorithm Boost::bimap)
 
@@ -71,12 +82,12 @@ set_target_properties(simple-chess-games-static PROPERTIES
 # ===== C LIBRARY =====
 
 # Shared C library (includes both core and C interface)
-add_library(simple-chess-games-c SHARED ${all_sources})
+add_library(simple-chess-games-c SHARED $<TARGET_OBJECTS:core-objects> $<TARGET_OBJECTS:c-interface-objects>)
 target_include_directories(simple-chess-games-c PUBLIC include)
 target_link_libraries(simple-chess-games-c PRIVATE Boost::algorithm Boost::bimap)
 
 # Static C library
-add_library(simple-chess-games-c-static STATIC ${all_sources})
+add_library(simple-chess-games-c-static STATIC $<TARGET_OBJECTS:core-objects> $<TARGET_OBJECTS:c-interface-objects>)
 target_include_directories(simple-chess-games-c-static PUBLIC include)
 target_link_libraries(simple-chess-games-c-static PRIVATE Boost::algorithm Boost::bimap)
 

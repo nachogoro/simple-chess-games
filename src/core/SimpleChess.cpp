@@ -219,7 +219,6 @@ Game simplechess::makeMove(
 		throw IllegalStateException("Attempted to make a move in finished game");
 	}
 
-	const Square& src = move.src();
 	const std::set<PieceMove> validMoves = game.allAvailableMoves();
 
 	if (validMoves.count(move) == 0)
