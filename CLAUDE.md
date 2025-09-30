@@ -4,9 +4,34 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Build Commands
 
-### Standard Build and Test
+### Build Options
+
+#### Quick Reference
 ```bash
-# Build the project
+# Debug build with tests (default)
+./build.sh
+
+# Release build (optimized for performance)
+./build-release.sh
+
+# Fast development build (no tests)
+./build-fast.sh [Debug|Release]
+
+# Custom build
+./build.sh [Debug|Release] [ON|OFF]
+```
+
+#### Build Modes
+- **Debug**: No optimizations (`-O0`), debug symbols (`-g`), all warnings
+- **Release**: Maximum optimizations (`-O3`), no debug symbols, runtime optimized
+
+#### Test Options
+- **ON** (default): Build and compile tests (slower build, more complete)
+- **OFF**: Libraries only (faster build for development iterations)
+
+#### Standard Build and Test
+```bash
+# Build the project (Debug with tests)
 ./build.sh
 
 # Build and run C tests (default)

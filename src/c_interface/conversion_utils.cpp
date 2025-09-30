@@ -82,7 +82,8 @@ played_move_t conversion_utils::c_played_move(const simplechess::PlayedMove& mov
 
 	result.check_type = c_check_type(move.checkType());
 	result.offers_draw = move.isDrawOffered();
-	strncpy(result.in_algebraic_notation, move.inAlgebraicNotation().c_str(), sizeof(result.in_algebraic_notation));
+	strncpy(result.in_algebraic_notation, move.inAlgebraicNotation().c_str(), sizeof(result.in_algebraic_notation) - 1);
+	result.in_algebraic_notation[sizeof(result.in_algebraic_notation) - 1] = '\0';
 	return result;
 }
 
@@ -144,7 +145,8 @@ game_stage_t conversion_utils::c_game_stage(const simplechess::GameStage& stage)
 		result.en_passant_target = c_square(stage.enPassantTarget().value());
 	}
 	result.check_status = c_check_type(stage.checkStatus());
-	strncpy(result.fen, stage.fen().c_str(), sizeof(result.fen));
+	strncpy(result.fen, stage.fen().c_str(), sizeof(result.fen) - 1);
+	result.fen[sizeof(result.fen) - 1] = '\0';
 	return result;
 }
 
@@ -197,7 +199,8 @@ game_t* conversion_utils::c_game(const simplechess::Game& game) {
 		result->history = new game_history_entry_t[result->history_size];
 
 	for (uint16_t i = 0; i < result->history_size; ++i) {
-		strncpy(result->history[i].fen, game.history()[i].first.fen().c_str(), sizeof(result->history[i].fen));
+		strncpy(result->history[i].fen, game.history()[i].first.fen().c_str(), sizeof(result->history[i].fen) - 1);
+		result->history[i].fen[sizeof(result->history[i].fen) - 1] = '\0';
 		result->history[i].played_move = c_played_move(game.history()[i].second);
 	}
 

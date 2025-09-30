@@ -35,11 +35,30 @@ set(c_interface_sources
 	src/c_interface/conversion_utils.cpp)
 
 set(CMAKE_CXX_STANDARD 17)
-set(COMMON_FLAGS -Wall -Wextra -Wpedantic -Werror)
-
-# Enable debug
-set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# Set default build type if not specified
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
+endif()
+
+# Common warning flags for all build types
+set(COMMON_WARNING_FLAGS -Wall -Wextra -Wpedantic -Werror)
+
+# Configure compiler flags based on build type
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    # Debug: No optimizations, debug symbols
+    set(COMMON_FLAGS ${COMMON_WARNING_FLAGS} -g -O0)
+    message(STATUS "Debug build: No optimizations, debug symbols enabled")
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    # Release: Maximum optimizations for runtime performance
+    set(COMMON_FLAGS ${COMMON_WARNING_FLAGS} -O3 -DNDEBUG)
+    message(STATUS "Release build: Optimized for runtime performance")
+else()
+    # Fallback for other build types
+    set(COMMON_FLAGS ${COMMON_WARNING_FLAGS})
+    message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+endif()
 
 # Enable fPIC for all targets (required for shared libraries)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -137,41 +156,50 @@ install(TARGETS simple-chess-games-static simple-chess-games-c-static
 install(DIRECTORY include/cpp DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(DIRECTORY include/c DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-# Tests
-enable_testing()
+# Option to build tests (enabled by default)
+option(BUILD_TESTS "Build test executables" ON)
 
-# C++ Tests
-add_executable(run_cpp_tests
-	tests/cpp/AlgebraicNotation_test.cpp
-	tests/cpp/DrawDetection_test.cpp
-	tests/cpp/FenGeneration_test.cpp
-	tests/cpp/GameCreation_test.cpp
-	tests/cpp/MoveAvailability_test.cpp
-	tests/cpp/MoveCounter_test.cpp
-	tests/cpp/MovesOnBoard_test.cpp
-	tests/cpp/Resignation_test.cpp)
-target_include_directories(run_cpp_tests PRIVATE include)
-target_include_directories(run_cpp_tests PRIVATE src/core)
-target_include_directories(run_cpp_tests PRIVATE tests/cpp)
-target_link_libraries(run_cpp_tests gtest_main simple-chess-games Boost::optional)
+if(BUILD_TESTS)
+    message(STATUS "Building tests enabled")
+    enable_testing()
+else()
+    message(STATUS "Building tests disabled - skipping for faster compilation")
+endif()
 
-# C Interface Tests
-add_executable(run_c_tests
-	tests/c/AlgebraicNotation_test.cpp
-	tests/c/GameCreation_test.cpp
-	tests/c/FenGeneration_test.cpp
-	tests/c/DrawDetection_test.cpp
-	tests/c/Resignation_test.cpp
-	tests/c/MoveCounter_test.cpp
-	tests/c/MoveAvailability_test.cpp
-	tests/c/MovesOnBoard_test.cpp)
-target_include_directories(run_c_tests PRIVATE include)
-target_include_directories(run_c_tests PRIVATE tests/c)
-target_link_libraries(run_c_tests gtest_main simple-chess-games-c)
+if(BUILD_TESTS)
+    # C++ Tests
+    add_executable(run_cpp_tests
+        tests/cpp/AlgebraicNotation_test.cpp
+        tests/cpp/DrawDetection_test.cpp
+        tests/cpp/FenGeneration_test.cpp
+        tests/cpp/GameCreation_test.cpp
+        tests/cpp/MoveAvailability_test.cpp
+        tests/cpp/MoveCounter_test.cpp
+        tests/cpp/MovesOnBoard_test.cpp
+        tests/cpp/Resignation_test.cpp)
+    target_include_directories(run_cpp_tests PRIVATE include)
+    target_include_directories(run_cpp_tests PRIVATE src/core)
+    target_include_directories(run_cpp_tests PRIVATE tests/cpp)
+    target_link_libraries(run_cpp_tests gtest_main simple-chess-games Boost::optional)
 
-include(GoogleTest)
-gtest_discover_tests(run_cpp_tests)
-gtest_discover_tests(run_c_tests)
+    # C Interface Tests
+    add_executable(run_c_tests
+        tests/c/AlgebraicNotation_test.cpp
+        tests/c/GameCreation_test.cpp
+        tests/c/FenGeneration_test.cpp
+        tests/c/DrawDetection_test.cpp
+        tests/c/Resignation_test.cpp
+        tests/c/MoveCounter_test.cpp
+        tests/c/MoveAvailability_test.cpp
+        tests/c/MovesOnBoard_test.cpp)
+    target_include_directories(run_c_tests PRIVATE include)
+    target_include_directories(run_c_tests PRIVATE tests/c)
+    target_link_libraries(run_c_tests gtest_main simple-chess-games-c)
 
-# Backward compatibility - run_tests now runs C++ tests
-add_custom_target(run_tests DEPENDS run_cpp_tests)
+    include(GoogleTest)
+    gtest_discover_tests(run_cpp_tests)
+    gtest_discover_tests(run_c_tests)
+
+    # Backward compatibility - run_tests now runs C++ tests
+    add_custom_target(run_tests DEPENDS run_cpp_tests)
+endif()
