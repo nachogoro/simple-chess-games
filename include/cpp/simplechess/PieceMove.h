@@ -5,7 +5,6 @@
 #include <cpp/simplechess/Square.h>
 
 #include <optional>
-#include <string>
 
 namespace simplechess
 {

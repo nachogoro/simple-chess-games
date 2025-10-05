@@ -159,7 +159,7 @@ TEST(CAlgebraicNotationTest, PawnPromotionCaptureCheck) {
     game_t* updated_game = simple_chess_make_move(game, move);
     ASSERT_GAME_NOT_NULL(updated_game);
 
-    EXPECT_LAST_MOVE_NOTATION(updated_game, "xc8=R+");
+    EXPECT_LAST_MOVE_NOTATION(updated_game, "bxc8=R+");
 
     destroy_game(game);
     destroy_game(updated_game);
@@ -189,7 +189,7 @@ TEST(CAlgebraicNotationTest, PawnRegularMoveCaptureNoAmbiguityNoCheck) {
     game_t* updated_game = simple_chess_make_move(game, move);
     ASSERT_GAME_NOT_NULL(updated_game);
 
-    EXPECT_LAST_MOVE_NOTATION(updated_game, "xh4");
+    EXPECT_LAST_MOVE_NOTATION(updated_game, "gxh4");
 
     destroy_game(game);
     destroy_game(updated_game);
@@ -204,7 +204,7 @@ TEST(CAlgebraicNotationTest, PawnEnPassantCaptureNoAmbiguityNoCheck) {
     game_t* updated_game = simple_chess_make_move(game, move);
     ASSERT_GAME_NOT_NULL(updated_game);
 
-    EXPECT_LAST_MOVE_NOTATION(updated_game, "xb6");
+    EXPECT_LAST_MOVE_NOTATION(updated_game, "axb6");
 
     destroy_game(game);
     destroy_game(updated_game);

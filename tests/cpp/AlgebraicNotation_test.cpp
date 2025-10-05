@@ -157,7 +157,7 @@ TEST(AlgebraicNotationTest, PawnPromotionCaptureCheck) {
 				Square::fromRankAndFile(8, 'c'),
 				PieceType::Rook));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "xc8=R+");
+	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "bxc8=R+");
 }
 
 TEST(AlgebraicNotationTest, PawnRegularMoveCaptureAmbiguityNoCheck) {
@@ -185,7 +185,7 @@ TEST(AlgebraicNotationTest, PawnRegularMoveCaptureNoAmbiguityNoCheck) {
 				Square::fromRankAndFile(5, 'g'),
 				Square::fromRankAndFile(4, 'h')));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "xh4");
+	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "gxh4");
 }
 
 TEST(AlgebraicNotationTest, PawnEnPassantCaptureNoAmbiguityNoCheck) {
@@ -199,7 +199,7 @@ TEST(AlgebraicNotationTest, PawnEnPassantCaptureNoAmbiguityNoCheck) {
 				Square::fromRankAndFile(5, 'a'),
 				Square::fromRankAndFile(6, 'b')));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "xb6");
+	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "axb6");
 }
 
 TEST(AlgebraicNotationTest, PawnEnPassantCaptureAmbiguityNoCheck) {

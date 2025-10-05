@@ -152,7 +152,7 @@ std::string AlgebraicNotationGenerator::toAlgebraicNotation(
 			board,
 			move);
 
-	std::stringstream ss;
+	std::ostringstream ss;
 	const std::optional<CastlingType> castling
 		= ::castlingType(move);
 
@@ -191,7 +191,16 @@ std::string AlgebraicNotationGenerator::toAlgebraicNotation(
 	}
 
 	// 3. Add the capture symbol if appropriate
-	ss << (isCapture ? "x" : "");
+	if (isCapture) {
+		if ((move.piece().type() == PieceType::Pawn) && (ss.tellp() == 0)) {
+			// It is a capture by a pawn. All captures by a pawn must include
+			// its original file even if it is not ambiguous.
+			// It may have already been added by the ambiguity resolution, so
+			// only add it if not already there
+			ss << move.src().file();
+		}
+		ss << "x";
+	}
 
 	// 4. Add destination square
 	ss << move.dst().toString();
