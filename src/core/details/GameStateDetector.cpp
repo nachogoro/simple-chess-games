@@ -21,7 +21,8 @@ namespace internal
 			const GameStage& stage,
 			const bool inCheck,
 			const std::set<PieceMove> allPossibleMoves,
-			const std::optional<DrawReason> reasonToClaimDraw)
+			const std::optional<DrawReason> reasonToClaimDraw,
+			const DrawEnforcement drawEnforcement)
 	{
 		if (inCheck)
 		{
@@ -37,26 +38,31 @@ namespace internal
 			}
 		}
 
-		if (!reasonToClaimDraw
-				|| (*reasonToClaimDraw != DrawReason::StaleMate
-						&& *reasonToClaimDraw != DrawReason::SeventyFiveMoveRule
-						&& *reasonToClaimDraw != DrawReason::FiveFoldRepetition
-						&& *reasonToClaimDraw != DrawReason::InsufficientMaterial))
+		if (reasonToClaimDraw && *reasonToClaimDraw == DrawReason::StaleMate)
 		{
-			// If there is a reason to draw, it is not automatically applied,
-			// so the game is still playable
-			return {GameState::Playing, {}};
+			// Stalemate is always enforced regardless of draw enforcement mode
+			return { GameState::Drawn, reasonToClaimDraw };
 		}
 
-		// There is a mandatory draw reason, so the game is drawn
-		return { GameState::Drawn, reasonToClaimDraw };
+		if (drawEnforcement == DrawEnforcement::Automatic
+				&& reasonToClaimDraw
+				&& (*reasonToClaimDraw == DrawReason::SeventyFiveMoveRule
+						|| *reasonToClaimDraw == DrawReason::FiveFoldRepetition
+						|| *reasonToClaimDraw == DrawReason::InsufficientMaterial))
+		{
+			// Mandatory draw reason with automatic enforcement
+			return { GameState::Drawn, reasonToClaimDraw };
+		}
+
+		return {GameState::Playing, {}};
 	}
 }
 
 GameStateInformation GameStateDetector::detect(
 		const GameStage& stage,
 		bool drawOffered,
-		const std::map<std::string, uint8_t>& previouslyReachedPositions)
+		const std::map<std::string, uint8_t>& previouslyReachedPositions,
+		const DrawEnforcement drawEnforcement)
 {
 	const bool inCheck = BoardAnalyzer::isInCheck(
 			stage.board(),
@@ -88,7 +94,8 @@ GameStateInformation GameStateDetector::detect(
 			stage,
 			inCheck,
 			availableMoves,
-			reasonToClaimDraw);
+			reasonToClaimDraw,
+			drawEnforcement);
 
 	return {
 		gameState.get<0>(),

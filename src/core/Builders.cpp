@@ -53,7 +53,8 @@ Game GameBuilder::build(
 		const std::vector<std::pair<GameStage, PlayedMove>>& history,
 		const GameStage& currentStage,
 		const std::set<PieceMove>& allAvailableMoves,
-		const std::optional<DrawReason>& reasonToClaimDraw)
+		const std::optional<DrawReason>& reasonToClaimDraw,
+		const DrawEnforcement drawEnforcement)
 {
 	return {
 		gameState,
@@ -61,7 +62,8 @@ Game GameBuilder::build(
 		history,
 		currentStage,
 		allAvailableMoves,
-		reasonToClaimDraw };
+		reasonToClaimDraw,
+		drawEnforcement };
 }
 
 Board BoardBuilder::build(

@@ -36,6 +36,8 @@ namespace conversion_utils {
 	simplechess::GameStage     cpp_game_stage(const game_stage_t& stage);
 	simplechess::GameState     cpp_game_state(game_state_t state);
 	simplechess::DrawReason    cpp_draw_reason(draw_reason_t reason);
+	simplechess::DrawEnforcement cpp_draw_enforcement(draw_enforcement_t enforcement);
+	draw_enforcement_t         c_draw_enforcement(simplechess::DrawEnforcement enforcement);
 	simplechess::Game          cpp_game(const game_t& game);
 } // namespace conversion_utils
 

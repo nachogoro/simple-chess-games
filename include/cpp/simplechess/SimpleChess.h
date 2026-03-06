@@ -13,9 +13,15 @@ namespace simplechess
 	 * \brief Factory method to create a new game from the standard
 	 * starting position.
 	 *
+	 * \param drawEnforcement Controls whether mandatory FIDE draw
+	 * conditions (fivefold repetition, 75-move rule, insufficient
+	 * material) are automatically enforced or only claimable.
+	 * Defaults to \ref DrawEnforcement::Automatic.
+	 *
 	 * \return The constructed Game.
 	 */
-	Game createNewGame();
+	Game createNewGame(
+			DrawEnforcement drawEnforcement = DrawEnforcement::Automatic);
 
 	/**
 	 * \brief Factory method to create a new game from a given board
@@ -35,10 +41,15 @@ namespace simplechess
 	 *
 	 * \param fen The representation of the initial position in
 	 * Forsyth-Edwards Notation.
+	 * \param drawEnforcement Controls whether mandatory FIDE draw
+	 * conditions are automatically enforced or only claimable.
+	 * Defaults to \ref DrawEnforcement::Automatic.
 	 *
 	 * \return The constructed Game.
 	 */
-	Game createGameFromFen(const std::string& fen);
+	Game createGameFromFen(
+			const std::string& fen,
+			DrawEnforcement drawEnforcement = DrawEnforcement::Automatic);
 
 	/**
 	 * \brief Make a move for the player whose turn it is to play.

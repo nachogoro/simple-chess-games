@@ -20,13 +20,15 @@ Game::Game(
 		const std::vector<std::pair<GameStage, PlayedMove>>& history,
 		const GameStage& currentStage,
 		const std::set<PieceMove>& allAvailableMoves,
-		const std::optional<DrawReason>& reasonToClaimDraw)
+		const std::optional<DrawReason>& reasonToClaimDraw,
+		const DrawEnforcement drawEnforcement)
 	: mGameState(gameState),
 	  mReasonGameWasDrawn(drawReason),
 	  mHistory(history),
 	  mCurrentStage(currentStage),
 	  mAllAvailableMoves(allAvailableMoves),
-	  mReasonToClaimDraw(reasonToClaimDraw)
+	  mReasonToClaimDraw(reasonToClaimDraw),
+	  mDrawEnforcement(drawEnforcement)
 {
 	if ((gameState == GameState::Drawn && !drawReason)
 			|| (gameState != GameState::Drawn && drawReason))
@@ -96,4 +98,9 @@ const std::optional<DrawReason>& Game::reasonToClaimDraw() const
 	}
 
 	return mReasonToClaimDraw;
+}
+
+DrawEnforcement Game::drawEnforcement() const
+{
+	return mDrawEnforcement;
 }

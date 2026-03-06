@@ -188,6 +188,30 @@ draw_reason_t conversion_utils::c_draw_reason(simplechess::DrawReason reason) {
 	return DrawReasonStaleMate;
 }
 
+simplechess::DrawEnforcement conversion_utils::cpp_draw_enforcement(draw_enforcement_t enforcement) {
+	switch (enforcement) {
+		case DrawEnforcementAutomatic:
+			return simplechess::DrawEnforcement::Automatic;
+		case DrawEnforcementClaimOnly:
+			return simplechess::DrawEnforcement::ClaimOnly;
+	}
+
+	// Suppress warning
+	return simplechess::DrawEnforcement::Automatic;
+}
+
+draw_enforcement_t conversion_utils::c_draw_enforcement(simplechess::DrawEnforcement enforcement) {
+	switch (enforcement) {
+		case simplechess::DrawEnforcement::Automatic:
+			return DrawEnforcementAutomatic;
+		case simplechess::DrawEnforcement::ClaimOnly:
+			return DrawEnforcementClaimOnly;
+	}
+
+	// Suppress warning
+	return DrawEnforcementAutomatic;
+}
+
 game_t* conversion_utils::c_game(const simplechess::Game& game) {
 	game_t* result = new game_t();
 	result->state = c_game_state(game.gameState());
@@ -221,6 +245,7 @@ game_t* conversion_utils::c_game(const simplechess::Game& game) {
 			result->reason_to_claim_draw = c_draw_reason(*game.reasonToClaimDraw());
 		}
 	}
+	result->draw_enforcement = c_draw_enforcement(game.drawEnforcement());
 
 	return result;
 }
@@ -428,11 +453,14 @@ simplechess::Game conversion_utils::cpp_game(const game_t& game) {
 		reasonToClaimDraw = cpp_draw_reason(game.reason_to_claim_draw);
 	}
 
+	const auto drawEnforcement = cpp_draw_enforcement(game.draw_enforcement);
+
 	return simplechess::GameBuilder::build(
 			state,
 			drawReason,
 			history,
 			currentStage,
 			allAvailableMoves,
-			reasonToClaimDraw);
+			reasonToClaimDraw,
+			drawEnforcement);
 }

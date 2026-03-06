@@ -13,11 +13,29 @@ game_t* simple_chess_create_new_game() {
 	}
 }
 
+game_t* simple_chess_create_new_game_ex(draw_enforcement_t draw_enforcement) {
+	try {
+		return c_game(simplechess::createNewGame(cpp_draw_enforcement(draw_enforcement)));
+	} catch (...) {
+		return nullptr;
+	}
+}
+
 game_t* simple_chess_create_game_from_fen(const char* fen) {
 	if (!fen) return nullptr;
 
 	try {
 		return c_game(simplechess::createGameFromFen(fen));
+	} catch (...) {
+		return nullptr;
+	}
+}
+
+game_t* simple_chess_create_game_from_fen_ex(const char* fen, draw_enforcement_t draw_enforcement) {
+	if (!fen) return nullptr;
+
+	try {
+		return c_game(simplechess::createGameFromFen(fen, cpp_draw_enforcement(draw_enforcement)));
 	} catch (...) {
 		return nullptr;
 	}

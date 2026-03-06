@@ -96,6 +96,29 @@ namespace simplechess
 		SeventyFiveMoveRule
 	};
 
+	/**
+	 * \brief Controls whether mandatory draw rules (fivefold repetition,
+	 * 75-move rule, insufficient material) are automatically enforced by
+	 * the library, or whether they only become claimable.
+	 *
+	 * \note Stalemate and checkmate are always enforced regardless of
+	 * this setting, as they are fundamental game-ending conditions.
+	 */
+	enum class DrawEnforcement
+	{
+		/**
+		 * \brief The library automatically ends the game in a draw when
+		 * mandatory FIDE draw conditions are met (default behaviour).
+		 */
+		Automatic,
+
+		/**
+		 * \brief Mandatory FIDE draw conditions are not automatically
+		 * enforced; they become claimable instead.
+		 */
+		ClaimOnly
+	};
+
 	class GameBuilder;
 
 	/**
@@ -213,6 +236,13 @@ namespace simplechess
 			 */
 			const std::optional<DrawReason>& reasonToClaimDraw() const;
 
+			/**
+			 * \brief Returns the draw enforcement mode of this game.
+			 *
+			 * \return The \ref DrawEnforcement mode.
+			 */
+			DrawEnforcement drawEnforcement() const;
+
 		private:
 			friend class GameBuilder;
 
@@ -222,7 +252,8 @@ namespace simplechess
 					const std::vector<std::pair<GameStage, PlayedMove>>& history,
 					const GameStage& currentStage,
 					const std::set<PieceMove>& allAvailableMoves,
-					const std::optional<DrawReason>& reasonToClaimDraw);
+					const std::optional<DrawReason>& reasonToClaimDraw,
+					DrawEnforcement drawEnforcement);
 
 			GameState mGameState;
 			std::optional<DrawReason> mReasonGameWasDrawn;
@@ -230,6 +261,7 @@ namespace simplechess
 			GameStage mCurrentStage;
 			std::set<PieceMove> mAllAvailableMoves;
 			std::optional<DrawReason> mReasonToClaimDraw;
+			DrawEnforcement mDrawEnforcement;
 	};
 }
 

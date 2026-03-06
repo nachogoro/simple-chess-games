@@ -46,16 +46,21 @@ namespace simplechess
 				 * at a given stage.
 				 *
 				 * \param stage The current stage of the  game.
+				 * \param drawOffered Whether the previous player offered a
+				 * draw.
 				 * \param previouslyReachedPositions A map of how many times
 				 * each position has been reached. The positions are described
 				 * by their relevant fields in a FEN string (all but the
 				 * counters). The map should be the one prior to reaching \a
 				 * stage.
+				 * \param drawEnforcement Controls whether mandatory draw
+				 * rules are automatically enforced or only claimable.
 				 */
 				static GameStateInformation detect(
 						const GameStage& stage,
 						bool drawOffered,
-						const std::map<std::string, uint8_t>& previouslyReachedPositions);
+						const std::map<std::string, uint8_t>& previouslyReachedPositions,
+						DrawEnforcement drawEnforcement = DrawEnforcement::Automatic);
 		};
 	}
 }

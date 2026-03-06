@@ -106,14 +106,16 @@ namespace internal
 	}
 }
 
-Game simplechess::createNewGame()
+Game simplechess::createNewGame(const DrawEnforcement drawEnforcement)
 {
 	const std::string fenOfInitialPosition
 		= "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-	return createGameFromFen(fenOfInitialPosition);
+	return createGameFromFen(fenOfInitialPosition, drawEnforcement);
 }
 
-Game simplechess::createGameFromFen(const std::string& fen)
+Game simplechess::createGameFromFen(
+		const std::string& fen,
+		const DrawEnforcement drawEnforcement)
 {
 	const details::FenParser parsedState = details::FenParser::parse(fen);
 
@@ -157,7 +159,7 @@ Game simplechess::createGameFromFen(const std::string& fen)
 			parsedState.enPassantTarget());
 
 		const details::GameStateInformation information
-			= details::GameStateDetector::detect(currentStage, false, {});
+			= details::GameStateDetector::detect(currentStage, false, {}, drawEnforcement);
 
 		return GameBuilder::build(
 				information.gameState,
@@ -165,7 +167,8 @@ Game simplechess::createGameFromFen(const std::string& fen)
 				{},
 				{currentStage},
 				information.availableMoves,
-				information.reasonToClaimDraw);
+				information.reasonToClaimDraw,
+				drawEnforcement);
 	}
 
 	// We can infer the last move, so we want to start the history of the game
@@ -196,7 +199,7 @@ Game simplechess::createGameFromFen(const std::string& fen)
 		std::nullopt); // No en passant target
 
 	const details::GameStateInformation information
-		= details::GameStateDetector::detect(originalStage, false, {});
+		= details::GameStateDetector::detect(originalStage, false, {}, drawEnforcement);
 
 	const Game originalGame = GameBuilder::build(
 		information.gameState,
@@ -204,7 +207,8 @@ Game simplechess::createGameFromFen(const std::string& fen)
 		{}, // empty history
 		originalStage,
 		information.availableMoves,
-		information.reasonToClaimDraw);
+		information.reasonToClaimDraw,
+		drawEnforcement);
 
 	return makeMove(originalGame, *lastMove, false);
 }
@@ -226,6 +230,8 @@ Game simplechess::makeMove(
 		throw IllegalStateException("Attempted to make invalid move");
 	}
 
+	const DrawEnforcement drawEnforcement = game.drawEnforcement();
+
 	const GameStage nextStage = details::GameStageUpdater::makeMove(
 			game.currentStage(),
 			move,
@@ -235,7 +241,8 @@ Game simplechess::makeMove(
 		= details::GameStateDetector::detect(
 				nextStage,
 				offerDraw,
-				internal::getPreviouslyReachedPositionsMap(game.history()));
+				internal::getPreviouslyReachedPositionsMap(game.history()),
+				drawEnforcement);
 
 	auto nextHistory = game.history();
 	nextHistory.push_back(
@@ -251,7 +258,8 @@ Game simplechess::makeMove(
 			nextHistory,
 			nextStage,
 			information.availableMoves,
-			information.reasonToClaimDraw);
+			information.reasonToClaimDraw,
+			drawEnforcement);
 }
 
 Game simplechess::claimDraw(const Game& game)
@@ -276,7 +284,8 @@ Game simplechess::claimDraw(const Game& game)
 			game.history(),
 			game.currentStage(),
 			{},
-			{});
+			{},
+			game.drawEnforcement());
 }
 
 Game simplechess::resign(const Game& game, Color resigningPlayer)
@@ -294,5 +303,6 @@ Game simplechess::resign(const Game& game, Color resigningPlayer)
 			game.history(),
 			game.currentStage(),
 			{},
-			{});
+			{},
+			game.drawEnforcement());
 }

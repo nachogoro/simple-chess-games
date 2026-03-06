@@ -374,6 +374,23 @@ extern "C" {
 	};
 
 	/**
+	 * \brief Controls whether mandatory draw rules are automatically
+	 * enforced or only claimable.
+	 */
+	enum draw_enforcement_t {
+		/**
+		 * \brief Mandatory FIDE draw conditions are automatically enforced.
+		 */
+		DrawEnforcementAutomatic,
+
+		/**
+		 * \brief Mandatory FIDE draw conditions are only claimable, not
+		 * automatically enforced.
+		 */
+		DrawEnforcementClaimOnly
+	};
+
+	/**
 	 * \brief Represents a complete chess game with all state information.
 	 *
 	 * This is the main structure for interacting with chess games.
@@ -426,6 +443,11 @@ extern "C" {
 		 * \brief Reason a draw can be claimed (if is_draw_claimable is true)
 		 */
 		draw_reason_t reason_to_claim_draw;
+
+		/**
+		 * \brief The draw enforcement mode of this game.
+		 */
+		draw_enforcement_t draw_enforcement;
 	};
 
 #ifdef __cplusplus

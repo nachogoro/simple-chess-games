@@ -37,7 +37,8 @@ namespace simplechess
 					const std::vector<std::pair<GameStage, PlayedMove>>& history,
 					const GameStage& currentStage,
 					const std::set<PieceMove>& allAvailableMoves,
-					const std::optional<DrawReason>& reasonToClaimDraw);
+					const std::optional<DrawReason>& reasonToClaimDraw,
+					DrawEnforcement drawEnforcement = DrawEnforcement::Automatic);
 	};
 
 	class BoardBuilder
