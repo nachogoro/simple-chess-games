@@ -204,6 +204,50 @@ TEST(DrawDetectionTest, InsufficientMaterialKingAndBishopvsKingAndOppositeColorB
 	EXPECT_EQ(stillEnoughMaterial.gameState(), GameState::Playing);
 }
 
+TEST(DrawDetectionTest, OpponentInsufficientMaterialKingvsKingAndQueen) {
+	// White has King + Queen, Black has only King
+	// White (active) can claim a draw because opponent can't win
+	const Game game = createGameFromFen(
+			"3k4/8/8/8/8/8/3K4/3Q4 w - - 0 1");
+
+	EXPECT_EQ(game.gameState(), GameState::Playing);
+	EXPECT_EQ(!!game.reasonToClaimDraw(), true);
+	EXPECT_EQ(*game.reasonToClaimDraw(), DrawReason::OpponentInsufficientMaterial);
+
+	const Game drawnGame = claimDraw(game);
+	EXPECT_EQ(drawnGame.gameState(), GameState::Drawn);
+	EXPECT_EQ(drawnGame.drawReason(), DrawReason::OpponentInsufficientMaterial);
+}
+
+TEST(DrawDetectionTest, OpponentInsufficientMaterialKingvsKingAndRook) {
+	// White has King + Rook, Black has only King
+	const Game game = createGameFromFen(
+			"3k4/8/8/8/8/8/3K4/3R4 w - - 0 1");
+
+	EXPECT_EQ(game.gameState(), GameState::Playing);
+	EXPECT_EQ(!!game.reasonToClaimDraw(), true);
+	EXPECT_EQ(*game.reasonToClaimDraw(), DrawReason::OpponentInsufficientMaterial);
+}
+
+TEST(DrawDetectionTest, OpponentInsufficientMaterialNotClaimableWhenOpponentHasPieces) {
+	// Both sides have pieces beyond king — no claim
+	const Game game = createGameFromFen(
+			"3k4/4p3/8/8/8/8/3K4/3Q4 w - - 0 1");
+
+	EXPECT_EQ(game.gameState(), GameState::Playing);
+	EXPECT_EQ(!!game.reasonToClaimDraw(), false);
+}
+
+TEST(DrawDetectionTest, OpponentInsufficientMaterialNeverAutomatic) {
+	// Even with Automatic enforcement, this should not auto-draw
+	const Game game = createGameFromFen(
+			"3k4/8/8/8/8/8/3K4/3Q4 w - - 0 1");
+
+	EXPECT_EQ(game.gameState(), GameState::Playing);
+	EXPECT_EQ(!!game.reasonToClaimDraw(), true);
+	EXPECT_EQ(*game.reasonToClaimDraw(), DrawReason::OpponentInsufficientMaterial);
+}
+
 TEST(DrawDetectionTest, InvalidClaim) {
 	const Game startingGame = createNewGame();
 

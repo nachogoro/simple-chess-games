@@ -93,7 +93,14 @@ namespace simplechess
 		 * \note See FIDE rule 9.6.2. If the 75th move results in checkmate,
 		 * the checkmate takes precedence over the draw rule.
 		 */
-		SeventyFiveMoveRule
+		SeventyFiveMoveRule,
+
+		/**
+		 * \brief The opponent (inactive side) has only a king remaining,
+		 * making it impossible for them to win. The active side may claim
+		 * a draw. This is never automatically enforced.
+		 */
+		OpponentInsufficientMaterial
 	};
 
 	/**

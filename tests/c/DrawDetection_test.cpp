@@ -111,6 +111,52 @@ TEST(CDrawDetectionTest, ClaimDrawWhenNotAvailable) {
     destroy_game(starting_game);
 }
 
+// ===== OpponentInsufficientMaterial tests =====
+
+TEST(CDrawDetectionTest, OpponentInsufficientMaterialClaimable) {
+    // White has K+Q, Black has only K — White can claim draw
+    game_t* game = simple_chess_create_game_from_fen(
+            "3k4/8/8/8/8/8/3K4/3Q4 w - - 0 1");
+    ASSERT_GAME_NOT_NULL(game);
+
+    EXPECT_EQ(game->state, GameStatePlaying);
+    EXPECT_TRUE(game->is_draw_claimable);
+    EXPECT_EQ(game->reason_to_claim_draw, DrawReasonOpponentInsufficientMaterial);
+
+    game_t* drawn = simple_chess_claim_draw(game);
+    ASSERT_GAME_NOT_NULL(drawn);
+    EXPECT_EQ(drawn->state, GameStateDrawn);
+    EXPECT_EQ(drawn->draw_reason, DrawReasonOpponentInsufficientMaterial);
+
+    destroy_game(game);
+    destroy_game(drawn);
+}
+
+TEST(CDrawDetectionTest, OpponentInsufficientMaterialNotClaimableWhenOpponentHasPieces) {
+    // Black has K+pawn — no claim available
+    game_t* game = simple_chess_create_game_from_fen(
+            "3k4/4p3/8/8/8/8/3K4/3Q4 w - - 0 1");
+    ASSERT_GAME_NOT_NULL(game);
+
+    EXPECT_EQ(game->state, GameStatePlaying);
+    EXPECT_FALSE(game->is_draw_claimable);
+
+    destroy_game(game);
+}
+
+TEST(CDrawDetectionTest, OpponentInsufficientMaterialNeverAutomatic) {
+    // Even with Automatic enforcement, should not auto-draw
+    game_t* game = simple_chess_create_game_from_fen(
+            "3k4/8/8/8/8/8/3K4/3Q4 w - - 0 1");
+    ASSERT_GAME_NOT_NULL(game);
+
+    EXPECT_EQ(game->state, GameStatePlaying);
+    EXPECT_TRUE(game->is_draw_claimable);
+    EXPECT_EQ(game->reason_to_claim_draw, DrawReasonOpponentInsufficientMaterial);
+
+    destroy_game(game);
+}
+
 // ===== DrawEnforcementClaimOnly tests =====
 
 TEST(CDrawDetectionTest, ClaimOnlyInsufficientMaterialNotAutoDrawn) {

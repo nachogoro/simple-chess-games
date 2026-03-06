@@ -182,6 +182,8 @@ draw_reason_t conversion_utils::c_draw_reason(simplechess::DrawReason reason) {
 			return DrawReasonFiftyMoveRule;
 		case simplechess::DrawReason::SeventyFiveMoveRule:
 			return DrawReasonSeventyFiveMoveRule;
+		case simplechess::DrawReason::OpponentInsufficientMaterial:
+			return DrawReasonOpponentInsufficientMaterial;
 	}
 
 	// Suppress warning
@@ -422,6 +424,8 @@ simplechess::DrawReason conversion_utils::cpp_draw_reason(draw_reason_t reason) 
 			return simplechess::DrawReason::FiftyMoveRule;
 		case DrawReasonSeventyFiveMoveRule:
 			return simplechess::DrawReason::SeventyFiveMoveRule;
+		case DrawReasonOpponentInsufficientMaterial:
+			return simplechess::DrawReason::OpponentInsufficientMaterial;
 	}
 
 	// Suppress warning

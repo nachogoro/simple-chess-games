@@ -345,6 +345,13 @@ extern "C" {
 		DrawReasonFiftyMoveRule,
 
 		/**
+		 * \brief The opponent (inactive side) has only a king remaining,
+		 * making it impossible for them to win. The active side may claim
+		 * a draw. This is never automatically enforced.
+		 */
+		DrawReasonOpponentInsufficientMaterial,
+
+		/**
 		 * \brief At least seventy-five full moves (i.e. each side has played their
 		 * move) have been played since the last capture or pawn move.
 		 *

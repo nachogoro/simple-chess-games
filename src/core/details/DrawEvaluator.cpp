@@ -10,6 +10,25 @@ using namespace simplechess::details;
 
 namespace internal
 {
+	bool opponentHasOnlyKing(const Board& board, Color activeColor)
+	{
+		const Color opponentColor
+			= (activeColor == Color::White) ? Color::Black : Color::White;
+
+		for (const auto& entry : board.occupiedSquares())
+		{
+			const Piece& piece = entry.second;
+
+			if (piece.color() == opponentColor
+					&& piece.type() != PieceType::King)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	bool enoughMatingMaterial(const Board& board)
 	{
 		// Only the following combinations are considered insufficient
@@ -177,6 +196,11 @@ std::optional<DrawReason> DrawEvaluator::reasonToDraw(
 	if (!internal::enoughMatingMaterial(stage.board()))
 	{
 		return { DrawReason::InsufficientMaterial };
+	}
+
+	if (internal::opponentHasOnlyKing(stage.board(), stage.activeColor()))
+	{
+		return { DrawReason::OpponentInsufficientMaterial };
 	}
 
 	if (drawOffered)
