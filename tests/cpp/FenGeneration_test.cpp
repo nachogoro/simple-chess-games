@@ -125,9 +125,9 @@ TEST(FenGenerationTest, EnPassantIgnored) {
 			"rnbqkbnr/pppp1ppp/8/8/3P4/2N1p3/PPP1PPPP/R1BQKBNR w KQkq - 0 2");
 }
 
-TEST(FenGenerationTest, EnPassantIsCreated) {
+TEST(FenGenerationTest, EnPassantIsCreatedWhenEnemyPawnAdjacent) {
 	const Game game = createGameFromFen(
-			"rnbqkbnr/pppp1ppp/8/4p3/8/4P3/PPPP1PPP/RNBQKBNR w KQkq e6 0 2");
+			"rnbqkbnr/pppp1ppp/8/8/4p3/8/PPPPPPPP/RNBQKBNR w KQkq - 0 2");
 
 	const Game result = makeMove(
 			game,
@@ -136,8 +136,44 @@ TEST(FenGenerationTest, EnPassantIsCreated) {
 				Square::fromRankAndFile(2, 'f'),
 				Square::fromRankAndFile(4, 'f')));
 
+	// Black pawn on e4 is adjacent to f4, so en passant target is reported
 	EXPECT_EQ(result.currentStage().fen(),
-			"rnbqkbnr/pppp1ppp/8/4p3/5P2/4P3/PPPP2PP/RNBQKBNR b KQkq f3 0 2");
+			"rnbqkbnr/pppp1ppp/8/8/4pP2/8/PPPPP1PP/RNBQKBNR b KQkq f3 0 2");
+}
+
+TEST(FenGenerationTest, EnPassantNotCreatedWhenNoEnemyPawnAdjacent) {
+	const Game game = createGameFromFen(
+			"rnbqkbnr/pppp1ppp/8/4p3/8/4P3/PPPP1PPP/RNBQKBNR w KQkq - 0 2");
+
+	const Game result = makeMove(
+			game,
+			PieceMove::regularMove(
+				{PieceType::Pawn, Color::White},
+				Square::fromRankAndFile(2, 'f'),
+				Square::fromRankAndFile(4, 'f')));
+
+	// No black pawn adjacent to f4, so no en passant target
+	EXPECT_EQ(result.currentStage().fen(),
+			"rnbqkbnr/pppp1ppp/8/4p3/5P2/4P3/PPPP2PP/RNBQKBNR b KQkq - 0 2");
+}
+
+TEST(FenGenerationTest, EnPassantNotCreatedWhenCaptureWouldLeaveInCheck) {
+	// Black pawn on e4, black king on c4, white rook on h4.
+	// If white plays d2-d4, the black pawn on e4 is adjacent but capturing
+	// exd3 would expose the black king to the rook on h4.
+	const Game game = createGameFromFen(
+			"8/8/8/8/2k1p2R/8/3P4/4K3 w - - 0 1");
+
+	const Game result = makeMove(
+			game,
+			PieceMove::regularMove(
+				{PieceType::Pawn, Color::White},
+				Square::fromRankAndFile(2, 'd'),
+				Square::fromRankAndFile(4, 'd')));
+
+	// En passant capture would leave black king in check, so no ep target
+	EXPECT_EQ(result.currentStage().fen(),
+			"8/8/8/8/2kPp2R/8/8/4K3 b - - 0 1");
 }
 
 TEST(FenGenerationTest, WhiteKingSideCastling) {

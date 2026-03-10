@@ -22,6 +22,7 @@ namespace simplechess
 		{
 			public:
 				static std::optional<Square> enPassantTarget(
+						const Board& board,
 						const PieceMove& pieceMove);
 
 				// Returns all possible moves for activeColor without

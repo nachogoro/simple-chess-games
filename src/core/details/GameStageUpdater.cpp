@@ -70,7 +70,7 @@ GameStage GameStageUpdater::makeMove(
 		+ ((stage.activeColor() == Color::Black) ? 1 : 0);
 
 	// Calculate en passant target
-	const std::optional<Square> enPassantTarget = MoveValidator::enPassantTarget({move});
+	const std::optional<Square> enPassantTarget = MoveValidator::enPassantTarget(nextBoard, {move});
 
 	return GameStageBuilder::build(
 		nextBoard,

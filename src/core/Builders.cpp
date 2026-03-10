@@ -98,7 +98,7 @@ PlayedMove PlayedMoveBuilder::build(
 		const std::set<PieceMove> availableResponses
 			= details::MoveValidator::allAvailableMoves(
 					afterMove,
-					details::MoveValidator::enPassantTarget({move}),
+					details::MoveValidator::enPassantTarget(afterMove, {move}),
 					0, // If in check, we can't castle any way
 					oppositeColor(move.piece().color()));
 

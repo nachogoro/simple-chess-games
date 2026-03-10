@@ -15,16 +15,45 @@ using namespace simplechess;
 using namespace simplechess::details;
 
 std::optional<Square> MoveValidator::enPassantTarget(
+		const Board& board,
 		const PieceMove& pieceMove)
 {
 	if (pieceMove.piece().type() == PieceType::Pawn
 			&& abs(pieceMove.dst().rank() - pieceMove.src().rank()) == 2)
 	{
-		return { Square::fromRankAndFile(
+		const Square candidateTarget = Square::fromRankAndFile(
 				((pieceMove.piece().color() == Color::White)
 				 ? 3
 				 : 6),
-				pieceMove.dst().file()) };
+				pieceMove.dst().file());
+
+		// Only report the en passant target if an enemy pawn can legally
+		// capture en passant (i.e. adjacent and not pinned)
+		const Color enemyColor = oppositeColor(pieceMove.piece().color());
+		const Piece enemyPawn = {PieceType::Pawn, enemyColor};
+		const uint8_t dstRank = pieceMove.dst().rank();
+		const char dstFile = pieceMove.dst().file();
+
+		for (int fileDelta : {-1, 1})
+		{
+			const char adjFile = dstFile + fileDelta;
+			if (!Square::isInsideBoundaries(dstRank, adjFile))
+				continue;
+
+			const Square adjSquare = Square::fromRankAndFile(dstRank, adjFile);
+			if (board.pieceAt(adjSquare) != std::optional<Piece>(enemyPawn))
+				continue;
+
+			// Check if this pawn has a legal en passant capture
+			const std::set<PieceMove> moves = availableMovesForPiece(
+					board, candidateTarget, 0, adjSquare);
+
+			for (const auto& move : moves)
+			{
+				if (move.dst() == candidateTarget)
+					return candidateTarget;
+			}
+		}
 	}
 
 	return {};
