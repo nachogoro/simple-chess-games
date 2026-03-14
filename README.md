@@ -35,34 +35,14 @@ Both APIs include thorough test suites.
 No manual dependency installation required - the build system automatically
 fetches Boost and GoogleTest.
 
-## Building
+## Pre-built Binaries
 
-### Quick Start (Linux)
+Pre-built libraries for all supported platforms are available from
+[GitHub Releases](https://github.com/nachogoro/simple-chess-games/releases).
+Binaries are built automatically via CI for Linux, Windows, macOS (arm64 and
+x86_64), and Android (arm64-v8a, armeabi-v7a, x86_64, x86).
 
-While the library is platform-agnostic, the build scripts are designed for
-Linux environments:
-
-```bash
-git clone https://github.com/nachogoro/simple-chess-games.git
-cd simple-chess-games
-
-# Linux native build (Release with tests)
-./build-linux.sh
-```
-
-### Build Options
-
-```bash
-# Linux build with options
-./build-linux.sh [Debug|Release] [ON|OFF]
-#                 ^build mode    ^tests
-
-# Examples:
-./build-linux.sh Release ON     # Release build with tests (default)
-./build-linux.sh Debug OFF      # Debug build, libraries only
-```
-
-### Manual Build
+## Building from Source
 
 ```bash
 mkdir build && cd build
@@ -74,50 +54,11 @@ cmake --build . --parallel $(nproc)
 ./run_cpp_tests    # C++ API tests
 ```
 
-### Build Targets
-
 The build produces four libraries:
 - `libsimple-chess-games.so` - C++ shared library
 - `libsimple-chess-games-static.a` - C++ static library
 - `libsimple-chess-games-c.so` - C shared library
 - `libsimple-chess-games-c-static.a` - C static library
-
-### Cross-Compilation
-
-For Windows and Android cross-compilation from Linux:
-
-#### Windows (MinGW-w64)
-```bash
-# Install prerequisites
-sudo apt install mingw-w64 gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64
-
-# Build for Windows
-./build-windows.sh Release
-```
-
-#### Android
-```bash
-# Set Android NDK path
-export ANDROID_NDK_ROOT="/path/to/android-ndk"
-
-# Build for Android (all architectures)
-./build-android.sh Release
-
-# ... or build only specific architectures
-./build-android.sh Release arm64-v8a,x86_64
-```
-
-#### Build All Platforms
-```bash
-# Build all platforms in Release mode
-./build-all.sh
-
-# Build specific platforms
-./build-all.sh Release linux,windows
-./build-all.sh Release android:arm64-v8a,x86_64
-```
-
-Cross-compiled libraries are output to `dist/lib/{platform}/{arch}/` with shared headers in `dist/include/`.
 
 ## APIs
 
@@ -127,6 +68,7 @@ This library provides two complete APIs for the same chess engine:
 Modern C++17 interface with exception-based error handling:
 ```cpp
 #include "cpp/simplechess/Game.h"
+
 Game game = createGame();
 Game newGame = makeMove(game, move);  // Returns new game state
 ```
@@ -135,6 +77,7 @@ Game newGame = makeMove(game, move);  // Returns new game state
 C-compatible interface with NULL return codes for errors:
 ```c
 #include "c/simplechess/simplechess.h"
+
 game_t* game = simple_chess_create_game();
 game_t* newGame = simple_chess_make_move(game, move);
 if (newGame == NULL) { /* handle error */ }
@@ -158,18 +101,15 @@ These demonstrate all library functionality including:
 
 ## Testing
 
-Run the test suite with:
+Run the test suite after building with `-DBUILD_TESTS=ON`:
 ```bash
-# Linux build with tests (both C and C++ APIs)
-./build-linux.sh
-
-# Manual test execution
-cd build-linux
-LD_LIBRARY_PATH=. ./run_c_tests      # C API tests
-LD_LIBRARY_PATH=. ./run_cpp_tests    # C++ API tests
+cd build
+./run_c_tests      # C API tests
+./run_cpp_tests    # C++ API tests
 ```
 
-The library includes comprehensive tests for all chess rules, edge cases, and both API implementations to ensure full functionality parity.
+The library includes comprehensive tests for all chess rules, edge cases, and
+both API implementations to ensure full functionality parity.
 
 ## Dependencies
 

@@ -1,0 +1,178 @@
+name: Build and Release Native Libraries
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v0.1.0). If empty, artifacts are uploaded but no release is created.'
+        required: false
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTS=OFF
+          cmake --build build --parallel
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-x86_64
+          path: |
+            build/libsimple-chess-games-c.so
+            build/libsimple-chess-games.so
+            build/libsimple-chess-games-c-static.a
+            build/libsimple-chess-games-static.a
+
+  build-windows:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MinGW
+        run: sudo apt-get update && sudo apt-get install -y mingw-w64
+      - name: Build
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_TOOLCHAIN_FILE=cmake/windows-cross.cmake \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTS=OFF
+          cmake --build build --parallel
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-x86_64
+          path: |
+            build/libsimple-chess-games-c.dll
+            build/libsimple-chess-games.dll
+            build/libsimple-chess-games-c.dll.a
+            build/libsimple-chess-games.dll.a
+            build/libsimple-chess-games-c-static.a
+            build/libsimple-chess-games-static.a
+
+  build-macos-arm64:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTS=OFF \
+            -DCMAKE_OSX_ARCHITECTURES=arm64
+          cmake --build build --parallel
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-arm64
+          path: |
+            build/libsimple-chess-games-c.dylib
+            build/libsimple-chess-games.dylib
+            build/libsimple-chess-games-c-static.a
+            build/libsimple-chess-games-static.a
+
+  build-macos-x86_64:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTS=OFF \
+            -DCMAKE_OSX_ARCHITECTURES=x86_64
+          cmake --build build --parallel
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-x86_64
+          path: |
+            build/libsimple-chess-games-c.dylib
+            build/libsimple-chess-games.dylib
+            build/libsimple-chess-games-c-static.a
+            build/libsimple-chess-games-static.a
+
+  build-android:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        abi: [arm64-v8a, armeabi-v7a, x86_64, x86]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up NDK
+        run: |
+          # GitHub runners have the NDK pre-installed
+          if [ -z "$ANDROID_NDK_ROOT" ]; then
+            export ANDROID_NDK_ROOT="$ANDROID_HOME/ndk/$(ls "$ANDROID_HOME/ndk/" | sort -V | tail -1)"
+          fi
+          echo "ANDROID_NDK_ROOT=$ANDROID_NDK_ROOT" >> "$GITHUB_ENV"
+      - name: Build
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_TOOLCHAIN_FILE=cmake/android-${{ matrix.abi }}.cmake \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTS=OFF
+          cmake --build build --parallel
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-${{ matrix.abi }}
+          path: |
+            build/libsimple-chess-games-c.so
+            build/libsimple-chess-games.so
+            build/libsimple-chess-games-c-static.a
+            build/libsimple-chess-games-static.a
+
+  release:
+    needs: [build-linux, build-windows, build-macos-arm64, build-macos-x86_64, build-android]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.tag != ''
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Package binaries
+        run: |
+          mkdir release
+
+          tar czf release/simple-chess-games-linux-x86_64.tar.gz \
+            -C artifacts/linux-x86_64 .
+
+          zip -j release/simple-chess-games-windows-x86_64.zip \
+            artifacts/windows-x86_64/*
+
+          tar czf release/simple-chess-games-macos-arm64.tar.gz \
+            -C artifacts/macos-arm64 .
+
+          tar czf release/simple-chess-games-macos-x86_64.tar.gz \
+            -C artifacts/macos-x86_64 .
+
+          # Bundle all Android ABIs into one archive
+          mkdir -p android-combined
+          for abi in arm64-v8a armeabi-v7a x86_64 x86; do
+            mkdir -p "android-combined/$abi"
+            cp artifacts/android-"$abi"/* "android-combined/$abi/"
+          done
+          tar czf release/simple-chess-games-android.tar.gz \
+            -C android-combined .
+
+      - name: Determine tag
+        id: tag
+        run: |
+          if [ -n "${{ github.event.inputs.tag }}" ]; then
+            echo "name=${{ github.event.inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.name }}
+          name: ${{ steps.tag.outputs.name }}
+          files: release/*
+          generate_release_notes: true

@@ -1,6 +1,6 @@
 .python-version
 compile_commands.json
-build-*/
+build*/
 Release/
 Debug/
 bin/
