@@ -115,6 +115,15 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_TESTS=OFF
           cmake --build build --parallel
+      - name: Strip debug symbols
+        run: |
+          # The Android .so are republished inside an AAR, where debug sections are dead weight:
+          # they quadruple the artifact and the consuming app discards them at packaging time.
+          # --strip-debug leaves .symtab in place, so native frames still symbolicate.
+          # The .a archives are left alone - stripping them would break linking against them.
+          "$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" --strip-debug \
+            build/libsimple-chess-games.so \
+            build/libsimple-chess-games-c.so
       - uses: actions/upload-artifact@v4
         with:
           name: android-${{ matrix.abi }}
