@@ -1,11 +1,13 @@
 #include "BoardAnalyzer.h"
 
 #include "../Builders.h"
+#include "BoardAccess.h"
 #include "MoveValidator.h"
 
 #include <cpp/simplechess/Exceptions.h>
 
 #include <algorithm>
+#include <array>
 #include <cstdlib>
 #include <stdexcept>
 
@@ -115,14 +117,18 @@ std::set<Square> BoardAnalyzer::reachableSquaresInDirection(
 	return result;
 }
 
-const Square& BoardAnalyzer::kingSquare(const Board& board, Color color)
+Square BoardAnalyzer::kingSquare(const Board& board, Color color)
 {
-	for (const auto& entry : board.occupiedSquares())
+	const std::array<uint8_t, 64>& squares = BoardAccess::squares(board);
+
+	for (uint8_t index = 0; index < 64; ++index)
 	{
-		if (entry.second.type() == PieceType::King
-				&& entry.second.color() == color)
+		const uint8_t code = squares[index];
+
+		if (BoardAccess::isColor(code, color)
+				&& BoardAccess::typeOf(code) == PieceType::King)
 		{
-			return entry.first;
+			return BoardAccess::squareOf(index);
 		}
 	}
 
@@ -133,15 +139,22 @@ Board BoardAnalyzer::makeMoveOnBoard(
 		const Board& board,
 		const PieceMove& move)
 {
-	std::map<Square, Piece> positions = board.occupiedSquares();
+	// This runs once per candidate move while generating the legal moves of a
+	// position, so it works on the packed array directly: copying the board
+	// is a single fixed-size copy and applying the move is a couple of byte
+	// stores.
+	Board result = board;
+	std::array<uint8_t, 64>& squares = BoardAccess::mutableSquares(result);
+
+	const uint8_t srcIndex = BoardAccess::indexOf(move.src());
+	const uint8_t dstIndex = BoardAccess::indexOf(move.dst());
 
 	if (move.piece().type() == PieceType::King
 			&& abs(move.dst().file() - move.src().file()) == 2)
 	{
-		// Castling
-		// Move the king...
-		positions.insert({move.dst(), move.piece()});
-		positions.erase(move.src());
+		// Castling: move the king...
+		squares[dstIndex] = squares[srcIndex];
+		squares[srcIndex] = 0;
 
 		// ... and the rook
 		const Square rookSrc = (move.dst().file() == 'g')
@@ -152,36 +165,36 @@ Board BoardAnalyzer::makeMoveOnBoard(
 			? Square::fromRankAndFile(move.dst().rank(), 'f')
 			: Square::fromRankAndFile(move.dst().rank(), 'd');
 
-		positions.insert({rookDst, positions.at(rookSrc)});
-		positions.erase(rookSrc);
+		squares[BoardAccess::indexOf(rookDst)]
+			= squares[BoardAccess::indexOf(rookSrc)];
+		squares[BoardAccess::indexOf(rookSrc)] = 0;
 
-		return BoardBuilder::build(positions);
+		return result;
 	}
 
 	if (move.piece().type() == PieceType::Pawn
 			&& move.src().file() != move.dst().file()
-			&& details::BoardAnalyzer::isEmpty(board, move.dst()))
+			&& squares[dstIndex] == 0)
 	{
 		// En passant
-		positions.insert({move.dst(), move.piece()});
-		positions.erase(move.src());
+		squares[dstIndex] = squares[srcIndex];
+		squares[srcIndex] = 0;
 
-		// Remove the captured pawn
-		positions.erase(
+		// Remove the captured pawn, which stands beside the moving pawn's
+		// origin rather than on its destination square
+		squares[BoardAccess::indexOf(
 				Square::fromRankAndFile(
 					move.dst().rank() + (move.dst().rank() == 6 ? -1 : 1),
-					move.dst().file()));
+					move.dst().file()))] = 0;
 
-		return BoardBuilder::build(positions);
+		return result;
 	}
 
-	positions.erase(move.dst());
-	positions.insert(
-			{move.dst(),
-			move.promoted()
-				? Piece(*move.promoted(), move.piece().color())
-				: move.piece()});
+	squares[dstIndex] = move.promoted()
+		? BoardAccess::encodePiece(Piece(*move.promoted(), move.piece().color()))
+		: BoardAccess::encodePiece(move.piece());
 
-	positions.erase(move.src());
-	return BoardBuilder::build(positions);
+	squares[srcIndex] = 0;
+
+	return result;
 }

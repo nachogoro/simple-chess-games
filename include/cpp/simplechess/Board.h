@@ -7,11 +7,14 @@
 
 #include <optional>
 
+#include <array>
+#include <cstdint>
 #include <map>
 
 namespace simplechess
 {
 	class BoardBuilder;
+	struct BoardAccess;
 
 	/**
 	 * \brief A representation of a chess board.
@@ -40,8 +43,15 @@ namespace simplechess
 			 */
 			const std::map<Square, Piece>& occupiedSquares() const;
 
+			Board(const Board& other);
+			Board(Board&& other) noexcept;
+			Board& operator=(const Board& other);
+			Board& operator=(Board&& other) noexcept;
+			~Board();
+
 		private:
 			friend class BoardBuilder;
+			friend struct BoardAccess;
 
 			/**
 			 * \brief Constructor.
@@ -52,7 +62,32 @@ namespace simplechess
 			 */
 			Board(const std::map<Square, Piece>& piecePositions);
 
-			std::map<Square, Piece> mPiecePositions;
+			/**
+			 * \brief One entry per square, indexed by (rank - 1) * 8 + (file -
+			 * 'a').
+			 *
+			 * A value of 0 means the square is empty; any other value encodes
+			 * the piece occupying it. This is the authoritative state of the
+			 * board: it is looked up in constant time and copied without
+			 * allocating, both of which matter because generating the moves
+			 * of a position copies the board once per candidate move.
+			 */
+			std::array<uint8_t, 64> mSquares;
+
+
+			/**
+			 * \brief The same information as \ref mSquares, in the form \ref
+			 * occupiedSquares() has to return.
+			 *
+			 * Built on first use rather than up front, since the boards
+			 * created while searching for legal moves are never asked for it.
+			 *
+			 * \note Because this is filled in on demand, the first call to
+			 * \ref occupiedSquares() on a given \c Board mutates it behind
+			 * the \c const. The library is single-threaded: a \c Board must
+			 * not be read from more than one thread at a time.
+			 */
+			mutable std::optional<std::map<Square, Piece>> mOccupiedSquares;
 	};
 }
 

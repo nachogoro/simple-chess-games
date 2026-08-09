@@ -1,5 +1,6 @@
 #include "MoveValidator.h"
 
+#include "BoardAccess.h"
 #include "BoardAnalyzer.h"
 
 #include "moves/BishopMove.h"
@@ -168,15 +169,20 @@ std::set<PieceMove> MoveValidator::allPotentiallyCapturingMovesUnfiltered(
 {
 	std::set<PieceMove> result;
 
-	for (const auto& squarePiece : board.occupiedSquares())
+	// Scanning the packed array rather than Board::occupiedSquares() keeps
+	// this off the map, which would otherwise have to be materialised for
+	// every board examined while generating moves.
+	const std::array<uint8_t, 64>& squares = BoardAccess::squares(board);
+
+	for (uint8_t index = 0; index < 64; ++index)
 	{
-		if (squarePiece.second.color() == activeColor)
+		if (BoardAccess::isColor(squares[index], activeColor))
 		{
 			const std::set<PieceMove> pieceMoves
 				= potentiallyCapturingMovesForPieceUnfiltered(
 						board,
 						enPassantTarget,
-						squarePiece.first);
+						BoardAccess::squareOf(index));
 			result.insert(pieceMoves.begin(), pieceMoves.end());
 		}
 	}
@@ -240,15 +246,17 @@ std::set<PieceMove> MoveValidator::allAvailableMoves(
 {
 	std::set<PieceMove> result;
 
-	for (const auto& squarePiece : board.occupiedSquares())
+	const std::array<uint8_t, 64>& squares = BoardAccess::squares(board);
+
+	for (uint8_t index = 0; index < 64; ++index)
 	{
-		if (squarePiece.second.color() == activeColor)
+		if (BoardAccess::isColor(squares[index], activeColor))
 		{
 			const std::set<PieceMove> pieceMoves = availableMovesForPiece(
 					board,
 					enPassantTarget,
 					castlingRights,
-					squarePiece.first);
+					BoardAccess::squareOf(index));
 			result.insert(pieceMoves.begin(), pieceMoves.end());
 		}
 	}

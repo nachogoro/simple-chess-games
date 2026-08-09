@@ -135,7 +135,7 @@ namespace simplechess
 				 * \return The \c Square occupied by the King of the specified
 				 * \a color.
 				 */
-				static const Square& kingSquare(const Board& board, Color color);
+				static Square kingSquare(const Board& board, Color color);
 
 				/**
 				 * \brief Returns a new copy of the state of the board after
