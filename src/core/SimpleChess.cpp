@@ -177,6 +177,10 @@ Game simplechess::createGameFromFen(
 				information.reasonItWasDrawn,
 				{},
 				{currentStage},
+				// The public interface hands the available moves out as an
+				// ordered set, so this is where the generated moves become
+				// one - once per move actually played, rather than on every
+				// position examined while working out what those moves are.
 				std::set<PieceMove>(
 						information.availableMoves.begin(),
 						information.availableMoves.end()),
@@ -260,7 +264,7 @@ Game simplechess::makeMove(
 				GameBuilder::previouslyReachedPositions(game),
 				drawEnforcement);
 
-	const std::map<std::string, uint8_t> nextReachedPositions
+	std::map<std::string, uint8_t> nextReachedPositions
 		= internal::updatedReachedPositions(
 				GameBuilder::previouslyReachedPositions(game),
 				game.currentStage(),
@@ -282,7 +286,7 @@ Game simplechess::makeMove(
 	return GameBuilder::build(
 			information.gameState,
 			information.reasonItWasDrawn,
-			nextHistory,
+			std::move(nextHistory),
 			next.stage,
 			// The public interface hands the available moves out as an ordered
 			// set, so this is where the generated moves become one - once per
@@ -293,7 +297,7 @@ Game simplechess::makeMove(
 					information.availableMoves.end()),
 			information.reasonToClaimDraw,
 			drawEnforcement,
-			nextReachedPositions);
+			std::move(nextReachedPositions));
 }
 
 Game simplechess::claimDraw(const Game& game)

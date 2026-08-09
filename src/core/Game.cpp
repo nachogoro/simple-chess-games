@@ -17,20 +17,20 @@ using namespace simplechess;
 Game::Game(
 		const GameState gameState,
 		const std::optional<DrawReason>& drawReason,
-		const std::vector<std::pair<GameStage, PlayedMove>>& history,
-		const GameStage& currentStage,
-		const std::set<PieceMove>& allAvailableMoves,
+		std::vector<std::pair<GameStage, PlayedMove>> history,
+		GameStage currentStage,
+		std::set<PieceMove> allAvailableMoves,
 		const std::optional<DrawReason>& reasonToClaimDraw,
 		const DrawEnforcement drawEnforcement,
-		const std::map<std::string, uint8_t>& previouslyReachedPositions)
+		std::map<std::string, uint8_t> previouslyReachedPositions)
 	: mGameState(gameState),
 	  mReasonGameWasDrawn(drawReason),
-	  mHistory(history),
-	  mCurrentStage(currentStage),
-	  mAllAvailableMoves(allAvailableMoves),
+	  mHistory(std::move(history)),
+	  mCurrentStage(std::move(currentStage)),
+	  mAllAvailableMoves(std::move(allAvailableMoves)),
 	  mReasonToClaimDraw(reasonToClaimDraw),
 	  mDrawEnforcement(drawEnforcement),
-	  mPreviouslyReachedPositions(previouslyReachedPositions)
+	  mPreviouslyReachedPositions(std::move(previouslyReachedPositions))
 {
 	if ((gameState == GameState::Drawn && !drawReason)
 			|| (gameState != GameState::Drawn && drawReason))

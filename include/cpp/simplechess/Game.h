@@ -258,12 +258,12 @@ namespace simplechess
 			Game(
 					GameState gameState,
 					const std::optional<DrawReason>& drawReason,
-					const std::vector<std::pair<GameStage, PlayedMove>>& history,
-					const GameStage& currentStage,
-					const std::set<PieceMove>& allAvailableMoves,
+					std::vector<std::pair<GameStage, PlayedMove>> history,
+					GameStage currentStage,
+					std::set<PieceMove> allAvailableMoves,
 					const std::optional<DrawReason>& reasonToClaimDraw,
 					DrawEnforcement drawEnforcement,
-					const std::map<std::string, uint8_t>& previouslyReachedPositions);
+					std::map<std::string, uint8_t> previouslyReachedPositions);
 
 			/**
 			 * \brief The number of times each position in \ref history() has

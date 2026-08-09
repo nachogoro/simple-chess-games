@@ -39,20 +39,26 @@ namespace simplechess
 				uint16_t fullmoveClock,
 				const std::optional<Square>& enPassantTarget,
 				CheckType checkStatus);
+
 	};
 
 	class GameBuilder
 	{
 		public:
+			/**
+			 * The by-value parameters are moved into the resulting \ref Game,
+			 * so callers should move into them: the history in particular is
+			 * expensive to copy and grows with every move played.
+			 */
 			static Game build(
 					GameState gameState,
 					const std::optional<DrawReason>& drawReason,
-					const std::vector<std::pair<GameStage, PlayedMove>>& history,
-					const GameStage& currentStage,
-					const std::set<PieceMove>& allAvailableMoves,
+					std::vector<std::pair<GameStage, PlayedMove>> history,
+					GameStage currentStage,
+					std::set<PieceMove> allAvailableMoves,
 					const std::optional<DrawReason>& reasonToClaimDraw,
 					DrawEnforcement drawEnforcement = DrawEnforcement::Automatic,
-					const std::map<std::string, uint8_t>& previouslyReachedPositions = {});
+					std::map<std::string, uint8_t> previouslyReachedPositions = {});
 
 			/**
 			 * Grants the library's internals access to the repetition

@@ -70,22 +70,22 @@ GameStage GameStageBuilder::build(
 Game GameBuilder::build(
 		const GameState gameState,
 		const std::optional<DrawReason>& drawReason,
-		const std::vector<std::pair<GameStage, PlayedMove>>& history,
-		const GameStage& currentStage,
-		const std::set<PieceMove>& allAvailableMoves,
+		std::vector<std::pair<GameStage, PlayedMove>> history,
+		GameStage currentStage,
+		std::set<PieceMove> allAvailableMoves,
 		const std::optional<DrawReason>& reasonToClaimDraw,
 		const DrawEnforcement drawEnforcement,
-		const std::map<std::string, uint8_t>& previouslyReachedPositions)
+		std::map<std::string, uint8_t> previouslyReachedPositions)
 {
 	return {
 		gameState,
 		drawReason,
-		history,
-		currentStage,
-		allAvailableMoves,
+		std::move(history),
+		std::move(currentStage),
+		std::move(allAvailableMoves),
 		reasonToClaimDraw,
 		drawEnforcement,
-		previouslyReachedPositions };
+		std::move(previouslyReachedPositions) };
 }
 
 const std::map<std::string, uint8_t>& GameBuilder::previouslyReachedPositions(
