@@ -176,11 +176,14 @@ if(BUILD_TESTS)
         tests/cpp/MoveAvailability_test.cpp
         tests/cpp/MoveCounter_test.cpp
         tests/cpp/MovesOnBoard_test.cpp
+        tests/cpp/Perft_test.cpp
         tests/cpp/Resignation_test.cpp)
     target_include_directories(run_cpp_tests PRIVATE include)
     target_include_directories(run_cpp_tests PRIVATE src/core)
     target_include_directories(run_cpp_tests PRIVATE tests/cpp)
-    target_link_libraries(run_cpp_tests gtest_main simple-chess-games Boost::optional)
+    # Perft_test reaches into src/core/details, which is not part of the
+    # installed library, so link the object files directly.
+    target_link_libraries(run_cpp_tests gtest_main simple-chess-games-static Boost::optional Boost::algorithm Boost::bimap)
 
     # C Interface Tests
     add_executable(run_c_tests
@@ -202,4 +205,17 @@ if(BUILD_TESTS)
 
     # Backward compatibility - run_tests now runs C++ tests
     add_custom_target(run_tests DEPENDS run_cpp_tests)
+endif()
+
+# Option to build benchmarks (disabled by default; never installed)
+option(BUILD_BENCHMARKS "Build the benchmark driver" OFF)
+
+if(BUILD_BENCHMARKS)
+    message(STATUS "Building benchmarks enabled")
+    add_executable(bench_simplechess benchmarks/bench_main.cpp)
+    target_include_directories(bench_simplechess PRIVATE include)
+    # The C static library bundles the core objects too, so this one target
+    # covers both the C++ and the C workloads.
+    target_link_libraries(bench_simplechess simple-chess-games-c-static Boost::algorithm Boost::bimap)
+    target_compile_options(bench_simplechess PRIVATE ${COMMON_FLAGS})
 endif()
