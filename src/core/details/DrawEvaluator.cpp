@@ -1,7 +1,6 @@
 #include "DrawEvaluator.h"
 
 #include "BoardAnalyzer.h"
-#include "GameStageUpdater.h"
 #include "MoveValidator.h"
 #include "fen/FenUtils.h"
 
@@ -241,16 +240,22 @@ std::optional<DrawReason> DrawEvaluator::reasonToDraw(
 
 	for (const auto& move : allPossibleMoves)
 	{
-		// To achieve the hypothetical next stage we don't care about draw
-		// offers
-		const GameStage nextStage
-			= GameStageUpdater::makeMove(stage, move, false);
+		// Only the repetition key of the hypothetical position is needed
+		// here, so it is built directly rather than by constructing a whole
+		// GameStage (which would generate a full FEN, derive the check status
+		// and, through PlayedMove, the algebraic notation of the move).
+		const Board nextBoard
+			= BoardAnalyzer::makeMoveOnBoard(stage.board(), move);
 
-		const std::string relevantFen
-			= FenUtils::fenForRepetitions(nextStage.fen());
+		const std::string relevantFen = FenUtils::repetitionKey(
+				nextBoard,
+				oppositeColor(stage.activeColor()),
+				updatedCastlingRights(stage.castlingRights(), move),
+				MoveValidator::enPassantTarget(nextBoard, move));
 
-		if (previouslyReachedPositions.count(relevantFen)
-				&& previouslyReachedPositions.at(relevantFen) >= 2)
+		const auto it = previouslyReachedPositions.find(relevantFen);
+
+		if (it != previouslyReachedPositions.end() && it->second >= 2)
 		{
 			return { DrawReason::ThreeFoldRepetition };
 		}

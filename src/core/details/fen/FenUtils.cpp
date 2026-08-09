@@ -21,6 +21,17 @@ namespace internal
 		{
 			return boost::bimap<L, R>(list.begin(), list.end());
 		}
+
+	/**
+	 * Generates the first four fields of a FEN string (piece placement,
+	 * active color, castling availability and en passant target), which are
+	 * shared between a full FEN and an n-fold repetition key.
+	 */
+	std::string generateFenPrefix(
+			const Board& board,
+			const Color activeColor,
+			const uint8_t castlingRights,
+			const std::optional<Square>& epTarget);
 }
 
 boost::bimap<char, Piece> FenUtils::sPieceMap
@@ -77,6 +88,20 @@ std::string FenUtils::fenForRepetitions(const std::string& fen)
 		return boost::algorithm::join(fenTokens, " ");
 }
 
+std::string FenUtils::repetitionKey(
+		const Board& board,
+		const Color activeColor,
+		const uint8_t castlingRights,
+		const std::optional<Square>& epTarget)
+{
+	// The repetition key is exactly the first four fields of the FEN string:
+	// everything which defines a position for the purposes of the n-fold
+	// repetition rule (piece placement, side to move, castling rights and en
+	// passant possibility), and nothing which does not (the two counters).
+	return internal::generateFenPrefix(
+			board, activeColor, castlingRights, epTarget);
+}
+
 std::string FenUtils::generateFen(
 		const Board& board,
 		const Color activeColor,
@@ -86,8 +111,30 @@ std::string FenUtils::generateFen(
 		const uint16_t fullmoveClock)
 {
 	// A FEN string is an ASCII string composed of six fields, separated from
-	// each other by a space.
+	// each other by a space. The first four are shared with the repetition
+	// key; only the two counters are appended here.
+	std::stringstream ss;
 
+	ss << internal::generateFenPrefix(
+			board, activeColor, castlingRights, epTarget);
+
+	// 5. Halfmove clock: The number of halfmoves since the last capture or
+	// pawn advance, used for the fifty-move rule.
+	ss << " " << halfmoveClock;
+
+	// 6. Fullmove number: The number of the full move. It starts at 1, and is
+	// incremented after Black's move.
+	ss << " " << fullmoveClock;
+
+	return ss.str();
+}
+
+std::string internal::generateFenPrefix(
+		const Board& board,
+		const Color activeColor,
+		const uint8_t castlingRights,
+		const std::optional<Square>& epTarget)
+{
 	std::stringstream ss;
 
 	// From Wikipedia:
@@ -125,7 +172,7 @@ std::string FenUtils::generateFen(
 				emptySquaresRun = 0;
 			}
 
-			ss << pieceToString(*piece);
+			ss << FenUtils::pieceToString(*piece);
 		}
 
 		// We have finished a rank, list number of empty squares if any
@@ -193,14 +240,6 @@ std::string FenUtils::generateFen(
 	{
 		ss << "-";
 	}
-
-	// 5. Halfmove clock: The number of halfmoves since the last capture or
-	// pawn advance, used for the fifty-move rule.
-	ss << " " << halfmoveClock;
-
-	// 6. Fullmove number: The number of the full move. It starts at 1, and is
-	// incremented after Black's move.
-	ss << " " << fullmoveClock;
 
 	return ss.str();
 }

@@ -16,6 +16,14 @@ namespace simplechess
 	namespace details
 	{
 		/**
+		 * \brief Returns the castling rights which remain after \p move is
+		 * played in a position which currently holds \p castlingRights.
+		 */
+		uint8_t updatedCastlingRights(
+				uint8_t castlingRights,
+				const PieceMove& move);
+
+		/**
 		 * \brief Collection of methods to validate moves on a board.
 		 */
 		class MoveValidator

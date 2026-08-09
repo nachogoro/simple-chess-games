@@ -14,6 +14,56 @@
 using namespace simplechess;
 using namespace simplechess::details;
 
+uint8_t details::updatedCastlingRights(
+		uint8_t castlingRights,
+		const PieceMove& move)
+{
+	if (move.piece().type() == PieceType::King)
+	{
+		// Once the king moves, castling is no longer allowed
+		if (move.piece().color() == Color::White)
+		{
+			castlingRights &= ~CastlingRight::WhiteKingSide;
+			castlingRights &= ~CastlingRight::WhiteQueenSide;
+		}
+		else
+		{
+			castlingRights &= ~CastlingRight::BlackKingSide;
+			castlingRights &= ~CastlingRight::BlackQueenSide;
+		}
+	}
+
+	// If the move starts or ends in a rook's original square, castling rights
+	// are lost. Comparing rank and file directly avoids parsing a square out
+	// of a string on every move.
+	const auto touches = [&move](const uint8_t rank, const char file) {
+		return (move.src().rank() == rank && move.src().file() == file)
+			|| (move.dst().rank() == rank && move.dst().file() == file);
+	};
+
+	if (touches(1, 'a'))
+	{
+		castlingRights &= ~CastlingRight::WhiteQueenSide;
+	}
+
+	if (touches(1, 'h'))
+	{
+		castlingRights &= ~CastlingRight::WhiteKingSide;
+	}
+
+	if (touches(8, 'a'))
+	{
+		castlingRights &= ~CastlingRight::BlackQueenSide;
+	}
+
+	if (touches(8, 'h'))
+	{
+		castlingRights &= ~CastlingRight::BlackKingSide;
+	}
+
+	return castlingRights;
+}
+
 std::optional<Square> MoveValidator::enPassantTarget(
 		const Board& board,
 		const PieceMove& pieceMove)

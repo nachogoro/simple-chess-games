@@ -177,12 +177,13 @@ if(BUILD_TESTS)
         tests/cpp/MoveCounter_test.cpp
         tests/cpp/MovesOnBoard_test.cpp
         tests/cpp/Perft_test.cpp
+        tests/cpp/RepetitionKey_test.cpp
         tests/cpp/Resignation_test.cpp)
     target_include_directories(run_cpp_tests PRIVATE include)
     target_include_directories(run_cpp_tests PRIVATE src/core)
     target_include_directories(run_cpp_tests PRIVATE tests/cpp)
-    # Perft_test reaches into src/core/details, which is not part of the
-    # installed library, so link the object files directly.
+    # Perft_test and RepetitionKey_test reach into src/core/details, which is
+    # not part of the installed library, so link the object files directly.
     target_link_libraries(run_cpp_tests gtest_main simple-chess-games-static Boost::optional Boost::algorithm Boost::bimap)
 
     # C Interface Tests

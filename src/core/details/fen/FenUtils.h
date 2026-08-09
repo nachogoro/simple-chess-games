@@ -70,6 +70,28 @@ namespace simplechess
 						const uint16_t fullmoveClock);
 
 				/**
+				 * \brief Builds the n-fold repetition key for a position
+				 * directly from its components.
+				 *
+				 * This is the same string \ref fenForRepetitions would return
+				 * for the FEN of the same position (i.e. the first four FEN
+				 * fields), but it avoids generating the full FEN - and
+				 * therefore avoids having to construct a \ref GameStage - when
+				 * only the repetition key is needed.
+				 *
+				 * \param board The board state.
+				 * \param activeColor The active color.
+				 * \param castlingRights The castling rights.
+				 * \param epTarget The en passant target square.
+				 * \return The repetition key for the position.
+				 */
+				static std::string repetitionKey(
+						const Board& board,
+						const Color activeColor,
+						const uint8_t castlingRights,
+						const std::optional<Square>& epTarget);
+
+				/**
 				 * \brief Create a GameStage from a FEN string.
 				 *
 				 * \param fen The FEN string to parse.

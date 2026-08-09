@@ -18,48 +18,8 @@ GameStage GameStageUpdater::makeMove(
 			move,
 			offerDraw);
 
-	uint8_t updatedCastlingRights = stage.castlingRights();
-
-	if (move.piece().type() == PieceType::King)
-	{
-		// Once the king moves, castling is no longer allowed
-		if (move.piece().color() == Color::White)
-		{
-			updatedCastlingRights &= ~CastlingRight::WhiteKingSide;
-			updatedCastlingRights &= ~CastlingRight::WhiteQueenSide;
-		}
-		else
-		{
-			updatedCastlingRights &= ~CastlingRight::BlackKingSide;
-			updatedCastlingRights &= ~CastlingRight::BlackQueenSide;
-		}
-	}
-
-	// If the move starts or ends in a rook's original square, castling rights
-	// are lost
-	if (move.src() == Square::fromString("a1")
-			|| move.dst() == Square::fromString("a1"))
-	{
-		updatedCastlingRights &= ~CastlingRight::WhiteQueenSide;
-	}
-
-	if (move.src() == Square::fromString("h1")
-			|| move.dst() == Square::fromString("h1"))
-	{
-		updatedCastlingRights &= ~CastlingRight::WhiteKingSide;
-	}
-
-	if (move.src() == Square::fromString("a8")
-			|| move.dst() == Square::fromString("a8"))
-	{
-		updatedCastlingRights &= ~CastlingRight::BlackQueenSide;
-	}
-
-	if (move.src() == Square::fromString("h8")
-			|| move.dst() == Square::fromString("h8"))
-	{
-		updatedCastlingRights &= ~CastlingRight::BlackKingSide;
-	}
+	const uint8_t updatedRights
+		= details::updatedCastlingRights(stage.castlingRights(), move);
 
 	const Board nextBoard = details::BoardAnalyzer::makeMoveOnBoard(stage.board(), move);
 	const Color nextActiveColor = oppositeColor(stage.activeColor());
@@ -75,7 +35,7 @@ GameStage GameStageUpdater::makeMove(
 	return GameStageBuilder::build(
 		nextBoard,
 		nextActiveColor,
-		updatedCastlingRights,
+		updatedRights,
 		nextHalfmoveClock,
 		nextFullmoveCounter,
 		enPassantTarget);
