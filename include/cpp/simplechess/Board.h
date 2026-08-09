@@ -73,6 +73,18 @@ namespace simplechess
 			 * of a position copies the board once per candidate move.
 			 */
 			std::array<uint8_t, 64> mSquares;
+			/**
+			 * \brief Where each side's king was last known to stand, indexed
+			 * by colour, or an index off the board while nothing is known.
+			 *
+			 * Locating the king is the first thing any check test does, and
+			 * check tests run once per candidate move, so scanning the board
+			 * for it every time is worth avoiding. This is only a hint:
+			 * whoever reads it confirms the king is really there and falls
+			 * back to a scan if it is not, which keeps it from ever being
+			 * able to give a wrong answer.
+			 */
+			mutable std::array<uint8_t, 2> mKingSquareHint;
 
 
 			/**

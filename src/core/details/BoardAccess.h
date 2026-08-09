@@ -69,6 +69,23 @@ namespace simplechess
 		static const std::array<uint8_t, 64>& squares(const Board& board);
 		static std::array<uint8_t, 64>& mutableSquares(Board& board);
 
+		/**
+		 * \brief The value a king square hint holds while nothing is known
+		 * about where that king stands.
+		 *
+		 * It is one past the last square of the board, so it can never be
+		 * mistaken for a real one.
+		 */
+		static constexpr uint8_t UNKNOWN = 64;
+
+		/**
+		 * \brief The cached location of \p color's king, or \ref UNKNOWN.
+		 * Only ever a hint - see \c Board::mKingSquareHint.
+		 */
+		static uint8_t kingSquareHint(const Board& board, Color color);
+		static void setKingSquareHint(
+				const Board& board, Color color, uint8_t index);
+
 
 		/**
 		 * \brief Whether \p code (as stored in the packed array) is a piece of

@@ -48,11 +48,23 @@ std::array<uint8_t, 64>& BoardAccess::mutableSquares(Board& board)
 	return board.mSquares;
 }
 
+uint8_t BoardAccess::kingSquareHint(const Board& board, const Color color)
+{
+	return board.mKingSquareHint[(color == Color::White) ? 0 : 1];
+}
+
+void BoardAccess::setKingSquareHint(
+		const Board& board, const Color color, const uint8_t index)
+{
+	board.mKingSquareHint[(color == Color::White) ? 0 : 1] = index;
+}
+
 
 Board::Board(const std::map<Square, Piece>& piecePositions)
 	: mSquares()
 {
 	mSquares.fill(0);
+	mKingSquareHint.fill(BoardAccess::UNKNOWN);
 
 	for (const auto& entry : piecePositions)
 	{
@@ -65,12 +77,14 @@ Board::Board(const std::map<Square, Piece>& piecePositions)
 // copy is usually an intermediate position which will never be asked for it,
 // and rebuilding it costs no more than copying it would.
 Board::Board(const Board& other)
-	: mSquares(other.mSquares)
+	: mSquares(other.mSquares),
+	  mKingSquareHint(other.mKingSquareHint)
 {
 }
 
 Board::Board(Board&& other) noexcept
-	: mSquares(other.mSquares)
+	: mSquares(other.mSquares),
+	  mKingSquareHint(other.mKingSquareHint)
 {
 }
 
@@ -79,6 +93,7 @@ Board& Board::operator=(const Board& other)
 	if (this != &other)
 	{
 		mSquares = other.mSquares;
+		mKingSquareHint = other.mKingSquareHint;
 		mOccupiedSquares.reset();
 	}
 
@@ -90,6 +105,7 @@ Board& Board::operator=(Board&& other) noexcept
 	if (this != &other)
 	{
 		mSquares = other.mSquares;
+		mKingSquareHint = other.mKingSquareHint;
 		mOccupiedSquares.reset();
 	}
 

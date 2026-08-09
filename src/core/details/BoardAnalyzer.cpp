@@ -248,13 +248,26 @@ Square BoardAnalyzer::kingSquare(const Board& board, Color color)
 {
 	const std::array<uint8_t, 64>& squares = BoardAccess::squares(board);
 
+	const auto holdsKing = [&squares, color](const uint8_t index) {
+		const uint8_t code = squares[index];
+		return BoardAccess::isColor(code, color)
+			&& BoardAccess::typeOf(code) == PieceType::King;
+	};
+
+	// Trust the hint only as far as confirming it, so a stale one costs a
+	// scan rather than a wrong answer.
+	const uint8_t hint = BoardAccess::kingSquareHint(board, color);
+
+	if (hint != BoardAccess::UNKNOWN && holdsKing(hint))
+	{
+		return BoardAccess::squareOf(hint);
+	}
+
 	for (uint8_t index = 0; index < 64; ++index)
 	{
-		const uint8_t code = squares[index];
-
-		if (BoardAccess::isColor(code, color)
-				&& BoardAccess::typeOf(code) == PieceType::King)
+		if (holdsKing(index))
 		{
+			BoardAccess::setKingSquareHint(board, color, index);
 			return BoardAccess::squareOf(index);
 		}
 	}
@@ -275,6 +288,12 @@ Board BoardAnalyzer::makeMoveOnBoard(
 
 	const uint8_t srcIndex = BoardAccess::indexOf(move.src());
 	const uint8_t dstIndex = BoardAccess::indexOf(move.dst());
+
+	if (move.piece().type() == PieceType::King)
+	{
+		BoardAccess::setKingSquareHint(
+				result, move.piece().color(), dstIndex);
+	}
 
 	if (move.piece().type() == PieceType::King
 			&& abs(move.dst().file() - move.src().file()) == 2)
