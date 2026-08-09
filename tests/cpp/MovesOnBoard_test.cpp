@@ -473,3 +473,34 @@ TEST(MovesOnBoardTest, QueensideCastlingBlack) {
 			Square::fromRankAndFile(8, 'a'),
 			Square::fromRankAndFile(8, 'd'));
 }
+
+namespace {
+	bool canCastleQueenside(const Game& game, const uint8_t rank) {
+		const Piece king = {PieceType::King, game.activeColor()};
+
+		return game.allAvailableMoves().count(
+				PieceMove::regularMove(
+					king,
+					Square::fromRankAndFile(rank, 'e'),
+					Square::fromRankAndFile(rank, 'c'))) != 0;
+	}
+}
+
+// The knight's square is between the king and the rook, so it has to be
+// vacant for the rook to pass over it, even though the king never lands on
+// it and it may be under attack.
+TEST(MovesOnBoardTest, QueensideCastlingBlockedByKnightOnBFile) {
+	EXPECT_FALSE(canCastleQueenside(
+				createGameFromFen("r3k2r/8/8/8/8/8/8/RN2K2R w KQkq - 0 1"), 1));
+
+	EXPECT_FALSE(canCastleQueenside(
+				createGameFromFen("rn2k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1"), 8));
+
+	// With the b-file clear it is available again, which confirms nothing
+	// else in these positions is preventing it.
+	EXPECT_TRUE(canCastleQueenside(
+				createGameFromFen("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1"), 1));
+
+	EXPECT_TRUE(canCastleQueenside(
+				createGameFromFen("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1"), 8));
+}

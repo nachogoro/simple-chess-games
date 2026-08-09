@@ -122,6 +122,16 @@ std::set<PieceMove> simplechess::details::kingMovesUnfiltered(
 			}
 		}
 
+		// Every square between the king and the rook must be vacant, so the
+		// knight's square must be empty too. Unlike the squares the king
+		// travels through, it does not matter whether it is under attack.
+		if (!BoardAnalyzer::isEmpty(
+					board,
+					Square::fromRankAndFile(square.rank(), 'b')))
+		{
+			allClear = false;
+		}
+
 		if (allClear)
 		{
 			result.insert(PieceMove::regularMove(
