@@ -36,7 +36,7 @@ namespace
 		{
 			// The reference: build the stage in full and cut its FEN down.
 			const GameStage nextStage
-				= details::GameStageUpdater::makeMove(stage, move, false);
+				= details::GameStageUpdater::makeMove(stage, move);
 			const std::string expected
 				= details::FenUtils::fenForRepetitions(nextStage.fen());
 

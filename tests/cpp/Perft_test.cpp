@@ -46,7 +46,7 @@ namespace
 		for (const auto& move : moves)
 		{
 			nodes += perft(
-					details::GameStageUpdater::makeMove(stage, move, false),
+					details::GameStageUpdater::makeMove(stage, move),
 					depth - 1);
 		}
 

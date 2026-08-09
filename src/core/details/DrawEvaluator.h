@@ -69,7 +69,7 @@ namespace simplechess
 				static std::optional<DrawReason> reasonToDraw(
 						const GameStage& stage,
 						bool isInCheck,
-						const std::set<PieceMove> allAvailableMoves,
+						const std::set<PieceMove>& allAvailableMoves,
 						const std::map<std::string, uint8_t>& previouslyReachedPositions,
 						bool drawOffered);
 		};

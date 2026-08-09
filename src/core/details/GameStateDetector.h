@@ -2,6 +2,9 @@
 #define GAME_STATE_DETECTOR_H_19318747_4966_4AD2_A8A4_173A832713DD
 
 #include <cpp/simplechess/Game.h>
+
+#include "MoveValidator.h"
+
 #include <map>
 
 namespace simplechess
@@ -61,6 +64,18 @@ namespace simplechess
 						bool drawOffered,
 						const std::map<std::string, uint8_t>& previouslyReachedPositions,
 						DrawEnforcement drawEnforcement = DrawEnforcement::Automatic);
+
+				/**
+				 * \brief Overload for callers which have already analysed the
+				 * position, so that the check status and the legal moves are
+				 * not derived a second time.
+				 */
+				static GameStateInformation detect(
+						const GameStage& stage,
+						const PositionAnalysis& analysis,
+						bool drawOffered,
+						const std::map<std::string, uint8_t>& previouslyReachedPositions,
+						DrawEnforcement drawEnforcement);
 		};
 	}
 }

@@ -64,43 +64,45 @@ GameStateInformation GameStateDetector::detect(
 		const std::map<std::string, uint8_t>& previouslyReachedPositions,
 		const DrawEnforcement drawEnforcement)
 {
-	const bool inCheck = BoardAnalyzer::isInCheck(
-			stage.board(),
-			stage.activeColor());
+	return detect(
+			stage,
+			details::analyzePosition(
+					stage.board(),
+					stage.activeColor(),
+					internal::enPassantTarget(stage),
+					stage.castlingRights()),
+			drawOffered,
+			previouslyReachedPositions,
+			drawEnforcement);
+}
 
-	const std::set<PieceMove> availableMoves
-		= MoveValidator::allAvailableMoves(
-				stage.board(),
-				internal::enPassantTarget(stage),
-				stage.castlingRights(),
-				stage.activeColor());
-
-	const CheckType checkType = (inCheck
-		? ((availableMoves.size() == 0)
-				? CheckType::CheckMate
-				: CheckType::Check)
-		: CheckType::NoCheck);
-
+GameStateInformation GameStateDetector::detect(
+		const GameStage& stage,
+		const PositionAnalysis& analysis,
+		bool drawOffered,
+		const std::map<std::string, uint8_t>& previouslyReachedPositions,
+		const DrawEnforcement drawEnforcement)
+{
 	const std::optional<DrawReason> reasonToClaimDraw
 		= details::DrawEvaluator::reasonToDraw(
 				stage,
-				inCheck,
-				availableMoves,
+				analysis.inCheck(),
+				analysis.legalMoves,
 				previouslyReachedPositions,
 				drawOffered);
 
 	const boost::tuple<GameState, std::optional<DrawReason>> gameState
 		= internal::inferGameStateFromStage(
 			stage,
-			inCheck,
-			availableMoves,
+			analysis.inCheck(),
+			analysis.legalMoves,
 			reasonToClaimDraw,
 			drawEnforcement);
 
 	return {
 		gameState.get<0>(),
-			checkType,
-			availableMoves,
+			analysis.checkType,
+			analysis.legalMoves,
 			gameState.get<1>(),
 			reasonToClaimDraw };
 

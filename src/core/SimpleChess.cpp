@@ -242,14 +242,15 @@ Game simplechess::makeMove(
 
 	const DrawEnforcement drawEnforcement = game.drawEnforcement();
 
-	const GameStage nextStage = details::GameStageUpdater::makeMove(
-			game.currentStage(),
-			move,
-			offerDraw);
+	const details::UpdatedStage next
+		= details::GameStageUpdater::makeMoveWithAnalysis(
+				game.currentStage(),
+				move);
 
 	const details::GameStateInformation information
 		= details::GameStateDetector::detect(
-				nextStage,
+				next.stage,
+				next.analysis,
 				offerDraw,
 				GameBuilder::previouslyReachedPositions(game),
 				drawEnforcement);
@@ -258,21 +259,26 @@ Game simplechess::makeMove(
 		= internal::updatedReachedPositions(
 				GameBuilder::previouslyReachedPositions(game),
 				game.currentStage(),
-				nextStage);
+				next.stage);
 
 	auto nextHistory = game.history();
+	nextHistory.reserve(nextHistory.size() + 1);
 	nextHistory.push_back(
 			{game.currentStage(),
+			// The check status this move produces is, by definition, the
+			// check status of the stage it leads to, which has just been
+			// derived.
 			PlayedMoveBuilder::build(
 					game.currentStage().board(),
 					move,
-					offerDraw)});
+					offerDraw,
+					next.stage.checkStatus())});
 
 	return GameBuilder::build(
 			information.gameState,
 			information.reasonItWasDrawn,
 			nextHistory,
-			nextStage,
+			next.stage,
 			information.availableMoves,
 			information.reasonToClaimDraw,
 			drawEnforcement,

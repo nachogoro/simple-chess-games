@@ -14,6 +14,27 @@
 using namespace simplechess;
 using namespace simplechess::details;
 
+PositionAnalysis details::analyzePosition(
+		const Board& board,
+		const Color activeColor,
+		const std::optional<Square>& enPassantTarget,
+		const uint8_t castlingRights)
+{
+	const bool inCheck = BoardAnalyzer::isInCheck(board, activeColor);
+
+	std::set<PieceMove> legalMoves = MoveValidator::allAvailableMoves(
+			board,
+			enPassantTarget,
+			castlingRights,
+			activeColor);
+
+	const CheckType checkType = inCheck
+		? (legalMoves.empty() ? CheckType::CheckMate : CheckType::Check)
+		: CheckType::NoCheck;
+
+	return {checkType, std::move(legalMoves)};
+}
+
 uint8_t details::updatedCastlingRights(
 		uint8_t castlingRights,
 		const PieceMove& move)

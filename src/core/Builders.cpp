@@ -15,16 +15,8 @@ GameStage GameStageBuilder::build(
 		const uint16_t fullmoveClock,
 		const std::optional<Square>& enPassantTarget)
 {
-	// Generate FEN string
-	const std::string fen = details::FenUtils::generateFen(
-		board,
-		activeColor,
-		castlingRights,
-		enPassantTarget,
-		halfmoveClock,
-		fullmoveClock);
-
-	// Calculate check status
+	// Calculate check status. Generating the legal moves is only needed to
+	// tell check from checkmate, so it is skipped when the king is safe.
 	const bool isInCheck = details::BoardAnalyzer::isInCheck(board, activeColor);
 	CheckType checkStatus = CheckType::NoCheck;
 	if (isInCheck) {
@@ -35,6 +27,34 @@ GameStage GameStageBuilder::build(
 			activeColor);
 		checkStatus = (availableMoves.empty()) ? CheckType::CheckMate : CheckType::Check;
 	}
+
+	return build(
+		board,
+		activeColor,
+		castlingRights,
+		halfmoveClock,
+		fullmoveClock,
+		enPassantTarget,
+		checkStatus);
+}
+
+GameStage GameStageBuilder::build(
+		const Board& board,
+		const Color activeColor,
+		const uint8_t castlingRights,
+		const uint16_t halfmoveClock,
+		const uint16_t fullmoveClock,
+		const std::optional<Square>& enPassantTarget,
+		const CheckType checkStatus)
+{
+	// Generate FEN string
+	const std::string fen = details::FenUtils::generateFen(
+		board,
+		activeColor,
+		castlingRights,
+		enPassantTarget,
+		halfmoveClock,
+		fullmoveClock);
 
 	return GameStage(
 		board,
@@ -115,6 +135,15 @@ PlayedMove PlayedMoveBuilder::build(
 			: CheckType::Check;
 	}
 
+	return build(board, move, drawOffered, checkType);
+}
+
+PlayedMove PlayedMoveBuilder::build(
+		const Board& board,
+		const PieceMove& move,
+		const bool drawOffered,
+		const CheckType checkType)
+{
 	return PlayedMoveBuilder::build(
 			move,
 			board.pieceAt(move.dst()),

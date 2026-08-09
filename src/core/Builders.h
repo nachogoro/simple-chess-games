@@ -26,6 +26,19 @@ namespace simplechess
 				uint16_t halfmoveClock,
 				uint16_t fullmoveClock,
 				const std::optional<Square>& enPassantTarget);
+
+			/**
+			 * Overload for callers which have already determined the check
+			 * status of the position, so that it is not derived twice.
+			 */
+			static GameStage build(
+				const Board& board,
+				Color toPlay,
+				uint8_t castlingRights,
+				uint16_t halfmoveClock,
+				uint16_t fullmoveClock,
+				const std::optional<Square>& enPassantTarget,
+				CheckType checkStatus);
 	};
 
 	class GameBuilder
@@ -64,6 +77,17 @@ namespace simplechess
 					const Board& board,
 					const PieceMove& move,
 					const bool drawOffered);
+
+			/**
+			 * Overload for callers which already know the check status the
+			 * move produces (it is the check status of the stage the move
+			 * leads to), sparing a second analysis of the resulting position.
+			 */
+			static PlayedMove build(
+					const Board& board,
+					const PieceMove& move,
+					const bool drawOffered,
+					CheckType checkType);
 
 			static PlayedMove build(
 					const PieceMove& pieceMove,

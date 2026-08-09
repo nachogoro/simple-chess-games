@@ -166,7 +166,7 @@ std::optional<DrawReason> DrawEvaluator::reasonToDraw(
 std::optional<DrawReason> DrawEvaluator::reasonToDraw(
 		const GameStage& stage,
 		const bool isInCheck,
-		const std::set<PieceMove> allPossibleMoves,
+		const std::set<PieceMove>& allPossibleMoves,
 		const std::map<std::string, uint8_t>& previouslyReachedPositions,
 		bool drawOffered)
 {
