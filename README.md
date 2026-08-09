@@ -86,6 +86,13 @@ simple_chess_destroy_game(game);  // Manual memory management required
 
 Both APIs expose identical functionality but follow their respective language conventions.
 
+### Threading
+
+The library is single-threaded. Objects are immutable from the caller's point
+of view, but some values are derived only when they are first asked for, so a
+given object must not be used from more than one thread at a time. Separate
+threads working on separate objects are fine.
+
 ## Usage
 
 For usage examples, see the test files in the `tests/` directory:
