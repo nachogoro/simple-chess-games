@@ -131,54 +131,95 @@ std::optional<Square> MoveValidator::enPassantTarget(
 	return {};
 }
 
+namespace
+{
+	/**
+	 * Appends every move the piece on \p square could make if the safety of
+	 * its own king were not a consideration.
+	 */
+	void appendPseudoLegalMoves(
+			std::vector<PieceMove>& moves,
+			const Board& board,
+			const std::optional<Square>& enPassantTarget,
+			const uint8_t castlingRights,
+			const Square& square,
+			const Piece& piece)
+	{
+		using namespace simplechess::details;
+
+		switch (piece.type())
+		{
+			case PieceType::Pawn:
+				appendPawnMovesUnfiltered(
+						moves, board, enPassantTarget, piece.color(), square);
+				return;
+			case PieceType::Rook:
+				appendRookMovesUnfiltered(moves, board, piece.color(), square);
+				return;
+			case PieceType::Knight:
+				appendKnightMovesUnfiltered(moves, board, piece.color(), square);
+				return;
+			case PieceType::Bishop:
+				appendBishopMovesUnfiltered(moves, board, piece.color(), square);
+				return;
+			case PieceType::Queen:
+				appendQueenMovesUnfiltered(moves, board, piece.color(), square);
+				return;
+			case PieceType::King:
+				appendKingMovesUnfiltered(
+						moves, board, castlingRights, piece.color(), square);
+				return;
+		}
+
+		throw std::invalid_argument(
+				std::string("Unknown piece type ")
+				+ std::to_string(static_cast<int>(piece.type())));
+	}
+
+	/**
+	 * Drops from \p moves (starting at \p from) every move which would leave
+	 * the mover's own king in check.
+	 */
+	void discardMovesExposingOwnKing(
+			std::vector<PieceMove>& moves,
+			const size_t from,
+			const Board& board,
+			const Color color)
+	{
+		size_t kept = from;
+
+		for (size_t i = from; i < moves.size(); ++i)
+		{
+			const Board afterMove
+				= BoardAnalyzer::makeMoveOnBoard(board, moves[i]);
+
+			if (!BoardAnalyzer::isInCheck(afterMove, color))
+			{
+				moves[kept++] = moves[i];
+			}
+		}
+
+		// erase rather than resize: shrinking with resize would still require
+		// PieceMove to be default-constructible.
+		moves.erase(moves.begin() + static_cast<long>(kept), moves.end());
+	}
+}
+
 std::vector<PieceMove> MoveValidator::availableMovesForPiece(
 		const Board& board,
 		const std::optional<Square>& enPassantTarget,
 		const uint8_t castlingRights,
 		const Square& square)
 {
-	const Color color = board.pieceAt(square)->color();
+	const Piece piece = *board.pieceAt(square);
 
-	std::vector<PieceMove> unfiltered;
+	std::vector<PieceMove> moves;
+	appendPseudoLegalMoves(
+			moves, board, enPassantTarget, castlingRights, square, piece);
 
-	switch (board.pieceAt(square)->type())
-	{
-		case PieceType::Pawn:
-			appendPawnMovesUnfiltered(
-					unfiltered, board, enPassantTarget, color, square);
-			break;
-		case PieceType::Rook:
-			appendRookMovesUnfiltered(unfiltered, board, color, square);
-			break;
-		case PieceType::Knight:
-			appendKnightMovesUnfiltered(unfiltered, board, color, square);
-			break;
-		case PieceType::Bishop:
-			appendBishopMovesUnfiltered(unfiltered, board, color, square);
-			break;
-		case PieceType::Queen:
-			appendQueenMovesUnfiltered(unfiltered, board, color, square);
-			break;
-		case PieceType::King:
-			appendKingMovesUnfiltered(
-					unfiltered, board, castlingRights, color, square);
-			break;
-	}
+	discardMovesExposingOwnKing(moves, 0, board, piece.color());
 
-	// Filter out moves which would expose the own king
-	std::vector<PieceMove> result;
-
-	for (const auto& move : unfiltered)
-	{
-		const Board afterMove = BoardAnalyzer::makeMoveOnBoard(board, move);
-
-		if (!BoardAnalyzer::isInCheck(afterMove, color))
-		{
-			result.push_back(move);
-		}
-	}
-
-	return result;
+	return moves;
 }
 
 std::vector<PieceMove> MoveValidator::allAvailableMoves(
@@ -189,19 +230,37 @@ std::vector<PieceMove> MoveValidator::allAvailableMoves(
 {
 	std::vector<PieceMove> result;
 
+	// Comfortably more than the number of moves available in any ordinary
+	// position, so the vector is not reallocated while it is filled.
+	result.reserve(64);
+
+	// Scanning the packed array rather than Board::occupiedSquares() keeps
+	// this off the map, which would otherwise have to be materialised for
+	// every board examined while generating moves.
 	const std::array<uint8_t, 64>& squares = BoardAccess::squares(board);
 
 	for (uint8_t index = 0; index < 64; ++index)
 	{
-		if (BoardAccess::isColor(squares[index], activeColor))
+		const uint8_t code = squares[index];
+
+		if (!BoardAccess::isColor(code, activeColor))
 		{
-			const std::vector<PieceMove> pieceMoves = availableMovesForPiece(
-					board,
-					enPassantTarget,
-					castlingRights,
-					BoardAccess::squareOf(index));
-			result.insert(result.end(), pieceMoves.begin(), pieceMoves.end());
+			continue;
 		}
+
+		// Each piece contributes moves from its own square, so no two pieces
+		// can produce the same move and no de-duplication is needed.
+		const size_t before = result.size();
+
+		appendPseudoLegalMoves(
+				result,
+				board,
+				enPassantTarget,
+				castlingRights,
+				BoardAccess::squareOf(index),
+				BoardAccess::decodePiece(code));
+
+		discardMovesExposingOwnKing(result, before, board, activeColor);
 	}
 
 	return result;
