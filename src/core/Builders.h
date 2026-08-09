@@ -40,6 +40,20 @@ namespace simplechess
 				const std::optional<Square>& enPassantTarget,
 				CheckType checkStatus);
 
+			/**
+			 * \brief Rebuilds a stage from a FEN string which is already
+			 * known to describe it, together with its check status.
+			 *
+			 * Nothing has to be derived: the FEN is kept as given instead of
+			 * being regenerated from the position it was just parsed out of,
+			 * and the check status is taken on trust rather than worked out
+			 * again. Only use this where both are known to be consistent
+			 * with the position - typically when restoring a stage which
+			 * this library produced earlier.
+			 */
+			static GameStage buildFromKnownFen(
+				const std::string& fen,
+				CheckType checkStatus);
 	};
 
 	class GameBuilder

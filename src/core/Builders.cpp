@@ -1,5 +1,6 @@
 #include "Builders.h"
 
+#include "details/fen/FenParser.h"
 #include "details/fen/FenUtils.h"
 #include "details/AlgebraicNotationGenerator.h"
 #include "details/BoardAnalyzer.h"
@@ -64,6 +65,23 @@ GameStage GameStageBuilder::build(
 		fullmoveClock,
 		fen,
 		enPassantTarget,
+		checkStatus);
+}
+
+GameStage GameStageBuilder::buildFromKnownFen(
+		const std::string& fen,
+		const CheckType checkStatus)
+{
+	const details::FenParser parsed = details::FenParser::parse(fen);
+
+	return GameStage(
+		parsed.board(),
+		parsed.activeColor(),
+		parsed.castlingRights(),
+		parsed.halfMovesSinceLastCaptureOrPawnAdvance(),
+		parsed.fullMoveCounter(),
+		fen,
+		parsed.enPassantTarget(),
 		checkStatus);
 }
 

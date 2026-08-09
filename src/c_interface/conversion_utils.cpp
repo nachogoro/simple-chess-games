@@ -390,7 +390,14 @@ simplechess::Board conversion_utils::cpp_board(const board_t& board) {
 }
 
 simplechess::GameStage conversion_utils::cpp_game_stage(const game_stage_t& stage) {
-	return simplechess::details::FenUtils::fromFenString(stage.fen);
+	// The C representation already carries both the FEN and the check status,
+	// so the stage can be rebuilt from them as-is. Going through
+	// FenUtils::fromFenString instead would regenerate the FEN it was just
+	// handed and re-derive the check status by generating moves - per stage,
+	// on every call that crosses the C boundary.
+	return simplechess::GameStageBuilder::buildFromKnownFen(
+			stage.fen,
+			cpp_check_type(stage.check_status));
 }
 
 simplechess::GameState conversion_utils::cpp_game_state(game_state_t state) {
@@ -469,10 +476,27 @@ simplechess::Game conversion_utils::cpp_game(const game_t& game) {
 		? std::make_optional(cpp_draw_reason(game.draw_reason))
 		: std::nullopt;
 
+	// A history entry stores the position's FEN but not its check status,
+	// which would be expensive to derive: it means generating moves for every
+	// position the game ever passed through, on every call which brings a
+	// game back across the C boundary.
+	//
+	// It does not have to be derived. The check status of a position is the
+	// check the move leading into it delivered, and that is recorded on the
+	// preceding entry. Only the very first position has no preceding move, so
+	// only that one is analysed.
 	std::vector<std::pair<simplechess::GameStage, simplechess::PlayedMove>> history;
+	history.reserve(game.history_size);
 	for (uint16_t index = 0; index < game.history_size; ++index) {
+		const char* fen = game.history[index].fen;
+
 		history.push_back({
-				simplechess::details::FenUtils::fromFenString(game.history[index].fen),
+				(index == 0)
+					? simplechess::details::FenUtils::fromFenString(fen)
+					: simplechess::GameStageBuilder::buildFromKnownFen(
+							fen,
+							cpp_check_type(
+								game.history[index - 1].played_move.check_type)),
 				cpp_played_move(game.history[index].played_move)});
 	}
 
@@ -489,13 +513,16 @@ simplechess::Game conversion_utils::cpp_game(const game_t& game) {
 
 	const auto drawEnforcement = cpp_draw_enforcement(game.draw_enforcement);
 
+	std::map<std::string, uint8_t> reachedPositions
+		= repetitionsFromHistory(history);
+
 	return simplechess::GameBuilder::build(
 			state,
 			drawReason,
-			history,
-			currentStage,
-			allAvailableMoves,
+			std::move(history),
+			std::move(currentStage),
+			std::move(allAvailableMoves),
 			reasonToClaimDraw,
 			drawEnforcement,
-			repetitionsFromHistory(history));
+			std::move(reachedPositions));
 }
