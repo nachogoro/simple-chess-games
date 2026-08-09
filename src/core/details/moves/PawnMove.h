@@ -7,13 +7,14 @@
 
 #include <optional>
 
-#include <set>
+#include <vector>
 
 namespace simplechess
 {
 	namespace details
 	{
-		std::set<PieceMove> pawnMovesUnfiltered(
+		void appendPawnMovesUnfiltered(
+				std::vector<PieceMove>& moves,
 				const Board& board,
 				const std::optional<Square>& enPassantTarget,
 				Color color,

@@ -116,6 +116,7 @@ namespace internal
 		return result;
 	}
 }
+
 Game simplechess::createNewGame(const DrawEnforcement drawEnforcement)
 {
 	const std::string fenOfInitialPosition
@@ -176,7 +177,9 @@ Game simplechess::createGameFromFen(
 				information.reasonItWasDrawn,
 				{},
 				{currentStage},
-				information.availableMoves,
+				std::set<PieceMove>(
+						information.availableMoves.begin(),
+						information.availableMoves.end()),
 				information.reasonToClaimDraw,
 				drawEnforcement);
 	}
@@ -216,7 +219,9 @@ Game simplechess::createGameFromFen(
 		information.reasonItWasDrawn,
 		{}, // empty history
 		originalStage,
-		information.availableMoves,
+		std::set<PieceMove>(
+				information.availableMoves.begin(),
+				information.availableMoves.end()),
 		information.reasonToClaimDraw,
 		drawEnforcement);
 
@@ -279,7 +284,13 @@ Game simplechess::makeMove(
 			information.reasonItWasDrawn,
 			nextHistory,
 			next.stage,
-			information.availableMoves,
+			// The public interface hands the available moves out as an ordered
+			// set, so this is where the generated moves become one - once per
+			// move actually played, rather than on every position examined
+			// while working out what those moves are.
+			std::set<PieceMove>(
+					information.availableMoves.begin(),
+					information.availableMoves.end()),
 			information.reasonToClaimDraw,
 			drawEnforcement,
 			nextReachedPositions);

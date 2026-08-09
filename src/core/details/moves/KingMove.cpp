@@ -6,46 +6,98 @@
 using namespace simplechess;
 using namespace simplechess::details;
 
-std::set<PieceMove> simplechess::details::kingMovesExceptCastling(
+namespace
+{
+	/**
+	 * Whether the king may castle towards \p rookFile.
+	 *
+	 * Every square between the king and the rook must be vacant, and the two
+	 * squares the king travels through must additionally be free of attack.
+	 * (Whether the king is currently in check is checked by the caller, once,
+	 * for both sides.)
+	 */
+	bool canCastle(
+			const Board& board,
+			const Color color,
+			const Square& kingSquare,
+			const char rookFile)
+	{
+		const uint8_t rank = kingSquare.rank();
+		const bool kingSide = (rookFile == 'h');
+
+		const char firstTravelled = kingSide ? 'f' : 'd';
+		const char secondTravelled = kingSide ? 'g' : 'c';
+
+		for (const char file : {firstTravelled, secondTravelled})
+		{
+			const Square square = Square::fromRankAndFile(rank, file);
+
+			if (!BoardAnalyzer::isEmpty(board, square)
+					|| BoardAnalyzer::isSquareThreatenedBy(
+						board,
+						square,
+						oppositeColor(color)))
+			{
+				return false;
+			}
+		}
+
+		// Queenside castling also passes over the knight's square, which must
+		// be vacant but, unlike the squares the king travels through, may be
+		// under attack.
+		if (!kingSide
+				&& !BoardAnalyzer::isEmpty(
+					board,
+					Square::fromRankAndFile(rank, 'b')))
+		{
+			return false;
+		}
+
+		return true;
+	}
+}
+
+void simplechess::details::appendKingMovesExceptCastling(
+		std::vector<PieceMove>& moves,
 		const Board& board,
 		const Color color,
 		const Square& square)
 {
-	const std::set<int8_t> step = {-1, 0, 1};
-
 	const Piece king = {PieceType::King, color};
 
-	std::set<PieceMove> result;
-
-	for (const int8_t rankStep : step)
+	for (const int8_t rankStep : {-1, 0, 1})
 	{
-		for (const int8_t fileStep : step)
+		for (const int8_t fileStep : {-1, 0, 1})
 		{
-			if (Square::isInsideBoundaries(
-						square.rank() + rankStep,
-						square.file() + fileStep))
+			if (rankStep == 0 && fileStep == 0)
 			{
-				const Square dst = Square::fromRankAndFile(
-						square.rank() + rankStep,
-						square.file() + fileStep);
+				continue;
+			}
 
-				if (BoardAnalyzer::isOccupiableBy(board, dst, color))
-				{
-					// The square currently occupied by the king does not make
-					// it past this if's guard
-					result.insert(PieceMove::regularMove(
-								king,
-								square,
-								dst));
-				}
+			const int rank = square.rank() + rankStep;
+			const int file = square.file() + fileStep;
+
+			if (!Square::isInsideBoundaries(
+						static_cast<uint8_t>(rank),
+						static_cast<char>(file)))
+			{
+				continue;
+			}
+
+			const Square dst = Square::fromRankAndFile(
+					static_cast<uint8_t>(rank),
+					static_cast<char>(file));
+
+			if (BoardAnalyzer::isOccupiableBy(board, dst, color))
+			{
+				moves.push_back(PieceMove::regularMove(king, square, dst));
 			}
 		}
 	}
-
-	return result;
 }
 
-std::set<PieceMove> simplechess::details::kingMovesUnfiltered(
+void simplechess::details::appendKingMovesUnfiltered(
+		std::vector<PieceMove>& moves,
 		const Board& board,
 		const uint8_t castlingRights,
 		const Color color,
@@ -53,95 +105,48 @@ std::set<PieceMove> simplechess::details::kingMovesUnfiltered(
 {
 	const Piece king = {PieceType::King, color};
 
-	std::set<PieceMove> result = kingMovesExceptCastling(board, color, square);
+	appendKingMovesExceptCastling(moves, board, color, square);
+
+	const uint8_t kingSideRight = (color == Color::White)
+		? CastlingRight::WhiteKingSide
+		: CastlingRight::BlackKingSide;
+
+	const uint8_t queenSideRight = (color == Color::White)
+		? CastlingRight::WhiteQueenSide
+		: CastlingRight::BlackQueenSide;
+
+	if ((castlingRights & (kingSideRight | queenSideRight)) == 0)
+	{
+		// Nothing to consider, and in particular no need to work out whether
+		// the king is in check.
+		return;
+	}
 
 	if (BoardAnalyzer::isInCheck(board, color))
 	{
 		// Castling is not available in check
-		return result;
+		return;
 	}
 
-	if ((color == Color::White
-				&& (castlingRights & CastlingRight::WhiteKingSide))
-			|| (color == Color::Black
-				&& (castlingRights & CastlingRight::BlackKingSide)))
+	if (castlingRights & kingSideRight)
 	{
-		// Only available if the passing squares are empty and not under attack
-		const std::set<Square> mustBeFreeSquares = {
-			Square::fromRankAndFile(square.rank(), 'f'),
-			Square::fromRankAndFile(square.rank(), 'g')
-		};
-
-		bool allClear = true;
-
-		for (const Square& sq : mustBeFreeSquares)
+		if (canCastle(board, color, square, 'h'))
 		{
-			if (!BoardAnalyzer::isEmpty(board, sq)
-					|| BoardAnalyzer::isSquareThreatenedBy(
-						board,
-						sq,
-						oppositeColor(color)))
-			{
-				allClear = false;
-			}
-		}
-
-		if (allClear)
-		{
-			result.insert(PieceMove::regularMove(
+			moves.push_back(PieceMove::regularMove(
 						king,
 						square,
-						Square::fromRankAndFile(
-							square.rank(),
-							'g')));
+						Square::fromRankAndFile(square.rank(), 'g')));
 		}
 	}
 
-	if ((color == Color::White
-				&& (castlingRights & CastlingRight::WhiteQueenSide))
-			|| (color == Color::Black
-				&& (castlingRights & CastlingRight::BlackQueenSide)))
+	if (castlingRights & queenSideRight)
 	{
-		// Only available if the passing squares are empty and not under attack
-		const std::set<Square> mustBeFreeSquares = {
-			Square::fromRankAndFile(square.rank(), 'd'),
-			Square::fromRankAndFile(square.rank(), 'c')
-		};
-
-		bool allClear = true;
-
-		for (const Square& sq : mustBeFreeSquares)
+		if (canCastle(board, color, square, 'a'))
 		{
-			if (!BoardAnalyzer::isEmpty(board, sq)
-					|| BoardAnalyzer::isSquareThreatenedBy(
-						board,
-						sq,
-						oppositeColor(color)))
-			{
-				allClear = false;
-			}
-		}
-
-		// Every square between the king and the rook must be vacant, so the
-		// knight's square must be empty too. Unlike the squares the king
-		// travels through, it does not matter whether it is under attack.
-		if (!BoardAnalyzer::isEmpty(
-					board,
-					Square::fromRankAndFile(square.rank(), 'b')))
-		{
-			allClear = false;
-		}
-
-		if (allClear)
-		{
-			result.insert(PieceMove::regularMove(
+			moves.push_back(PieceMove::regularMove(
 						king,
 						square,
-						Square::fromRankAndFile(
-							square.rank(),
-							'c')));
+						Square::fromRankAndFile(square.rank(), 'c')));
 		}
 	}
-
-	return result;
 }

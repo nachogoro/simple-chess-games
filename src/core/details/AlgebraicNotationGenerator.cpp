@@ -102,7 +102,7 @@ namespace
 			return 0;
 		}
 
-		const std::set<PieceMove> allPossibleMoves
+		const std::vector<PieceMove> allPossibleMoves
 			= details::MoveValidator::allAvailableMoves(
 					board,
 					::targetIfEnPassantCapture(board, move),

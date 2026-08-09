@@ -5,14 +5,13 @@
 using namespace simplechess;
 using namespace simplechess::details;
 
-std::set<PieceMove> simplechess::details::pawnMovesUnfiltered(
+void simplechess::details::appendPawnMovesUnfiltered(
+		std::vector<PieceMove>& moves,
 		const Board& board,
 		const std::optional<Square>& enPassantTarget,
 		const Color color,
 		const Square& square)
 {
-	std::set<Square> finalSquares;
-
 	// A pawn can move:
 	//  1. One square ahead if the landing square is empty
 	//  2. Two squares ahead if both squares in front of it are empty and it's
@@ -29,27 +28,30 @@ std::set<PieceMove> simplechess::details::pawnMovesUnfiltered(
 		? 1
 		: -1;
 
+	// At most four squares are reachable, and they are all distinct.
+	Square finalSquares[4] = {square, square, square, square};
+	size_t finalSquareCount = 0;
+
 	const Square oneAhead = Square::fromRankAndFile(
 			square.rank() + step,
 			square.file());
 
 	if (BoardAnalyzer::isEmpty(board, oneAhead))
 	{
-		finalSquares.insert(oneAhead);
-	}
+		finalSquares[finalSquareCount++] = oneAhead;
 
-	if ((pawn.color() == Color::White && square.rank() == 2)
-			|| (pawn.color() == Color::Black && square.rank() == 7))
-	{
-		// The pawn has never moved, might be able to move twice ahead
-		const Square twoAhead = Square::fromRankAndFile(
-				square.rank() + 2*step,
-				square.file());
-
-		if (BoardAnalyzer::isEmpty(board, oneAhead)
-				&& BoardAnalyzer::isEmpty(board, twoAhead))
+		if ((pawn.color() == Color::White && square.rank() == 2)
+				|| (pawn.color() == Color::Black && square.rank() == 7))
 		{
-			finalSquares.insert(twoAhead);
+			// The pawn has never moved, might be able to move twice ahead
+			const Square twoAhead = Square::fromRankAndFile(
+					square.rank() + 2*step,
+					square.file());
+
+			if (BoardAnalyzer::isEmpty(board, twoAhead))
+			{
+				finalSquares[finalSquareCount++] = twoAhead;
+			}
 		}
 	}
 
@@ -66,7 +68,7 @@ std::set<PieceMove> simplechess::details::pawnMovesUnfiltered(
 					oppositeColor(pawn.color()))
 				|| (enPassantTarget && enPassantTarget == aheadQueenSide))
 		{
-			finalSquares.insert(aheadQueenSide);
+			finalSquares[finalSquareCount++] = aheadQueenSide;
 		}
 	}
 
@@ -83,25 +85,26 @@ std::set<PieceMove> simplechess::details::pawnMovesUnfiltered(
 					oppositeColor(pawn.color()))
 				|| (enPassantTarget && enPassantTarget == aheadKingSide))
 		{
-			finalSquares.insert(aheadKingSide);
+			finalSquares[finalSquareCount++] = aheadKingSide;
 		}
 	}
 
-	static const std::set<PieceType> sPromotionableTypes = {
+	static const PieceType promotionTypes[4] = {
 		PieceType::Rook,
 		PieceType::Knight,
 		PieceType::Bishop,
 		PieceType::Queen};
 
-	std::set<PieceMove> result;
-	for (const Square& dst : finalSquares)
+	for (size_t i = 0; i < finalSquareCount; ++i)
 	{
+		const Square& dst = finalSquares[i];
+
 		if (dst.rank() == 1 || dst.rank() == 8)
 		{
 			// Pawn promotion
-			for (const PieceType& promotionType : sPromotionableTypes)
+			for (const PieceType promotionType : promotionTypes)
 			{
-				result.insert(PieceMove::pawnPromotion(
+				moves.push_back(PieceMove::pawnPromotion(
 							pawn,
 							square,
 							dst,
@@ -110,9 +113,7 @@ std::set<PieceMove> simplechess::details::pawnMovesUnfiltered(
 		}
 		else
 		{
-			result.insert(PieceMove::regularMove(pawn, square, dst));
+			moves.push_back(PieceMove::regularMove(pawn, square, dst));
 		}
 	}
-
-	return result;
 }

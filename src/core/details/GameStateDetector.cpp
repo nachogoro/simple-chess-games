@@ -20,7 +20,7 @@ namespace internal
 	boost::tuple<GameState, std::optional<DrawReason>> inferGameStateFromStage(
 			const GameStage& stage,
 			const bool inCheck,
-			const std::set<PieceMove> allPossibleMoves,
+			const std::vector<PieceMove>& allPossibleMoves,
 			const std::optional<DrawReason> reasonToClaimDraw,
 			const DrawEnforcement drawEnforcement)
 	{

@@ -24,7 +24,7 @@ namespace
 	{
 		const GameStage stage = details::FenUtils::fromFenString(fen);
 
-		const std::set<PieceMove> moves = details::MoveValidator::allAvailableMoves(
+		const std::vector<PieceMove> moves = details::MoveValidator::allAvailableMoves(
 				stage.board(),
 				stage.enPassantTarget(),
 				stage.castlingRights(),

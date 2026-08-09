@@ -30,7 +30,7 @@ namespace
 {
 	uint64_t perft(const GameStage& stage, const unsigned depth)
 	{
-		const std::set<PieceMove> moves
+		const std::vector<PieceMove> moves
 			= details::MoveValidator::allAvailableMoves(
 					stage.board(),
 					stage.enPassantTarget(),

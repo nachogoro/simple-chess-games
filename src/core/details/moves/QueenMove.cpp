@@ -1,32 +1,31 @@
 #include "QueenMove.h"
 
-#include "RookMove.h"
-#include "BishopMove.h"
+#include "../BoardAnalyzer.h"
 
 using namespace simplechess;
 using namespace simplechess::details;
 
-std::set<PieceMove> simplechess::details::queenMovesUnfiltered(
+void simplechess::details::appendQueenMovesUnfiltered(
+		std::vector<PieceMove>& moves,
 		const Board& board,
 		const Color color,
 		const Square& square)
 {
-	// These moves assume the moving piece is a rook/bishop!
-	const std::set<PieceMove> asRook = rookMovesUnfiltered(board, color, square);
-	const std::set<PieceMove> asBishop = bishopMovesUnfiltered(board, color, square);
+	// A queen moves like a rook and like a bishop combined, so it simply
+	// travels in all eight directions.
+	const Piece queen = {PieceType::Queen, color};
 
-	std::set<PieceMove> combined;
-	combined.insert(asRook.begin(), asRook.end());
-	combined.insert(asBishop.begin(), asBishop.end());
-
-	std::set<PieceMove> result;
-	for (const auto& move : combined)
+	for (const int8_t rankStep : {-1, 0, 1})
 	{
-		result.insert(PieceMove::regularMove(
-					{PieceType::Queen, color},
-					move.src(),
-					move.dst()));
-	}
+		for (const int8_t fileStep : {-1, 0, 1})
+		{
+			if (rankStep == 0 && fileStep == 0)
+			{
+				continue;
+			}
 
-	return result;
+			BoardAnalyzer::appendMovesInDirection(
+					moves, board, queen, square, rankStep, fileStep);
+		}
+	}
 }

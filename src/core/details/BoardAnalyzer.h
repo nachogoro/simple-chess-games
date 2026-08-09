@@ -3,11 +3,12 @@
 
 #include <cpp/simplechess/Board.h>
 #include <cpp/simplechess/Color.h>
+#include <cpp/simplechess/PieceMove.h>
 #include <cpp/simplechess/Square.h>
 
 #include <optional>
 
-#include <set>
+#include <vector>
 
 namespace simplechess
 {
@@ -98,32 +99,31 @@ namespace simplechess
 						const Board& board, const Square& square, Color color);
 
 				/**
-				 * \brief Returns all the squares which could be reached by a
-				 * piece of color \a color from \a src by moving in the
-				 * direction specified by \a rankStep and \a fileStep.
+				 * \brief Appends to \a moves every move which takes \a piece
+				 * from \a src in the direction specified by \a rankStep and
+				 * \a fileStep.
 				 *
 				 * All squares in a given direction from \a src are reachable
 				 * until:
-				 * - A square is reached which cannot be occupied by a piece of
-				 *   color \a color.
+				 * - A square is reached which cannot be occupied by \a piece.
 				 * - The first square occupied by a piece of the opposite color
 				 *   is reached.
 				 * - The end of the board is reached.
 				 *
+				 * \param moves The collection the moves are appended to.
 				 * \param board The state of the board.
+				 * \param piece The piece being moved.
 				 * \param src The square from where the piece would start.
-				 * \param color The color of the moving piece.
 				 * \param rankStep How much would the rank increments in each
 				 * move.
 				 * \param fileStep How much would the file increments in each
 				 * move.
-				 * \return \c true if they are in the same rank or file, \c
-				 * false otherwise.
 				 */
-				static std::set<Square> reachableSquaresInDirection(
+				static void appendMovesInDirection(
+						std::vector<PieceMove>& moves,
 						const Board& board,
+						const Piece& piece,
 						const Square& src,
-						Color color,
 						int8_t rankStep,
 						int8_t fileStep);
 

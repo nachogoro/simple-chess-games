@@ -5,51 +5,37 @@
 using namespace simplechess;
 using namespace simplechess::details;
 
-std::set<PieceMove> simplechess::details::knightMovesUnfiltered(
+void simplechess::details::appendKnightMovesUnfiltered(
+		std::vector<PieceMove>& moves,
 		const Board& board,
 		const Color color,
 		const Square& square)
 {
 	const Piece knight = {PieceType::Knight, color};
 
-	const std::set<int8_t> longSteps = {-2, 2};
-	const std::set<int8_t> shortSteps = {-1, 1};
+	static const int8_t offsets[8][2] = {
+		{1, 2}, {2, 1}, {2, -1}, {1, -2},
+		{-1, -2}, {-2, -1}, {-2, 1}, {-1, 2}};
 
-	std::set<PieceMove> result;
-
-	for (const int8_t longStep : longSteps)
+	for (const auto& offset : offsets)
 	{
-		for (const int8_t shortStep : shortSteps)
+		const int rank = square.rank() + offset[0];
+		const int file = square.file() + offset[1];
+
+		if (!Square::isInsideBoundaries(
+					static_cast<uint8_t>(rank),
+					static_cast<char>(file)))
 		{
-			if (Square::isInsideBoundaries(
-						square.rank() + longStep,
-						square.file() + shortStep))
-			{
-				const Square dst = Square::fromRankAndFile(
-						square.rank() + longStep,
-						square.file() + shortStep);
+			continue;
+		}
 
-				if (BoardAnalyzer::isOccupiableBy(board, dst, color))
-				{
-					result.insert(PieceMove::regularMove(knight, square, dst));
-				}
-			}
+		const Square dst = Square::fromRankAndFile(
+				static_cast<uint8_t>(rank),
+				static_cast<char>(file));
 
-			if (Square::isInsideBoundaries(
-						square.rank() + shortStep,
-						square.file() + longStep))
-			{
-				const Square dst = Square::fromRankAndFile(
-						square.rank() + shortStep,
-						square.file() + longStep);
-
-				if (BoardAnalyzer::isOccupiableBy(board, dst, color))
-				{
-					result.insert(PieceMove::regularMove(knight, square, dst));
-				}
-			}
+		if (BoardAnalyzer::isOccupiableBy(board, dst, color))
+		{
+			moves.push_back(PieceMove::regularMove(knight, square, dst));
 		}
 	}
-
-	return result;
 }

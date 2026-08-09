@@ -23,7 +23,7 @@ PositionAnalysis details::analyzePosition(
 {
 	const bool inCheck = BoardAnalyzer::isInCheck(board, activeColor);
 
-	std::set<PieceMove> legalMoves = MoveValidator::allAvailableMoves(
+	std::vector<PieceMove> legalMoves = MoveValidator::allAvailableMoves(
 			board,
 			enPassantTarget,
 			castlingRights,
@@ -117,7 +117,7 @@ std::optional<Square> MoveValidator::enPassantTarget(
 				continue;
 
 			// Check if this pawn has a legal en passant capture
-			const std::set<PieceMove> moves = availableMovesForPiece(
+			const std::vector<PieceMove> moves = availableMovesForPiece(
 					board, candidateTarget, 0, adjSquare);
 
 			for (const auto& move : moves)
@@ -131,7 +131,7 @@ std::optional<Square> MoveValidator::enPassantTarget(
 	return {};
 }
 
-std::set<PieceMove> MoveValidator::availableMovesForPiece(
+std::vector<PieceMove> MoveValidator::availableMovesForPiece(
 		const Board& board,
 		const std::optional<Square>& enPassantTarget,
 		const uint8_t castlingRights,
@@ -139,32 +139,34 @@ std::set<PieceMove> MoveValidator::availableMovesForPiece(
 {
 	const Color color = board.pieceAt(square)->color();
 
-	std::set<PieceMove> unfiltered;
+	std::vector<PieceMove> unfiltered;
 
 	switch (board.pieceAt(square)->type())
 	{
 		case PieceType::Pawn:
-			unfiltered = pawnMovesUnfiltered(board, enPassantTarget, color, square);
+			appendPawnMovesUnfiltered(
+					unfiltered, board, enPassantTarget, color, square);
 			break;
 		case PieceType::Rook:
-			unfiltered = rookMovesUnfiltered(board, color, square);
+			appendRookMovesUnfiltered(unfiltered, board, color, square);
 			break;
 		case PieceType::Knight:
-			unfiltered = knightMovesUnfiltered(board, color, square);
+			appendKnightMovesUnfiltered(unfiltered, board, color, square);
 			break;
 		case PieceType::Bishop:
-			unfiltered = bishopMovesUnfiltered(board, color, square);
+			appendBishopMovesUnfiltered(unfiltered, board, color, square);
 			break;
 		case PieceType::Queen:
-			unfiltered = queenMovesUnfiltered(board, color, square);
+			appendQueenMovesUnfiltered(unfiltered, board, color, square);
 			break;
 		case PieceType::King:
-			unfiltered = kingMovesUnfiltered(board, castlingRights, color, square);
+			appendKingMovesUnfiltered(
+					unfiltered, board, castlingRights, color, square);
 			break;
 	}
 
 	// Filter out moves which would expose the own king
-	std::set<PieceMove> result;
+	std::vector<PieceMove> result;
 
 	for (const auto& move : unfiltered)
 	{
@@ -172,20 +174,20 @@ std::set<PieceMove> MoveValidator::availableMovesForPiece(
 
 		if (!BoardAnalyzer::isInCheck(afterMove, color))
 		{
-			result.insert(move);
+			result.push_back(move);
 		}
 	}
 
 	return result;
 }
 
-std::set<PieceMove> MoveValidator::allAvailableMoves(
+std::vector<PieceMove> MoveValidator::allAvailableMoves(
 		const Board& board,
 		const std::optional<Square>& enPassantTarget,
 		const uint8_t castlingRights,
 		const Color activeColor)
 {
-	std::set<PieceMove> result;
+	std::vector<PieceMove> result;
 
 	const std::array<uint8_t, 64>& squares = BoardAccess::squares(board);
 
@@ -193,12 +195,12 @@ std::set<PieceMove> MoveValidator::allAvailableMoves(
 	{
 		if (BoardAccess::isColor(squares[index], activeColor))
 		{
-			const std::set<PieceMove> pieceMoves = availableMovesForPiece(
+			const std::vector<PieceMove> pieceMoves = availableMovesForPiece(
 					board,
 					enPassantTarget,
 					castlingRights,
 					BoardAccess::squareOf(index));
-			result.insert(pieceMoves.begin(), pieceMoves.end());
+			result.insert(result.end(), pieceMoves.begin(), pieceMoves.end());
 		}
 	}
 

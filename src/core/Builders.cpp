@@ -20,7 +20,7 @@ GameStage GameStageBuilder::build(
 	const bool isInCheck = details::BoardAnalyzer::isInCheck(board, activeColor);
 	CheckType checkStatus = CheckType::NoCheck;
 	if (isInCheck) {
-		const std::set<PieceMove> availableMoves = details::MoveValidator::allAvailableMoves(
+		const std::vector<PieceMove> availableMoves = details::MoveValidator::allAvailableMoves(
 			board,
 			enPassantTarget,
 			castlingRights,
@@ -123,7 +123,7 @@ PlayedMove PlayedMoveBuilder::build(
 	}
 	else
 	{
-		const std::set<PieceMove> availableResponses
+		const std::vector<PieceMove> availableResponses
 			= details::MoveValidator::allAvailableMoves(
 					afterMove,
 					details::MoveValidator::enPassantTarget(afterMove, {move}),

@@ -199,49 +199,47 @@ bool BoardAnalyzer::isOccupiedByPieceOfColor(
 		&& board.pieceAt(dstSquare)->color() == color;
 }
 
-std::set<Square> BoardAnalyzer::reachableSquaresInDirection(
+void BoardAnalyzer::appendMovesInDirection(
+		std::vector<PieceMove>& moves,
 		const Board& board,
+		const Piece& piece,
 		const Square& src,
-		const Color color,
 		const int8_t rankStep,
 		const int8_t fileStep)
 {
-	std::set<Square> result;
-
 	// There are at most 7 squares left in any direction
 	for (int8_t i = 1; i < 8; ++i)
 	{
-		if (Square::isInsideBoundaries(
-					src.rank() + i*rankStep,
-					src.file() + i*fileStep))
-		{
-			const Square dst = Square::fromRankAndFile(
-					src.rank() + i*rankStep,
-					src.file() + i*fileStep);
+		const int rank = src.rank() + i*rankStep;
+		const int file = src.file() + i*fileStep;
 
-			if (!isOccupiableBy(board, dst, color))
-			{
-				// First non-ocuppiable square
-				break;
-			}
-
-			result.insert(dst);
-
-			if (!BoardAnalyzer::isEmpty(board, dst))
-			{
-				// First occupied square, we can't keep moving in this
-				// direction
-				break;
-			}
-		}
-		else
+		if (!Square::isInsideBoundaries(
+					static_cast<uint8_t>(rank),
+					static_cast<char>(file)))
 		{
 			// End of the board
 			break;
 		}
-	}
 
-	return result;
+		const Square dst = Square::fromRankAndFile(
+				static_cast<uint8_t>(rank),
+				static_cast<char>(file));
+
+		if (!isOccupiableBy(board, dst, piece.color()))
+		{
+			// First non-ocuppiable square
+			break;
+		}
+
+		moves.push_back(PieceMove::regularMove(piece, src, dst));
+
+		if (!BoardAnalyzer::isEmpty(board, dst))
+		{
+			// First occupied square, we can't keep moving in this
+			// direction
+			break;
+		}
+	}
 }
 
 Square BoardAnalyzer::kingSquare(const Board& board, Color color)

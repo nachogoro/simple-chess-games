@@ -5,13 +5,14 @@
 #include <cpp/simplechess/PieceMove.h>
 #include <cpp/simplechess/Square.h>
 
-#include <set>
+#include <vector>
 
 namespace simplechess
 {
 	namespace details
 	{
-		std::set<PieceMove> queenMovesUnfiltered(
+		void appendQueenMovesUnfiltered(
+				std::vector<PieceMove>& moves,
 				const Board& board,
 				Color color,
 				const Square& square);

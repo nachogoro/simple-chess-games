@@ -145,7 +145,7 @@ std::optional<DrawReason> DrawEvaluator::reasonToDraw(
 		const std::map<std::string, uint8_t>& previouslyReachedPositions,
 		bool drawOffered)
 {
-	const std::set<PieceMove> allPossibleMoves
+	const std::vector<PieceMove> allPossibleMoves
 		= MoveValidator::allAvailableMoves(
 				stage.board(),
 				stage.enPassantTarget(),
@@ -166,7 +166,7 @@ std::optional<DrawReason> DrawEvaluator::reasonToDraw(
 std::optional<DrawReason> DrawEvaluator::reasonToDraw(
 		const GameStage& stage,
 		const bool isInCheck,
-		const std::set<PieceMove>& allPossibleMoves,
+		const std::vector<PieceMove>& allPossibleMoves,
 		const std::map<std::string, uint8_t>& previouslyReachedPositions,
 		bool drawOffered)
 {

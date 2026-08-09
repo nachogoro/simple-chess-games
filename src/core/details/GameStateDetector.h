@@ -19,12 +19,12 @@ namespace simplechess
 			GameStateInformation(
 					const GameState gameState,
 					const CheckType checkType,
-					const std::set<PieceMove>& availableMoves,
+					std::vector<PieceMove> availableMoves,
 					const std::optional<DrawReason>& reasonItWasDrawn,
 					const std::optional<DrawReason>& reasonToClaimDraw)
 				: gameState(gameState),
 				checkType(checkType),
-				availableMoves(availableMoves),
+				availableMoves(std::move(availableMoves)),
 				reasonItWasDrawn(reasonItWasDrawn),
 				reasonToClaimDraw(reasonToClaimDraw)
 			{
@@ -32,7 +32,7 @@ namespace simplechess
 
 			const GameState gameState;
 			const CheckType checkType;
-			const std::set<PieceMove> availableMoves;
+			const std::vector<PieceMove> availableMoves;
 			const std::optional<DrawReason> reasonItWasDrawn;
 			const std::optional<DrawReason> reasonToClaimDraw;
 		};

@@ -9,7 +9,7 @@
 
 #include <optional>
 
-#include <set>
+#include <vector>
 
 namespace simplechess
 {
@@ -27,7 +27,7 @@ namespace simplechess
 		struct PositionAnalysis
 		{
 			CheckType checkType;
-			std::set<PieceMove> legalMoves;
+			std::vector<PieceMove> legalMoves;
 
 			bool inCheck() const
 			{
@@ -63,13 +63,22 @@ namespace simplechess
 						const Board& board,
 						const PieceMove& pieceMove);
 
-				static std::set<PieceMove> allAvailableMoves(
+				/**
+				 * All the legal moves for \p activeColor.
+				 *
+				 * Moves are gathered into a vector rather than a set: they
+				 * are generated one source square at a time, so duplicates
+				 * are impossible, and the ordering a set would impose costs
+				 * an allocation and a tree insertion per move on a path which
+				 * runs many thousands of times per move played.
+				 */
+				static std::vector<PieceMove> allAvailableMoves(
 						const Board& board,
 						const std::optional<Square>& enPassantTarget,
 						uint8_t castlingRights,
 						Color activeColor);
 
-				static std::set<PieceMove> availableMovesForPiece(
+				static std::vector<PieceMove> availableMovesForPiece(
 						const Board& board,
 						const std::optional<Square>& enPassantTarget,
 						uint8_t castlingRights,
