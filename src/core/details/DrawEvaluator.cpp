@@ -1,10 +1,12 @@
 #include "DrawEvaluator.h"
 
+#include "BoardAccess.h"
 #include "BoardAnalyzer.h"
 #include "MoveValidator.h"
 #include "fen/FenUtils.h"
 
 #include <algorithm>
+#include <array>
 
 using namespace simplechess;
 using namespace simplechess::details;
@@ -16,12 +18,14 @@ namespace internal
 		const Color opponentColor
 			= (activeColor == Color::White) ? Color::Black : Color::White;
 
-		for (const auto& entry : board.occupiedSquares())
-		{
-			const Piece& piece = entry.second;
+		const std::array<uint8_t, 64>& squares = BoardAccess::squares(board);
 
-			if (piece.color() == opponentColor
-					&& piece.type() != PieceType::King)
+		for (uint8_t index = 0; index < 64; ++index)
+		{
+			const uint8_t code = squares[index];
+
+			if (BoardAccess::isColor(code, opponentColor)
+					&& BoardAccess::typeOf(code) != PieceType::King)
 			{
 				return false;
 			}
@@ -38,42 +42,65 @@ namespace internal
 		//   - King + Bishop vs King
 		//   - King + Knight vs King
 		//   - King + Bishop vs King + Bishop (same coloured bishops)
-		std::set<Piece> whitePieces;
-		std::set<Piece> blackPieces;
 
-		const std::map<Square, Piece> occupiedSquares = board.occupiedSquares();
+		// Which piece types each side has on the board, one bit per type.
+		// Only the distinct types matter here, never how many of each, so a
+		// bit mask per side answers every question below without allocating
+		// anything.
+		uint8_t typesPresent[2] = {0, 0};
 
-		for (const auto& entry : occupiedSquares)
+		const auto typeCount = [](const uint8_t mask) {
+			uint8_t count = 0;
+			for (uint8_t bit = 0; bit < 8; ++bit)
+			{
+				count = static_cast<uint8_t>(count + ((mask >> bit) & 1));
+			}
+			return count;
+		};
+
+		const auto has = [](const uint8_t mask, const PieceType type) {
+			return (mask & (1 << static_cast<uint8_t>(type))) != 0;
+		};
+
+		const std::array<uint8_t, 64>& squares = BoardAccess::squares(board);
+
+		for (uint8_t index = 0; index < 64; ++index)
 		{
-			const Piece& piece = entry.second;
+			const uint8_t code = squares[index];
 
-			if (piece.color() == Color::White)
+			if (code == 0)
 			{
-				whitePieces.insert(piece);
+				continue;
 			}
-			else
-			{
-				blackPieces.insert(piece);
-			}
+
+			const size_t side
+				= BoardAccess::isColor(code, Color::White) ? 0 : 1;
+
+			typesPresent[side] = static_cast<uint8_t>(
+					typesPresent[side]
+					| (1 << static_cast<uint8_t>(BoardAccess::typeOf(code))));
 		}
 
-		if (whitePieces.size() == 1 && blackPieces.size() == 1)
+		const uint8_t whiteTypes = typeCount(typesPresent[0]);
+		const uint8_t blackTypes = typeCount(typesPresent[1]);
+
+		if (whiteTypes == 1 && blackTypes == 1)
 		{
 			// King vs king
 			return false;
 		}
 
-		if (whitePieces.size() > 2 || blackPieces.size() > 2)
+		if (whiteTypes > 2 || blackTypes > 2)
 		{
 			// At least one side has more than 2 pieces, this is always enough
 			// to theoretically mate.
 			return true;
 		}
 
-		if (whitePieces.size() == 2 && blackPieces.size() == 2)
+		if (whiteTypes == 2 && blackTypes == 2)
 		{
-			if (!(whitePieces.count({PieceType::Bishop, Color::White})
-					&& blackPieces.count({PieceType::Bishop, Color::Black})))
+			if (!(has(typesPresent[0], PieceType::Bishop)
+					&& has(typesPresent[1], PieceType::Bishop)))
 			{
 				// If both sides do not have King + Bishop but have two pieces,
 				// mate is theoretically possible
@@ -83,12 +110,18 @@ namespace internal
 			// Both sides have King + Bishop, we need to figure out if they are
 			// of the same color
 			std::optional<Color> bishopColor;
-			for (const auto& entry : occupiedSquares)
+			for (uint8_t index = 0; index < 64; ++index)
 			{
-				const Square& sq = entry.first;
-				const Piece& piece = entry.second;
+				const uint8_t code = squares[index];
 
-				if (piece.type() == PieceType::Bishop)
+				if (code == 0)
+				{
+					continue;
+				}
+
+				const Square sq = BoardAccess::squareOf(index);
+
+				if (BoardAccess::typeOf(code) == PieceType::Bishop)
 				{
 					if (!bishopColor)
 					{
@@ -118,24 +151,18 @@ namespace internal
 		}
 
 		// One side has only the King and the other has King + some other piece
-		const std::set<Piece>& piecesOfRelevantSide
-			= (whitePieces.size() > 1)
-				? whitePieces
-				: blackPieces;
+		const uint8_t relevantSideTypes
+			= (whiteTypes > 1) ? typesPresent[0] : typesPresent[1];
 
-		const std::set<PieceType> drawingTypes
-			= {PieceType::King, PieceType::Knight, PieceType::Bishop};
+		const uint8_t drawingTypes
+			= static_cast<uint8_t>(
+					(1 << static_cast<uint8_t>(PieceType::King))
+					| (1 << static_cast<uint8_t>(PieceType::Knight))
+					| (1 << static_cast<uint8_t>(PieceType::Bishop)));
 
-		for (const Piece& piece : piecesOfRelevantSide)
-		{
-			if (drawingTypes.count(piece.type()) == 0)
-			{
-				// Found one piece which is neither King, Bishop or Knight
-				return true;
-			}
-		}
-
-		return false;
+		// A piece which is neither King, Bishop nor Knight means mate is
+		// theoretically possible.
+		return (relevantSideTypes & ~drawingTypes) != 0;
 	}
 
 }
