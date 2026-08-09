@@ -131,65 +131,6 @@ std::optional<Square> MoveValidator::enPassantTarget(
 	return {};
 }
 
-std::set<PieceMove> MoveValidator::potentiallyCapturingMovesForPieceUnfiltered(
-		const Board& board,
-		// En passant is irrelevant when asking what a piece threatens
-		const std::optional<Square>&,
-		const Square& square)
-{
-	const Color color = board.pieceAt(square)->color();
-
-	switch (board.pieceAt(square)->type())
-	{
-		case PieceType::Pawn:
-			// What a pawn threatens is not what it can move to, so its
-			// attacked squares have to be asked for separately.
-			return pawnAttacksUnfiltered(color, square);
-		case PieceType::Rook:
-			return rookMovesUnfiltered(board, color, square);
-		case PieceType::Knight:
-			return knightMovesUnfiltered(board, color, square);
-		case PieceType::Bishop:
-			return bishopMovesUnfiltered(board, color, square);
-		case PieceType::Queen:
-			return queenMovesUnfiltered(board, color, square);
-		case PieceType::King:
-			return kingMovesExceptCastling(board, color, square);
-	}
-
-	throw std::invalid_argument(
-			std::string("Unknown piece type ")
-			+ std::to_string(static_cast<int>(board.pieceAt(square)->type())));
-}
-
-std::set<PieceMove> MoveValidator::allPotentiallyCapturingMovesUnfiltered(
-		const Board& board,
-		const std::optional<Square>& enPassantTarget,
-		const Color activeColor)
-{
-	std::set<PieceMove> result;
-
-	// Scanning the packed array rather than Board::occupiedSquares() keeps
-	// this off the map, which would otherwise have to be materialised for
-	// every board examined while generating moves.
-	const std::array<uint8_t, 64>& squares = BoardAccess::squares(board);
-
-	for (uint8_t index = 0; index < 64; ++index)
-	{
-		if (BoardAccess::isColor(squares[index], activeColor))
-		{
-			const std::set<PieceMove> pieceMoves
-				= potentiallyCapturingMovesForPieceUnfiltered(
-						board,
-						enPassantTarget,
-						BoardAccess::squareOf(index));
-			result.insert(pieceMoves.begin(), pieceMoves.end());
-		}
-	}
-
-	return result;
-}
-
 std::set<PieceMove> MoveValidator::availableMovesForPiece(
 		const Board& board,
 		const std::optional<Square>& enPassantTarget,

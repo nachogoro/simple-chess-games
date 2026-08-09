@@ -14,6 +14,75 @@
 using namespace simplechess;
 using namespace simplechess::details;
 
+namespace
+{
+	// Directions in which a rook or a queen threatens, then those of a bishop
+	// or a queen, as {file, rank} steps.
+	constexpr int8_t sStraightDirections[4][2]
+		= {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+	constexpr int8_t sDiagonalDirections[4][2]
+		= {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+	constexpr int8_t sKnightOffsets[8][2]
+		= {{1, 2}, {2, 1}, {2, -1}, {1, -2},
+		   {-1, -2}, {-2, -1}, {-2, 1}, {-1, 2}};
+
+	/**
+	 * Whether any piece of \p color standing on a square reachable from \p
+	 * originIndex along the given directions threatens it.
+	 *
+	 * Walks outwards until it runs off the board or meets a piece: if that
+	 * piece is a sliding piece of \p color which moves in that direction, the
+	 * square is threatened.
+	 */
+	bool threatenedBySlider(
+			const std::array<uint8_t, 64>& squares,
+			const uint8_t originIndex,
+			const simplechess::Color color,
+			const int8_t (&directions)[4][2],
+			const simplechess::PieceType slider)
+	{
+		using namespace simplechess;
+
+		for (const auto& direction : directions)
+		{
+			for (int distance = 1; distance < 8; ++distance)
+			{
+				const int index = BoardAccess::offsetIndex(
+						originIndex,
+						direction[0] * distance,
+						direction[1] * distance);
+
+				if (index < 0)
+				{
+					break;
+				}
+
+				const uint8_t code = squares[static_cast<size_t>(index)];
+
+				if (code == 0)
+				{
+					continue;
+				}
+
+				// The first piece in the way either threatens the square or
+				// blocks everything behind it.
+				if (BoardAccess::isColor(code, color))
+				{
+					const PieceType type = BoardAccess::typeOf(code);
+					if (type == slider || type == PieceType::Queen)
+					{
+						return true;
+					}
+				}
+
+				break;
+			}
+		}
+
+		return false;
+	}
+}
+
 bool BoardAnalyzer::isSquareThreatenedBy(
 		const Board& board,
 		const Square& square,
@@ -24,17 +93,75 @@ bool BoardAnalyzer::isSquareThreatenedBy(
 		return false;
 	}
 
-	const std::set<PieceMove> availableMoves
-		= MoveValidator::allPotentiallyCapturingMovesUnfiltered(
-				board,
-				{}, // En passant is irrelevant for this
-				color);
+	// Rather than generating every move the attacking side could make and
+	// looking for one that lands here, radiate outwards from the square and
+	// ask what would be standing where an attacker would have to stand. That
+	// answers the same question by reading a few dozen squares instead of
+	// building a whole set of moves, and it can stop as soon as it finds one.
+	const std::array<uint8_t, 64>& squares = BoardAccess::squares(board);
+	const uint8_t origin = BoardAccess::indexOf(square);
 
-	for (const auto& move : availableMoves)
+	if (threatenedBySlider(squares, origin, color, sStraightDirections, PieceType::Rook)
+			|| threatenedBySlider(squares, origin, color, sDiagonalDirections, PieceType::Bishop))
 	{
-		if (move.dst() == square)
+		return true;
+	}
+
+	for (const auto& offset : sKnightOffsets)
+	{
+		const int index = BoardAccess::offsetIndex(origin, offset[0], offset[1]);
+
+		if (index >= 0)
 		{
-			return true;
+			const uint8_t code = squares[static_cast<size_t>(index)];
+			if (BoardAccess::isColor(code, color)
+					&& BoardAccess::typeOf(code) == PieceType::Knight)
+			{
+				return true;
+			}
+		}
+	}
+
+	// Pawns capture forwards, so a white pawn threatening this square must be
+	// on the rank below it and a black pawn on the rank above.
+	const int pawnRankDelta = (color == Color::White) ? -1 : 1;
+	for (const int fileDelta : {-1, 1})
+	{
+		const int index
+			= BoardAccess::offsetIndex(origin, fileDelta, pawnRankDelta);
+
+		if (index >= 0)
+		{
+			const uint8_t code = squares[static_cast<size_t>(index)];
+			if (BoardAccess::isColor(code, color)
+					&& BoardAccess::typeOf(code) == PieceType::Pawn)
+			{
+				return true;
+			}
+		}
+	}
+
+	for (int fileDelta = -1; fileDelta <= 1; ++fileDelta)
+	{
+		for (int rankDelta = -1; rankDelta <= 1; ++rankDelta)
+		{
+			if (fileDelta == 0 && rankDelta == 0)
+			{
+				continue;
+			}
+
+			const int index
+				= BoardAccess::offsetIndex(origin, fileDelta, rankDelta);
+
+			if (index >= 0)
+			{
+				const uint8_t code = squares[static_cast<size_t>(index)];
+				if (BoardAccess::isColor(code, color)
+						&& BoardAccess::typeOf(code) == PieceType::King)
+				{
+					return true;
+				}
+			}
 		}
 	}
 
