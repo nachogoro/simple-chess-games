@@ -21,14 +21,16 @@ Game::Game(
 		const GameStage& currentStage,
 		const std::set<PieceMove>& allAvailableMoves,
 		const std::optional<DrawReason>& reasonToClaimDraw,
-		const DrawEnforcement drawEnforcement)
+		const DrawEnforcement drawEnforcement,
+		const std::map<std::string, uint8_t>& previouslyReachedPositions)
 	: mGameState(gameState),
 	  mReasonGameWasDrawn(drawReason),
 	  mHistory(history),
 	  mCurrentStage(currentStage),
 	  mAllAvailableMoves(allAvailableMoves),
 	  mReasonToClaimDraw(reasonToClaimDraw),
-	  mDrawEnforcement(drawEnforcement)
+	  mDrawEnforcement(drawEnforcement),
+	  mPreviouslyReachedPositions(previouslyReachedPositions)
 {
 	if ((gameState == GameState::Drawn && !drawReason)
 			|| (gameState != GameState::Drawn && drawReason))
@@ -103,4 +105,9 @@ const std::optional<DrawReason>& Game::reasonToClaimDraw() const
 DrawEnforcement Game::drawEnforcement() const
 {
 	return mDrawEnforcement;
+}
+
+const std::map<std::string, uint8_t>& Game::previouslyReachedPositions() const
+{
+	return mPreviouslyReachedPositions;
 }

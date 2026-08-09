@@ -54,7 +54,8 @@ Game GameBuilder::build(
 		const GameStage& currentStage,
 		const std::set<PieceMove>& allAvailableMoves,
 		const std::optional<DrawReason>& reasonToClaimDraw,
-		const DrawEnforcement drawEnforcement)
+		const DrawEnforcement drawEnforcement,
+		const std::map<std::string, uint8_t>& previouslyReachedPositions)
 {
 	return {
 		gameState,
@@ -63,7 +64,14 @@ Game GameBuilder::build(
 		currentStage,
 		allAvailableMoves,
 		reasonToClaimDraw,
-		drawEnforcement };
+		drawEnforcement,
+		previouslyReachedPositions };
+}
+
+const std::map<std::string, uint8_t>& GameBuilder::previouslyReachedPositions(
+		const Game& game)
+{
+	return game.previouslyReachedPositions();
 }
 
 Board BoardBuilder::build(

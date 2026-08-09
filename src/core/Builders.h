@@ -38,7 +38,16 @@ namespace simplechess
 					const GameStage& currentStage,
 					const std::set<PieceMove>& allAvailableMoves,
 					const std::optional<DrawReason>& reasonToClaimDraw,
-					DrawEnforcement drawEnforcement = DrawEnforcement::Automatic);
+					DrawEnforcement drawEnforcement = DrawEnforcement::Automatic,
+					const std::map<std::string, uint8_t>& previouslyReachedPositions = {});
+
+			/**
+			 * Grants the library's internals access to the repetition
+			 * bookkeeping cached inside a \ref Game, which is deliberately
+			 * not part of its public interface.
+			 */
+			static const std::map<std::string, uint8_t>&
+				previouslyReachedPositions(const Game& game);
 	};
 
 	class BoardBuilder

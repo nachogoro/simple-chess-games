@@ -82,30 +82,40 @@ namespace internal
 		}
 	}
 
-	std::map<std::string, uint8_t> getPreviouslyReachedPositionsMap(
-			const std::vector<std::pair<GameStage, PlayedMove>>& history)
+	/**
+	 * Returns the repetition bookkeeping for a game which has just played \p
+	 * move from \p previousStage, given the bookkeeping \p previous of the
+	 * game before the move.
+	 *
+	 * The map counts the positions of every stage in the game's history, so
+	 * moving on adds the stage the move was played from. Rebuilding it from
+	 * the history on every move would mean re-splitting every FEN string ever
+	 * produced, making a move cost more the longer the game gets.
+	 *
+	 * A move which resets the halfmove clock or gives up a castling right
+	 * makes every earlier position permanently unreachable - the material,
+	 * the pawn structure or the castling rights can never be restored - so
+	 * the accumulated counts can simply be dropped.
+	 */
+	std::map<std::string, uint8_t> updatedReachedPositions(
+			const std::map<std::string, uint8_t>& previous,
+			const GameStage& previousStage,
+			const GameStage& nextStage)
 	{
-		std::map<std::string, uint8_t> result;
+		const bool everyEarlierPositionIsUnreachable
+			= nextStage.halfMovesSinceLastCaptureOrPawnAdvance() == 0
+				|| nextStage.castlingRights() != previousStage.castlingRights();
 
-		for (const auto& [stage, move] : history)
+		if (everyEarlierPositionIsUnreachable)
 		{
-			const std::string repetitionFen
-				= details::FenUtils::fenForRepetitions(stage.fen());
-
-			if (result.count(repetitionFen))
-			{
-				result.at(repetitionFen)++;
-			}
-			else
-			{
-				result.insert({repetitionFen, 1});
-			}
+			return {};
 		}
 
+		std::map<std::string, uint8_t> result = previous;
+		++result[details::FenUtils::fenForRepetitions(previousStage.fen())];
 		return result;
 	}
 }
-
 Game simplechess::createNewGame(const DrawEnforcement drawEnforcement)
 {
 	const std::string fenOfInitialPosition
@@ -241,8 +251,14 @@ Game simplechess::makeMove(
 		= details::GameStateDetector::detect(
 				nextStage,
 				offerDraw,
-				internal::getPreviouslyReachedPositionsMap(game.history()),
+				GameBuilder::previouslyReachedPositions(game),
 				drawEnforcement);
+
+	const std::map<std::string, uint8_t> nextReachedPositions
+		= internal::updatedReachedPositions(
+				GameBuilder::previouslyReachedPositions(game),
+				game.currentStage(),
+				nextStage);
 
 	auto nextHistory = game.history();
 	nextHistory.push_back(
@@ -259,7 +275,8 @@ Game simplechess::makeMove(
 			nextStage,
 			information.availableMoves,
 			information.reasonToClaimDraw,
-			drawEnforcement);
+			drawEnforcement,
+			nextReachedPositions);
 }
 
 Game simplechess::claimDraw(const Game& game)
@@ -285,7 +302,8 @@ Game simplechess::claimDraw(const Game& game)
 			game.currentStage(),
 			{},
 			{},
-			game.drawEnforcement());
+			game.drawEnforcement(),
+			GameBuilder::previouslyReachedPositions(game));
 }
 
 Game simplechess::resign(const Game& game, Color resigningPlayer)
@@ -304,5 +322,6 @@ Game simplechess::resign(const Game& game, Color resigningPlayer)
 			game.currentStage(),
 			{},
 			{},
-			game.drawEnforcement());
+			game.drawEnforcement(),
+			GameBuilder::previouslyReachedPositions(game));
 }

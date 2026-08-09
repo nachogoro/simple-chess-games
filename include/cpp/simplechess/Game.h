@@ -9,7 +9,9 @@
 
 #include <optional>
 
+#include <map>
 #include <set>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -260,7 +262,20 @@ namespace simplechess
 					const GameStage& currentStage,
 					const std::set<PieceMove>& allAvailableMoves,
 					const std::optional<DrawReason>& reasonToClaimDraw,
-					DrawEnforcement drawEnforcement);
+					DrawEnforcement drawEnforcement,
+					const std::map<std::string, uint8_t>& previouslyReachedPositions);
+
+			/**
+			 * \brief The number of times each position in \ref history() has
+			 * been reached, keyed by the position's n-fold repetition key.
+			 *
+			 * Maintained incrementally as moves are played rather than
+			 * recomputed from the history, and cleared whenever a move makes
+			 * every earlier position unreachable (a capture, a pawn advance
+			 * or the loss of a castling right), which also keeps it small.
+			 */
+			const std::map<std::string, uint8_t>&
+				previouslyReachedPositions() const;
 
 			GameState mGameState;
 			std::optional<DrawReason> mReasonGameWasDrawn;
@@ -269,6 +284,7 @@ namespace simplechess
 			std::set<PieceMove> mAllAvailableMoves;
 			std::optional<DrawReason> mReasonToClaimDraw;
 			DrawEnforcement mDrawEnforcement;
+			std::map<std::string, uint8_t> mPreviouslyReachedPositions;
 	};
 }
 

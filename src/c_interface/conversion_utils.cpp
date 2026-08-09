@@ -432,6 +432,35 @@ simplechess::DrawReason conversion_utils::cpp_draw_reason(draw_reason_t reason) 
 	return simplechess::DrawReason::StaleMate;
 }
 
+namespace {
+	/**
+	 * Rebuilds the repetition bookkeeping of a game from its history.
+	 *
+	 * A Game carries this map with it, but the C representation of a game
+	 * does not, so it has to be reconstructed whenever a game crosses back
+	 * over the C boundary.
+	 *
+	 * Positions reached before the last capture, pawn advance or loss of a
+	 * castling right can never recur, so a Game built by the C++ API drops
+	 * them. Counting them here anyway is harmless - their keys can never
+	 * match a position still reachable - and saves having to detect those
+	 * moves from the history.
+	 */
+	std::map<std::string, uint8_t> repetitionsFromHistory(
+			const std::vector<std::pair<simplechess::GameStage, simplechess::PlayedMove>>& history)
+	{
+		std::map<std::string, uint8_t> result;
+
+		for (const auto& entry : history)
+		{
+			++result[simplechess::details::FenUtils::fenForRepetitions(
+					entry.first.fen())];
+		}
+
+		return result;
+	}
+}
+
 simplechess::Game conversion_utils::cpp_game(const game_t& game) {
 	const auto state = cpp_game_state(game.state);
 
@@ -466,5 +495,6 @@ simplechess::Game conversion_utils::cpp_game(const game_t& game) {
 			currentStage,
 			allAvailableMoves,
 			reasonToClaimDraw,
-			drawEnforcement);
+			drawEnforcement,
+			repetitionsFromHistory(history));
 }
