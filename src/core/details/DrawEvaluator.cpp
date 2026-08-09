@@ -5,6 +5,8 @@
 #include "MoveValidator.h"
 #include "fen/FenUtils.h"
 
+#include <algorithm>
+
 using namespace simplechess;
 using namespace simplechess::details;
 
@@ -214,13 +216,27 @@ std::optional<DrawReason> DrawEvaluator::reasonToDraw(
 	}
 
 	// A player can claim a draw if the current position has been reached at
-	// least twice before times, or if the position emerging from their move in
+	// least twice before, or if the position emerging from their move in
 	// their current turn has appeared at least twice before. Hence, we need to
 	// figure out if any of the positions which might emerge from this move
 	// would cause 3-fold repetition
 	if (timesPositionAppearedPreviously >= 2)
 	{
 		return { DrawReason::ThreeFoldRepetition };
+	}
+
+	// The look-ahead below can only ever fire on a position which has already
+	// been reached twice. If no position has, the whole loop is dead and can
+	// be skipped (which is the case on virtually every move of a normal
+	// game)
+	const bool anyPositionReachedTwice = std::any_of(
+			previouslyReachedPositions.begin(),
+			previouslyReachedPositions.end(),
+			[](const auto& entry) { return entry.second >= 2; });
+
+	if (!anyPositionReachedTwice)
+	{
+		return {};
 	}
 
 	for (const auto& move : allPossibleMoves)
