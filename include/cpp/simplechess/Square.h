@@ -120,6 +120,60 @@ namespace simplechess
 			uint8_t mRank;
 			char mFile;
 	};
+
+	// These are defined here rather than in the implementation file because
+	// they sit in the innermost loops of move generation, where the cost of
+	// not being able to inline them across translation units is significant.
+
+	/**
+	 * \brief Lower-cases an ASCII letter.
+	 *
+	 * Deliberately not \c std::tolower, which is a locale-dependent function
+	 * call. File letters are plain ASCII.
+	 */
+	inline char asciiToLower(const char c)
+	{
+		return (c >= 'A' && c <= 'Z')
+			? static_cast<char>(c - 'A' + 'a')
+			: c;
+	}
+
+	inline bool Square::isInsideBoundaries(const uint8_t rank, const char file)
+	{
+		const char lowered = asciiToLower(file);
+		return (rank >= 1 && rank <= 8 && lowered >= 'a' && lowered <= 'h');
+	}
+
+	inline uint8_t Square::rank() const
+	{
+		return mRank;
+	}
+
+	inline char Square::file() const
+	{
+		return mFile;
+	}
+
+	inline bool Square::operator==(const Square& rhs) const
+	{
+		return rhs.mRank == mRank && rhs.mFile == mFile;
+	}
+
+	inline bool Square::operator!=(const Square& rhs) const
+	{
+		return !(rhs == *this);
+	}
+
+	inline bool Square::operator<(const Square& rhs) const
+	{
+		if (mRank != rhs.mRank)
+		{
+			// The higher the rank, the smaller the Square
+			return mRank > rhs.mRank;
+		}
+
+		return mFile < rhs.mFile;
+	}
 }
 
 #endif
