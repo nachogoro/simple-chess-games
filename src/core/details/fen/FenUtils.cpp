@@ -5,9 +5,6 @@
 
 #include <cpp/simplechess/GameStage.h>
 
-#include <boost/algorithm/string.hpp>
-
-#include <sstream>
 #include <stdexcept>
 
 using namespace simplechess;
@@ -15,13 +12,6 @@ using namespace simplechess::details;
 
 namespace internal
 {
-	template <typename L, typename R>
-		boost::bimap<L, R>
-		makeBimap(std::initializer_list<typename boost::bimap<L, R>::value_type> list)
-		{
-			return boost::bimap<L, R>(list.begin(), list.end());
-		}
-
 	/**
 	 * Generates the first four fields of a FEN string (piece placement,
 	 * active color, castling availability and en passant target), which are
@@ -34,58 +24,59 @@ namespace internal
 			const std::optional<Square>& epTarget);
 }
 
-boost::bimap<char, Piece> FenUtils::sPieceMap
-	= internal::makeBimap<char, Piece>(
-			{
-				{'P', {PieceType::Pawn,   Color::White}},
-				{'R', {PieceType::Rook,   Color::White}},
-				{'N', {PieceType::Knight, Color::White}},
-				{'B', {PieceType::Bishop, Color::White}},
-				{'Q', {PieceType::Queen,  Color::White}},
-				{'K', {PieceType::King,   Color::White}},
-				{'p', {PieceType::Pawn,   Color::Black}},
-				{'r', {PieceType::Rook,   Color::Black}},
-				{'n', {PieceType::Knight, Color::Black}},
-				{'b', {PieceType::Bishop, Color::Black}},
-				{'q', {PieceType::Queen,  Color::Black}},
-				{'k', {PieceType::King,   Color::Black}},
-			});
-
 char FenUtils::pieceToString(const Piece& piece)
 {
-	boost::bimap<char, Piece>::right_const_iterator it
-		= sPieceMap.right.find(piece);
+	// One character per piece type, in the order of the PieceType enum;
+	// upper case for white, lower case for black.
+	static const char letters[] = "PRNBQK";
 
-	if (it == sPieceMap.right.end())
+	const size_t type = static_cast<size_t>(piece.type());
+
+	if (type >= sizeof(letters) - 1)
 	{
 		throw std::invalid_argument("Cannot convert piece to FEN");
 	}
 
-	return it->second;
+	return (piece.color() == Color::White)
+		? letters[type]
+		: static_cast<char>(letters[type] - 'A' + 'a');
 }
 
 Piece FenUtils::stringToPiece(const char c)
 {
-	boost::bimap<char, Piece>::left_const_iterator it
-		= sPieceMap.left.find(c);
+	const bool isWhite = (c >= 'A' && c <= 'Z');
+	const char upper = isWhite ? c : static_cast<char>(c - 'a' + 'A');
+	const Color color = isWhite ? Color::White : Color::Black;
 
-	if (it == sPieceMap.left.end())
+	switch (upper)
 	{
-		throw std::invalid_argument(std::string("Character \'")
-				+ c
-				+ "\' is not a piece-representing character in FEN notation");
+		case 'P': return {PieceType::Pawn, color};
+		case 'R': return {PieceType::Rook, color};
+		case 'N': return {PieceType::Knight, color};
+		case 'B': return {PieceType::Bishop, color};
+		case 'Q': return {PieceType::Queen, color};
+		case 'K': return {PieceType::King, color};
+		default: break;
 	}
 
-	return it->second;
+	throw std::invalid_argument(std::string("Character \'")
+			+ c
+			+ "\' is not a piece-representing character in FEN notation");
 }
 
 std::string FenUtils::fenForRepetitions(const std::string& fen)
 {
-		std::vector<std::string> fenTokens;
-		boost::split(fenTokens, fen,  [](char c) { return c == ' ';});
-		fenTokens.pop_back();
-		fenTokens.pop_back();
-		return boost::algorithm::join(fenTokens, " ");
+	// The repetition key is the FEN without its last two fields, so rather
+	// than splitting the string into all six and joining four back together,
+	// find where the fifth field starts and cut there.
+	const size_t afterEpTarget = fen.rfind(' ', fen.rfind(' ') - 1);
+
+	if (afterEpTarget == std::string::npos)
+	{
+		throw std::invalid_argument(fen + " is not a valid FEN string");
+	}
+
+	return fen.substr(0, afterEpTarget);
 }
 
 std::string FenUtils::repetitionKey(
@@ -113,20 +104,20 @@ std::string FenUtils::generateFen(
 	// A FEN string is an ASCII string composed of six fields, separated from
 	// each other by a space. The first four are shared with the repetition
 	// key; only the two counters are appended here.
-	std::stringstream ss;
-
-	ss << internal::generateFenPrefix(
+	std::string fen = internal::generateFenPrefix(
 			board, activeColor, castlingRights, epTarget);
 
 	// 5. Halfmove clock: The number of halfmoves since the last capture or
 	// pawn advance, used for the fifty-move rule.
-	ss << " " << halfmoveClock;
+	fen += ' ';
+	fen += std::to_string(halfmoveClock);
 
 	// 6. Fullmove number: The number of the full move. It starts at 1, and is
 	// incremented after Black's move.
-	ss << " " << fullmoveClock;
+	fen += ' ';
+	fen += std::to_string(fullmoveClock);
 
-	return ss.str();
+	return fen;
 }
 
 std::string internal::generateFenPrefix(
@@ -135,7 +126,11 @@ std::string internal::generateFenPrefix(
 		const uint8_t castlingRights,
 		const std::optional<Square>& epTarget)
 {
-	std::stringstream ss;
+	// A FEN never exceeds ~90 characters, so reserving up front means the
+	// string is never reallocated while it is assembled. This runs for every
+	// position the library builds.
+	std::string fen;
+	fen.reserve(90);
 
 	// From Wikipedia:
 	// 1. Piece placement (from White's perspective). Each rank is described,
@@ -168,62 +163,60 @@ std::string internal::generateFenPrefix(
 			// We have encountered a piece, list number of empty squares if any
 			if (emptySquaresRun != 0)
 			{
-				ss << static_cast<int>(emptySquaresRun);
+				fen += static_cast<char>('0' + emptySquaresRun);
 				emptySquaresRun = 0;
 			}
 
-			ss << FenUtils::pieceToString(*piece);
+			fen += FenUtils::pieceToString(*piece);
 		}
 
 		// We have finished a rank, list number of empty squares if any
 		if (emptySquaresRun != 0)
 		{
-			ss << static_cast<int>(emptySquaresRun);
+			fen += static_cast<char>('0' + emptySquaresRun);
 			emptySquaresRun = 0;
 		}
 
 		if (rank != 1)
 		{
-			ss << "/";
+			fen += '/';
 		}
 	}
 
 	// 2. Active color. "w" means White moves next, "b" means Black moves next.
-	ss << " ";
-	ss << ((activeColor == Color::White)
-		? "w"
-		: "b");
+	fen += ' ';
+	fen += (activeColor == Color::White) ? 'w' : 'b';
 
 	// 3. Castling availability. If neither side can castle, this is "-".
 	// Otherwise, this has one or more letters: "K" (White can castle
 	// kingside), "Q" (White can castle queenside), "k" (Black can castle
 	// kingside), and/or "q" (Black can castle queenside). A move that
 	// temporarily prevents castling does not negate this notation.
-	ss << " ";
+	fen += ' ';
 	if (castlingRights == 0)
 	{
-		ss << "-";
+		fen += '-';
 	}
 	else
 	{
 		if ((castlingRights & CastlingRight::WhiteKingSide) != 0)
 		{
-			ss << "K";
+			fen += 'K';
 		}
 
 		if ((castlingRights & CastlingRight::WhiteQueenSide) != 0)
 		{
-			ss << "Q";
+			fen += 'Q';
 		}
 
 		if ((castlingRights & CastlingRight::BlackKingSide) != 0)
 		{
-			ss << "k";
+			fen += 'k';
 		}
 
 		if ((castlingRights & CastlingRight::BlackQueenSide) != 0)
 		{
-			ss << "q";
+			fen += 'q';
 		}
 	}
 	// 4. En passant target square in algebraic notation. If there's no en
@@ -231,17 +224,17 @@ std::string internal::generateFenPrefix(
 	// move, this is the position "behind" the pawn. This is recorded
 	// regardless of whether there is a pawn in position to make an en passant
 	// capture.
-	ss << " ";
+	fen += ' ';
 	if (epTarget)
 	{
-		ss << epTarget->toString();
+		fen += epTarget->toString();
 	}
 	else
 	{
-		ss << "-";
+		fen += '-';
 	}
 
-	return ss.str();
+	return fen;
 }
 
 GameStage FenUtils::fromFenString(const std::string& fen)

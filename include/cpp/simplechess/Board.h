@@ -63,6 +63,15 @@ namespace simplechess
 			Board(const std::map<Square, Piece>& piecePositions);
 
 			/**
+			 * \brief Constructor from the packed representation.
+			 *
+			 * Lets code which already knows the layout of the board (FEN
+			 * parsing, above all) build one without first assembling a map
+			 * only for it to be taken apart again.
+			 */
+			explicit Board(const std::array<uint8_t, 64>& squares);
+
+			/**
 			 * \brief One entry per square, indexed by (rank - 1) * 8 + (file -
 			 * 'a').
 			 *
@@ -73,6 +82,7 @@ namespace simplechess
 			 * of a position copies the board once per candidate move.
 			 */
 			std::array<uint8_t, 64> mSquares;
+
 			/**
 			 * \brief Where each side's king was last known to stand, indexed
 			 * by colour, or an index off the board while nothing is known.
@@ -85,7 +95,6 @@ namespace simplechess
 			 * able to give a wrong answer.
 			 */
 			mutable std::array<uint8_t, 2> mKingSquareHint;
-
 
 			/**
 			 * \brief The same information as \ref mSquares, in the form \ref

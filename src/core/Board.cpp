@@ -59,7 +59,6 @@ void BoardAccess::setKingSquareHint(
 	board.mKingSquareHint[(color == Color::White) ? 0 : 1] = index;
 }
 
-
 Board::Board(const std::map<Square, Piece>& piecePositions)
 	: mSquares()
 {
@@ -71,6 +70,12 @@ Board::Board(const std::map<Square, Piece>& piecePositions)
 		mSquares[BoardAccess::indexOf(entry.first)]
 			= ::encode(entry.second);
 	}
+}
+
+Board::Board(const std::array<uint8_t, 64>& squares)
+	: mSquares(squares)
+{
+	mKingSquareHint.fill(BoardAccess::UNKNOWN);
 }
 
 // The lazily built map is deliberately not carried over by any of these: a

@@ -2,6 +2,7 @@
 #include "cpp/simplechess/SimpleChess.h"
 #include "../core/Builders.h"
 #include "../core/details/fen/FenUtils.h"
+#include <algorithm>
 #include <cstring>
 
 // C++ to C conversions

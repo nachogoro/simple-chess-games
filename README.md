@@ -114,7 +114,7 @@ both API implementations to ensure full functionality parity.
 ## Dependencies
 
 Automatically managed dependencies:
-- **Boost**: String algorithms, bidirectional maps, optional I/O
+- **Boost**: String algorithms, optional I/O
 - **GoogleTest**: Unit testing framework (development only)
 
 All dependencies are downloaded and built automatically during the CMake build process.

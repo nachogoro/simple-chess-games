@@ -2,9 +2,11 @@
 #include "FenUtils.h"
 
 #include "../../Builders.h"
+#include "../BoardAccess.h"
 
 #include <boost/algorithm/string.hpp>
 
+#include <array>
 #include <cctype>
 #include <cstdint>
 #include <vector>
@@ -27,7 +29,10 @@ namespace internal
 					+ "field in a FEN string");
 		}
 
-		std::map<Square, Piece> pieceLocations;
+		// Filled in directly rather than via a std::map, which would mean
+		// building and tearing down a tree for every position parsed.
+		std::array<uint8_t, 64> squares;
+		squares.fill(0);
 
 		// In FEN, numbers indicate a run of consecutive empty squares in the
 		// row. Numbers must be in [1,8], and cannot be consecutive ('12' is
@@ -89,15 +94,15 @@ namespace internal
 								+ " is not a valid \"piece placement\" "
 								+ "field in a FEN string");
 				}
-				pieceLocations.insert({
-						Square::fromRankAndFile(row, col),
-						FenUtils::stringToPiece(c)});
+				squares[BoardAccess::indexOf(
+						Square::fromRankAndFile(row, col))]
+					= BoardAccess::encodePiece(FenUtils::stringToPiece(c));
 
 				col++;
 			}
 		}
 
-		return BoardBuilder::build(pieceLocations);
+		return BoardAccess::fromSquares(squares);
 	}
 
 	Color parseColor(const std::string& str)

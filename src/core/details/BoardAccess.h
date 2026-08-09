@@ -66,6 +66,14 @@ namespace simplechess
 		static uint8_t encodePiece(const Piece& piece);
 		static Piece decodePiece(uint8_t code);
 
+		/**
+		 * \brief Builds a \ref Board straight from the packed layout.
+		 */
+		static Board fromSquares(const std::array<uint8_t, 64>& squares)
+		{
+			return Board(squares);
+		}
+
 		static const std::array<uint8_t, 64>& squares(const Board& board);
 		static std::array<uint8_t, 64>& mutableSquares(Board& board);
 
@@ -85,7 +93,6 @@ namespace simplechess
 		static uint8_t kingSquareHint(const Board& board, Color color);
 		static void setKingSquareHint(
 				const Board& board, Color color, uint8_t index);
-
 
 		/**
 		 * \brief Whether \p code (as stored in the packed array) is a piece of

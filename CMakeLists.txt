@@ -68,13 +68,13 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # Core engine object library - compiled once with fPIC
 add_library(core-objects OBJECT ${core_sources})
 target_include_directories(core-objects PUBLIC include)
-target_link_libraries(core-objects PRIVATE Boost::algorithm Boost::bimap)
+target_link_libraries(core-objects PRIVATE Boost::algorithm)
 target_compile_options(core-objects PRIVATE ${COMMON_FLAGS})
 
 # C interface object library
 add_library(c-interface-objects OBJECT ${c_interface_sources})
 target_include_directories(c-interface-objects PUBLIC include)
-target_link_libraries(c-interface-objects PRIVATE Boost::algorithm Boost::bimap)
+target_link_libraries(c-interface-objects PRIVATE Boost::algorithm)
 target_compile_options(c-interface-objects PRIVATE ${COMMON_FLAGS})
 
 # ===== C++ LIBRARY =====
@@ -82,12 +82,12 @@ target_compile_options(c-interface-objects PRIVATE ${COMMON_FLAGS})
 # Shared C++ library
 add_library(simple-chess-games SHARED $<TARGET_OBJECTS:core-objects>)
 target_include_directories(simple-chess-games PUBLIC include)
-target_link_libraries(simple-chess-games PRIVATE Boost::algorithm Boost::bimap)
+target_link_libraries(simple-chess-games PRIVATE Boost::algorithm)
 
 # Static C++ library
 add_library(simple-chess-games-static STATIC $<TARGET_OBJECTS:core-objects>)
 target_include_directories(simple-chess-games-static PUBLIC include)
-target_link_libraries(simple-chess-games-static PRIVATE Boost::algorithm Boost::bimap)
+target_link_libraries(simple-chess-games-static PRIVATE Boost::algorithm)
 
 # Set properties for C++ libraries
 set_target_properties(simple-chess-games PROPERTIES
@@ -103,12 +103,12 @@ set_target_properties(simple-chess-games-static PROPERTIES
 # Shared C library (includes both core and C interface)
 add_library(simple-chess-games-c SHARED $<TARGET_OBJECTS:core-objects> $<TARGET_OBJECTS:c-interface-objects>)
 target_include_directories(simple-chess-games-c PUBLIC include)
-target_link_libraries(simple-chess-games-c PRIVATE Boost::algorithm Boost::bimap)
+target_link_libraries(simple-chess-games-c PRIVATE Boost::algorithm)
 
 # Static C library
 add_library(simple-chess-games-c-static STATIC $<TARGET_OBJECTS:core-objects> $<TARGET_OBJECTS:c-interface-objects>)
 target_include_directories(simple-chess-games-c-static PUBLIC include)
-target_link_libraries(simple-chess-games-c-static PRIVATE Boost::algorithm Boost::bimap)
+target_link_libraries(simple-chess-games-c-static PRIVATE Boost::algorithm)
 
 # Set properties for C libraries
 set_target_properties(simple-chess-games-c PROPERTIES
@@ -140,7 +140,7 @@ FetchContent_Declare(
 )
 set(BOOST_ENABLE_CMAKE ON)
 # Only build the libraries we need
-set(BOOST_INCLUDE_LIBRARIES algorithm bimap optional)
+set(BOOST_INCLUDE_LIBRARIES algorithm optional)
 FetchContent_MakeAvailable(Boost)
 
 # Install targets
@@ -184,7 +184,7 @@ if(BUILD_TESTS)
     target_include_directories(run_cpp_tests PRIVATE tests/cpp)
     # Perft_test and RepetitionKey_test reach into src/core/details, which is
     # not part of the installed library, so link the object files directly.
-    target_link_libraries(run_cpp_tests gtest_main simple-chess-games-static Boost::optional Boost::algorithm Boost::bimap)
+    target_link_libraries(run_cpp_tests gtest_main simple-chess-games-static Boost::optional Boost::algorithm)
 
     # C Interface Tests
     add_executable(run_c_tests
@@ -217,6 +217,6 @@ if(BUILD_BENCHMARKS)
     target_include_directories(bench_simplechess PRIVATE include)
     # The C static library bundles the core objects too, so this one target
     # covers both the C++ and the C workloads.
-    target_link_libraries(bench_simplechess simple-chess-games-c-static Boost::algorithm Boost::bimap)
+    target_link_libraries(bench_simplechess simple-chess-games-c-static Boost::algorithm)
     target_compile_options(bench_simplechess PRIVATE ${COMMON_FLAGS})
 endif()

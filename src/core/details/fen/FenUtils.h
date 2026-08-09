@@ -3,8 +3,6 @@
 
 #include <cpp/simplechess/GameStage.h>
 
-#include <boost/bimap.hpp>
-
 #include <string>
 
 namespace simplechess
@@ -99,9 +97,6 @@ namespace simplechess
 				 * \throws std::invalid_argument if the FEN string is invalid.
 				 */
 				static GameStage fromFenString(const std::string& fen);
-
-			private:
-				static boost::bimap<char, Piece> sPieceMap;
 		};
 	}
 }
