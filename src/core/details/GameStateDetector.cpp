@@ -21,7 +21,7 @@ namespace internal
 			const GameStage& stage,
 			const bool inCheck,
 			const std::vector<PieceMove>& allPossibleMoves,
-			const std::optional<DrawReason> reasonToClaimDraw,
+			const std::optional<DrawReason>& reasonToClaimDraw,
 			const DrawEnforcement drawEnforcement)
 	{
 		if (inCheck)
