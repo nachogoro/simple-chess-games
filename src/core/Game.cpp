@@ -56,15 +56,9 @@ GameState Game::gameState() const
 	return mGameState;
 }
 
-DrawReason Game::drawReason() const
+const std::optional<DrawReason>& Game::drawReason() const
 {
-	if (gameState() != GameState::Drawn)
-	{
-		throw IllegalStateException(
-				"Cannot request draw reason of non-drawn game");
-	}
-
-	return *mReasonGameWasDrawn;
+	return mReasonGameWasDrawn;
 }
 
 const std::vector<HistoryEntry>& Game::history() const
@@ -99,12 +93,6 @@ const std::vector<PieceMove>& Game::allAvailableMoves() const
 
 const std::optional<DrawReason>& Game::reasonToClaimDraw() const
 {
-	if (gameState() != GameState::Playing)
-	{
-		throw IllegalStateException(
-				"Draws cannot be claimed in finished games");
-	}
-
 	return mReasonToClaimDraw;
 }
 

@@ -9,7 +9,7 @@ TEST(GameCreationTest, RegularGameCreation) {
 
 	EXPECT_EQ(game.gameState(), GameState::Playing);
 
-	EXPECT_THROW_CUSTOM(game.drawReason(), IllegalStateException);
+	EXPECT_EQ(game.drawReason(), std::optional<DrawReason>());
 
 	const auto& history = game.history();
 
@@ -62,7 +62,7 @@ TEST(GameCreationTest, GameCreationFromPosition1) {
 
 	EXPECT_EQ(game.gameState(), GameState::Playing);
 
-	EXPECT_THROW_CUSTOM(game.drawReason(), IllegalStateException);
+	EXPECT_EQ(game.drawReason(), std::optional<DrawReason>());
 
 	const auto& history = game.history();
 

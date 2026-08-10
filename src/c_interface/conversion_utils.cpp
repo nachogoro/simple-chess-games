@@ -218,8 +218,8 @@ draw_enforcement_t conversion_utils::c_draw_enforcement(simplechess::DrawEnforce
 game_t* conversion_utils::c_game(const simplechess::Game& game) {
 	game_t* result = new game_t();
 	result->state = c_game_state(game.gameState());
-	if (game.gameState() == simplechess::GameState::Drawn)
-		result->draw_reason = c_draw_reason(game.drawReason());
+	if (const std::optional<simplechess::DrawReason>& reason = game.drawReason())
+		result->draw_reason = c_draw_reason(*reason);
 
 	result->history_size = static_cast<uint16_t>(game.history().size());
 	if (result->history_size)

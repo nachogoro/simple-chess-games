@@ -540,3 +540,31 @@ TEST(DrawDetectionTest, NoDrawToClaimInAGameSomebodyWon) {
 	EXPECT_EQ(stateOf(mateOnTheFiftiethMove), GameState::WhiteWon);
 	EXPECT_EQ(claimableIn(mateOnTheFiftiethMove), std::optional<DrawReason>());
 }
+
+// The queries above no longer throw for a game which has ended, so what they
+// report about one is now something a caller can see.
+
+TEST(DrawDetectionTest, FinishedGamesReportNoDrawToClaim) {
+	const Game stalemated = createGameFromFen("7k/5Q2/6K1/8/8/8/8/8 b - - 0 1");
+	ASSERT_EQ(stalemated.gameState(), GameState::Drawn);
+	EXPECT_EQ(stalemated.reasonToClaimDraw(), std::optional<DrawReason>());
+
+	const Game won = createGameFromFen("7k/5KQ1/8/8/8/8/8/8 b - - 100 100");
+	ASSERT_EQ(won.gameState(), GameState::WhiteWon);
+	EXPECT_EQ(won.reasonToClaimDraw(), std::optional<DrawReason>());
+
+	// A drawn game says why it was drawn, and offers nothing to claim.
+	EXPECT_EQ(stalemated.drawReason(),
+			std::optional<DrawReason>(DrawReason::StaleMate));
+
+	// Resigning ends a game in which a draw was claimable, and the offer
+	// goes with it.
+	const Game claimable = createGameFromFen("7k/7r/8/8/8/8/R7/K7 w - - 100 100");
+	ASSERT_EQ(claimable.gameState(), GameState::Playing);
+	ASSERT_EQ(claimable.reasonToClaimDraw(),
+			std::optional<DrawReason>(DrawReason::FiftyMoveRule));
+
+	const Game resigned = resign(claimable, Color::White);
+	ASSERT_EQ(resigned.gameState(), GameState::BlackWon);
+	EXPECT_EQ(resigned.reasonToClaimDraw(), std::optional<DrawReason>());
+}

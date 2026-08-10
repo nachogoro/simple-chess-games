@@ -274,7 +274,7 @@ namespace
 		std::cout << "state=" << static_cast<int>(game.gameState()) << "\n";
 		if (game.gameState() == GameState::Drawn)
 		{
-			std::cout << "drawReason=" << static_cast<int>(game.drawReason()) << "\n";
+			std::cout << "drawReason=" << static_cast<int>(*game.drawReason()) << "\n";
 		}
 		else if (game.gameState() == GameState::Playing)
 		{

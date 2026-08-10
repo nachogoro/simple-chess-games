@@ -164,15 +164,12 @@ namespace simplechess
 			GameState gameState() const;
 
 			/**
-			 * \brief Returns the reason why the game ended in a draw.
-			 *
-			 * \throws IllegalStateException in the following circumstances:
-			 * - The Game has not been drawn (its state is not
-			 *   Drawn).
+			 * \brief Returns the reason why the game ended in a draw, or an
+			 * empty optional if it did not end in a draw.
 			 *
 			 * \return The reason why the game was drawn.
 			 */
-			DrawReason drawReason() const;
+			const std::optional<DrawReason>& drawReason() const;
 
 			/**
 			 * \brief Returns the history of the game.
@@ -257,8 +254,8 @@ namespace simplechess
 			 *   checkmate).
 			 * - If there is insufficient material for any side to checkmate.
 			 *
-			 * \throws \ref IllegalStateException if the state of the game is
-			 * not \ref Playing.
+			 * \note A finished game has no reason to claim a draw, so the
+			 * optional is empty for one.
 			 *
 			 * \return A possible reason to claim a draw if it exists, an empty
 			 * value otherwise.
