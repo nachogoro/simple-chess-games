@@ -116,3 +116,35 @@ std::set<PieceMove> simplechess::details::pawnMovesUnfiltered(
 
 	return result;
 }
+
+std::set<PieceMove> simplechess::details::pawnAttacksUnfiltered(
+		const Color color,
+		const Square& square)
+{
+	const Piece pawn = {PieceType::Pawn, color};
+	const int step = (color == Color::White) ? 1 : -1;
+	const int rank = square.rank() + step;
+
+	std::set<PieceMove> result;
+
+	for (const int fileDelta : {-1, 1})
+	{
+		const int file = square.file() + fileDelta;
+
+		if (!Square::isInsideBoundaries(
+					static_cast<uint8_t>(rank),
+					static_cast<char>(file)))
+		{
+			continue;
+		}
+
+		result.insert(PieceMove::regularMove(
+					pawn,
+					square,
+					Square::fromRankAndFile(
+						static_cast<uint8_t>(rank),
+						static_cast<char>(file))));
+	}
+
+	return result;
+}

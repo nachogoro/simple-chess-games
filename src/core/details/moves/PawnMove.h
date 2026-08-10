@@ -13,10 +13,23 @@ namespace simplechess
 {
 	namespace details
 	{
-		// TODO make attacking-only version (no forward moves)
 		std::set<PieceMove> pawnMovesUnfiltered(
 				const Board& board,
 				const std::optional<Square>& enPassantTarget,
+				Color color,
+				const Square& square);
+
+		/**
+		 * \brief Returns the squares a pawn of \p color standing on \p square
+		 * attacks.
+		 *
+		 * A pawn is the one piece whose moves do not describe what it
+		 * attacks: it advances straight ahead, which threatens nothing, and
+		 * captures diagonally, which it can only be seen to do when there is
+		 * something there to capture. The squares are therefore reported
+		 * regardless of what stands on them, if anything.
+		 */
+		std::set<PieceMove> pawnAttacksUnfiltered(
 				Color color,
 				const Square& square);
 	}

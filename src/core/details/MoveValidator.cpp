@@ -61,7 +61,8 @@ std::optional<Square> MoveValidator::enPassantTarget(
 
 std::set<PieceMove> MoveValidator::potentiallyCapturingMovesForPieceUnfiltered(
 		const Board& board,
-		const std::optional<Square>& enPassantTarget,
+		// En passant is irrelevant when asking what a piece threatens
+		const std::optional<Square>&,
 		const Square& square)
 {
 	const Color color = board.pieceAt(square)->color();
@@ -69,7 +70,9 @@ std::set<PieceMove> MoveValidator::potentiallyCapturingMovesForPieceUnfiltered(
 	switch (board.pieceAt(square)->type())
 	{
 		case PieceType::Pawn:
-			return pawnMovesUnfiltered(board, enPassantTarget, color, square);
+			// What a pawn threatens is not what it can move to, so its
+			// attacked squares have to be asked for separately.
+			return pawnAttacksUnfiltered(color, square);
 		case PieceType::Rook:
 			return rookMovesUnfiltered(board, color, square);
 		case PieceType::Knight:

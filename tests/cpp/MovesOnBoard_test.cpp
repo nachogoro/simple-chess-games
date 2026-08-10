@@ -504,3 +504,37 @@ TEST(MovesOnBoardTest, QueensideCastlingBlockedByKnightOnBFile) {
 	EXPECT_TRUE(canCastleQueenside(
 				createGameFromFen("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1"), 8));
 }
+
+namespace {
+	bool canCastleKingside(const Game& game, const uint8_t rank) {
+		const Piece king = {PieceType::King, game.activeColor()};
+
+		return game.allAvailableMoves().count(
+				PieceMove::regularMove(
+					king,
+					Square::fromRankAndFile(rank, 'e'),
+					Square::fromRankAndFile(rank, 'g'))) != 0;
+	}
+}
+
+// A pawn guards the squares it captures towards, whether or not there is
+// anything on them to capture. The squares a castling king crosses are empty
+// by definition, so this is exactly the case where a pawn's threat has to be
+// noticed.
+TEST(MovesOnBoardTest, CastlingThroughSquareAttackedByPawn) {
+	// The black pawn on e2 attacks d1 and f1, so the king may cross neither.
+	const Game white = createGameFromFen("4k3/8/8/8/8/8/4p3/R3K2R w KQ - 0 1");
+	EXPECT_FALSE(canCastleKingside(white, 1));
+	EXPECT_FALSE(canCastleQueenside(white, 1));
+
+	// Likewise the white pawn on e7 against black.
+	const Game black = createGameFromFen("r3k2r/4P3/8/8/8/8/8/4K3 b kq - 0 1");
+	EXPECT_FALSE(canCastleKingside(black, 8));
+	EXPECT_FALSE(canCastleQueenside(black, 8));
+
+	// Without the pawns both castlings are available, which confirms nothing
+	// else in these positions is preventing them.
+	const Game noPawns = createGameFromFen("4k3/8/8/8/8/8/8/R3K2R w KQ - 0 1");
+	EXPECT_TRUE(canCastleKingside(noPawns, 1));
+	EXPECT_TRUE(canCastleQueenside(noPawns, 1));
+}
