@@ -1,6 +1,7 @@
 #ifndef BOARD_H_060630C0_3ADF_4CCD_B96C_1728BF67C017
 #define BOARD_H_060630C0_3ADF_4CCD_B96C_1728BF67C017
 
+#include <simplechess/Export.h>
 #include <simplechess/Piece.h>
 #include <simplechess/PieceMove.h>
 #include <simplechess/Square.h>
@@ -22,7 +23,7 @@ namespace simplechess
 	 * This representation is absent of any context beyond the position of the
 	 * pieces on the board.
 	 */
-	class Board
+	class SIMPLECHESS_API Board
 	{
 		public:
 			/**

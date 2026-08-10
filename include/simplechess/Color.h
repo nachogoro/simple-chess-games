@@ -1,6 +1,8 @@
 #ifndef COLOR_H_DF81538F_CDF8_4535_A288_BB24FBEFD656
 #define COLOR_H_DF81538F_CDF8_4535_A288_BB24FBEFD656
 
+#include <simplechess/Export.h>
+
 namespace simplechess
 {
 	/**
@@ -18,7 +20,7 @@ namespace simplechess
 	 * \param c The \ref Color whose opposite is wanted.
 	 * \return \ref Color::Black for \ref Color::White and vice versa.
 	 */
-	Color oppositeColor(Color c);
+	SIMPLECHESS_API Color oppositeColor(Color c);
 }
 
 #endif

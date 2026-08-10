@@ -1,6 +1,7 @@
 #ifndef PIECE_H_F9AD4EA8_033F_4911_BDF4_6FCAA1DA336D
 #define PIECE_H_F9AD4EA8_033F_4911_BDF4_6FCAA1DA336D
 
+#include <simplechess/Export.h>
 #include <simplechess/Color.h>
 
 namespace simplechess
@@ -44,7 +45,7 @@ namespace simplechess
 	/**
 	 * \brief A chess piece.
 	 */
-	class Piece
+	class SIMPLECHESS_API Piece
 	{
 		public:
 			/**

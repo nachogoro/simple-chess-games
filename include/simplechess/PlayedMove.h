@@ -1,6 +1,7 @@
 #ifndef MOVE_H_BE1088E7_A628_4046_BB4C_41A12DAA23BC
 #define MOVE_H_BE1088E7_A628_4046_BB4C_41A12DAA23BC
 
+#include <simplechess/Export.h>
 #include <simplechess/Board.h>
 #include <simplechess/Piece.h>
 #include <simplechess/PieceMove.h>
@@ -45,7 +46,7 @@ namespace simplechess
 	 * "The move included a draw offer", "The move resulted in checkmate",
 	 * etc.).
 	 */
-	class PlayedMove
+	class SIMPLECHESS_API PlayedMove
 	{
 		public:
 

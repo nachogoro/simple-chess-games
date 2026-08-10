@@ -63,21 +63,43 @@ endif()
 # Enable fPIC for all targets (required for shared libraries)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+# Nothing is visible in a shared build unless it is marked SIMPLECHESS_API,
+# so that src/core/details stays out of what a program links against and
+# every platform exports the same set.
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_C_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
+
 include(GNUInstallDirs)
 
 # ===== OBJECT LIBRARIES (compiled once, reused) =====
 
-# Core engine object library - compiled once with fPIC
-add_library(core-objects OBJECT ${core_sources})
-target_include_directories(core-objects PUBLIC include)
-target_link_libraries(core-objects PRIVATE Boost::algorithm)
-target_compile_options(core-objects PRIVATE ${COMMON_FLAGS})
+# The same sources are compiled more than once, because what a translation
+# unit exports depends on which library it ends up in:
+#
+#   cpp-shared  the shared C++ library, which exports the C++ API
+#   c-shared    the shared C library, which carries the engine so as to be
+#               self-contained but exports only the C API
+#   static      the static libraries, which export nothing
+foreach(kind cpp-shared c-shared static)
+	add_library(core-objects-${kind} OBJECT ${core_sources})
+	target_include_directories(core-objects-${kind} PUBLIC include)
+	target_link_libraries(core-objects-${kind} PRIVATE Boost::algorithm)
+	target_compile_options(core-objects-${kind} PRIVATE ${COMMON_FLAGS})
+endforeach()
 
-# C interface object library
-add_library(c-interface-objects OBJECT ${c_interface_sources})
-target_include_directories(c-interface-objects PUBLIC include)
-target_link_libraries(c-interface-objects PRIVATE Boost::algorithm)
-target_compile_options(c-interface-objects PRIVATE ${COMMON_FLAGS})
+foreach(kind c-shared static)
+	add_library(c-interface-objects-${kind} OBJECT ${c_interface_sources})
+	target_include_directories(c-interface-objects-${kind} PUBLIC include)
+	target_link_libraries(c-interface-objects-${kind} PRIVATE Boost::algorithm)
+	target_compile_options(c-interface-objects-${kind} PRIVATE ${COMMON_FLAGS})
+endforeach()
+
+target_compile_definitions(core-objects-cpp-shared PRIVATE SIMPLECHESS_BUILDING)
+target_compile_definitions(core-objects-c-shared PRIVATE SIMPLECHESS_C_BUILDING)
+target_compile_definitions(c-interface-objects-c-shared PRIVATE SIMPLECHESS_C_BUILDING)
+target_compile_definitions(core-objects-static PUBLIC SIMPLECHESS_STATIC)
+target_compile_definitions(c-interface-objects-static PUBLIC SIMPLECHESS_STATIC)
 
 # ===== C++ LIBRARY =====
 
@@ -88,7 +110,7 @@ target_compile_options(c-interface-objects PRIVATE ${COMMON_FLAGS})
 # exporting one which is not itself exported is an error.
 
 # Shared C++ library
-add_library(simple-chess-games SHARED $<TARGET_OBJECTS:core-objects>)
+add_library(simple-chess-games SHARED $<TARGET_OBJECTS:core-objects-cpp-shared>)
 add_library(SimpleChess::simple-chess-games ALIAS simple-chess-games)
 target_include_directories(simple-chess-games PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -96,11 +118,12 @@ target_include_directories(simple-chess-games PUBLIC
 target_link_libraries(simple-chess-games PRIVATE $<BUILD_INTERFACE:Boost::algorithm>)
 
 # Static C++ library
-add_library(simple-chess-games-static STATIC $<TARGET_OBJECTS:core-objects>)
+add_library(simple-chess-games-static STATIC $<TARGET_OBJECTS:core-objects-static>)
 add_library(SimpleChess::simple-chess-games-static ALIAS simple-chess-games-static)
 target_include_directories(simple-chess-games-static PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+target_compile_definitions(simple-chess-games-static PUBLIC SIMPLECHESS_STATIC)
 target_link_libraries(simple-chess-games-static PRIVATE $<BUILD_INTERFACE:Boost::algorithm>)
 
 # The headers are installed as whole directories further down, so no target
@@ -116,7 +139,7 @@ set_target_properties(simple-chess-games-static PROPERTIES
 # ===== C LIBRARY =====
 
 # Shared C library (includes both core and C interface)
-add_library(simple-chess-games-c SHARED $<TARGET_OBJECTS:core-objects> $<TARGET_OBJECTS:c-interface-objects>)
+add_library(simple-chess-games-c SHARED $<TARGET_OBJECTS:core-objects-c-shared> $<TARGET_OBJECTS:c-interface-objects-c-shared>)
 add_library(SimpleChess::simple-chess-games-c ALIAS simple-chess-games-c)
 target_include_directories(simple-chess-games-c PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -124,11 +147,12 @@ target_include_directories(simple-chess-games-c PUBLIC
 target_link_libraries(simple-chess-games-c PRIVATE $<BUILD_INTERFACE:Boost::algorithm>)
 
 # Static C library
-add_library(simple-chess-games-c-static STATIC $<TARGET_OBJECTS:core-objects> $<TARGET_OBJECTS:c-interface-objects>)
+add_library(simple-chess-games-c-static STATIC $<TARGET_OBJECTS:core-objects-static> $<TARGET_OBJECTS:c-interface-objects-static>)
 add_library(SimpleChess::simple-chess-games-c-static ALIAS simple-chess-games-c-static)
 target_include_directories(simple-chess-games-c-static PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+target_compile_definitions(simple-chess-games-c-static PUBLIC SIMPLECHESS_STATIC)
 target_link_libraries(simple-chess-games-c-static PRIVATE $<BUILD_INTERFACE:Boost::algorithm>)
 
 set_target_properties(simple-chess-games-c PROPERTIES

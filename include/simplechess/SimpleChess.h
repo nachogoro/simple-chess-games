@@ -1,6 +1,7 @@
 #ifndef SIMPLE_CHESS_H_83ECD5A4_C290_4A1B_8127_33357F92414E
 #define SIMPLE_CHESS_H_83ECD5A4_C290_4A1B_8127_33357F92414E
 
+#include <simplechess/Export.h>
 #include <simplechess/Color.h>
 #include <simplechess/Game.h>
 #include <simplechess/PieceMove.h>
@@ -22,7 +23,7 @@ namespace simplechess
 	 *
 	 * \return The constructed Game.
 	 */
-	Game createNewGame(
+	SIMPLECHESS_API Game createNewGame(
 			DrawEnforcement drawEnforcement = DrawEnforcement::Automatic);
 
 	/**
@@ -49,7 +50,7 @@ namespace simplechess
 	 *
 	 * \return The constructed Game.
 	 */
-	Game createGameFromFen(
+	SIMPLECHESS_API Game createGameFromFen(
 			const std::string& fen,
 			DrawEnforcement drawEnforcement = DrawEnforcement::Automatic);
 
@@ -75,7 +76,7 @@ namespace simplechess
 	 * \return The matching legal move, or an empty optional if the current
 	 * player has no such move available.
 	 */
-	std::optional<PieceMove> findMove(
+	SIMPLECHESS_API std::optional<PieceMove> findMove(
 			const Game& game,
 			const Square& src,
 			const Square& dst,
@@ -97,7 +98,7 @@ namespace simplechess
 	 * \return A new copy of the Game in which the specified move has
 	 * been played.
 	 */
-	Game makeMove(
+	SIMPLECHESS_API Game makeMove(
 			const Game& game,
 			const PieceMove& move,
 			bool offerDraw=false);
@@ -115,7 +116,7 @@ namespace simplechess
 	 * \return A new copy of the Game, identical to the current one but
 	 * finished as a draw.
 	 */
-	Game claimDraw(const Game& game);
+	SIMPLECHESS_API Game claimDraw(const Game& game);
 
 	/**
 	 * \brief Resign the game.
@@ -128,7 +129,7 @@ namespace simplechess
 	 * \return A new copy of the Game, identical to the current one but
 	 * finished with the resignation of \p resigningPlayer.
 	 */
-	Game resign(const Game& game, Color resigningPlayer);
+	SIMPLECHESS_API Game resign(const Game& game, Color resigningPlayer);
 }
 
 #endif

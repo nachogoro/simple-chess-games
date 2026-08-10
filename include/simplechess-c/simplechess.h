@@ -12,6 +12,8 @@
 
 #include "simplechess_types.h"
 
+#include <simplechess/Export.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -28,7 +30,7 @@ extern "C" {
  * \return A static string, never NULL, valid for the lifetime of the
  *         program.
  */
-const char* simple_chess_error_string(simple_chess_error_t error);
+SIMPLECHESS_C_API const char* simple_chess_error_string(simple_chess_error_t error);
 
 /**
  * \brief Factory function to create a new game from the standard starting position.
@@ -47,7 +49,7 @@ const char* simple_chess_error_string(simple_chess_error_t error);
  * \note The caller is responsible for freeing the returned game object
  *       using simple_chess_destroy_game().
  */
-simple_chess_game_t* simple_chess_create_new_game(
+SIMPLECHESS_C_API simple_chess_game_t* simple_chess_create_new_game(
 		simple_chess_draw_enforcement_t draw_enforcement,
 		simple_chess_error_t* error);
 
@@ -76,7 +78,7 @@ simple_chess_game_t* simple_chess_create_new_game(
  * \note The caller is responsible for freeing the returned game object
  *       using simple_chess_destroy_game().
  */
-simple_chess_game_t* simple_chess_create_game_from_fen(
+SIMPLECHESS_C_API simple_chess_game_t* simple_chess_create_game_from_fen(
 		const char* fen,
 		simple_chess_draw_enforcement_t draw_enforcement,
 		simple_chess_error_t* error);
@@ -102,7 +104,7 @@ simple_chess_game_t* simple_chess_create_game_from_fen(
  * \note The caller is responsible for freeing the returned game object
  *       using simple_chess_destroy_game().
  */
-simple_chess_game_t* simple_chess_make_move(
+SIMPLECHESS_C_API simple_chess_game_t* simple_chess_make_move(
 		const simple_chess_game_t* game,
 		simple_chess_piece_move_t move,
 		simple_chess_error_t* error);
@@ -129,7 +131,7 @@ simple_chess_game_t* simple_chess_make_move(
  * \note The caller is responsible for freeing the returned game object
  *       using simple_chess_destroy_game().
  */
-simple_chess_game_t* simple_chess_make_move_with_draw_offer(
+SIMPLECHESS_C_API simple_chess_game_t* simple_chess_make_move_with_draw_offer(
 		const simple_chess_game_t* game,
 		simple_chess_piece_move_t move,
 		bool offer_draw,
@@ -155,7 +157,7 @@ simple_chess_game_t* simple_chess_make_move_with_draw_offer(
  * \note The caller is responsible for freeing the returned game object
  *       using simple_chess_destroy_game().
  */
-simple_chess_game_t* simple_chess_claim_draw(
+SIMPLECHESS_C_API simple_chess_game_t* simple_chess_claim_draw(
 		const simple_chess_game_t* game,
 		simple_chess_error_t* error);
 
@@ -178,7 +180,7 @@ simple_chess_game_t* simple_chess_claim_draw(
  * \note The caller is responsible for freeing the returned game object
  *       using simple_chess_destroy_game().
  */
-simple_chess_game_t* simple_chess_resign(
+SIMPLECHESS_C_API simple_chess_game_t* simple_chess_resign(
 		const simple_chess_game_t* game,
 		simple_chess_color_t resigner,
 		simple_chess_error_t* error);
@@ -190,7 +192,7 @@ simple_chess_game_t* simple_chess_resign(
  *
  * \return Whether the game is still being played, drawn, or won.
  */
-simple_chess_game_state_t simple_chess_game_state(const simple_chess_game_t* game);
+SIMPLECHESS_C_API simple_chess_game_state_t simple_chess_game_state(const simple_chess_game_t* game);
 
 /**
  * \brief The color whose turn it is to play.
@@ -199,7 +201,7 @@ simple_chess_game_state_t simple_chess_game_state(const simple_chess_game_t* gam
  *
  * \return The color to move next.
  */
-simple_chess_color_t simple_chess_game_active_color(const simple_chess_game_t* game);
+SIMPLECHESS_C_API simple_chess_color_t simple_chess_game_active_color(const simple_chess_game_t* game);
 
 /**
  * \brief The draw enforcement mode the game was created with.
@@ -208,7 +210,7 @@ simple_chess_color_t simple_chess_game_active_color(const simple_chess_game_t* g
  *
  * \return The draw enforcement mode.
  */
-simple_chess_draw_enforcement_t simple_chess_game_draw_enforcement(
+SIMPLECHESS_C_API simple_chess_draw_enforcement_t simple_chess_game_draw_enforcement(
 		const simple_chess_game_t* game);
 
 /**
@@ -219,7 +221,7 @@ simple_chess_draw_enforcement_t simple_chess_game_draw_enforcement(
  *
  * \return true if the game ended in a draw, false otherwise.
  */
-bool simple_chess_game_draw_reason(
+SIMPLECHESS_C_API bool simple_chess_game_draw_reason(
 		const simple_chess_game_t* game,
 		simple_chess_draw_reason_t* out);
 
@@ -231,7 +233,7 @@ bool simple_chess_game_draw_reason(
  *
  * \return true if the current player may claim a draw, false otherwise.
  */
-bool simple_chess_game_reason_to_claim_draw(
+SIMPLECHESS_C_API bool simple_chess_game_reason_to_claim_draw(
 		const simple_chess_game_t* game,
 		simple_chess_draw_reason_t* out);
 
@@ -243,7 +245,7 @@ bool simple_chess_game_reason_to_claim_draw(
  *
  * \return true on success, false if either argument is NULL.
  */
-bool simple_chess_game_current_stage(
+SIMPLECHESS_C_API bool simple_chess_game_current_stage(
 		const simple_chess_game_t* game,
 		simple_chess_game_stage_t* out);
 
@@ -254,7 +256,7 @@ bool simple_chess_game_current_stage(
  *
  * \return The number of entries in the history.
  */
-uint16_t simple_chess_game_history_size(const simple_chess_game_t* game);
+SIMPLECHESS_C_API uint16_t simple_chess_game_history_size(const simple_chess_game_t* game);
 
 /**
  * \brief The position the \p index-th move of the game was played from.
@@ -270,7 +272,7 @@ uint16_t simple_chess_game_history_size(const simple_chess_game_t* game);
  * \return true on success, false if \p index is out of range or either
  *         pointer is NULL.
  */
-bool simple_chess_game_history_stage(
+SIMPLECHESS_C_API bool simple_chess_game_history_stage(
 		const simple_chess_game_t* game,
 		uint16_t index,
 		simple_chess_game_stage_t* out);
@@ -285,7 +287,7 @@ bool simple_chess_game_history_stage(
  * \return true on success, false if \p index is out of range or either
  *         pointer is NULL.
  */
-bool simple_chess_game_history_move(
+SIMPLECHESS_C_API bool simple_chess_game_history_move(
 		const simple_chess_game_t* game,
 		uint16_t index,
 		simple_chess_played_move_t* out);
@@ -297,7 +299,7 @@ bool simple_chess_game_history_move(
  *
  * \return The number of legal moves in the current position.
  */
-uint16_t simple_chess_game_available_move_count(const simple_chess_game_t* game);
+SIMPLECHESS_C_API uint16_t simple_chess_game_available_move_count(const simple_chess_game_t* game);
 
 /**
  * \brief The \p index-th legal move of the current player.
@@ -313,7 +315,7 @@ uint16_t simple_chess_game_available_move_count(const simple_chess_game_t* game)
  * \return true on success, false if \p index is out of range or either
  *         pointer is NULL.
  */
-bool simple_chess_game_available_move(
+SIMPLECHESS_C_API bool simple_chess_game_available_move(
 		const simple_chess_game_t* game,
 		uint16_t index,
 		simple_chess_piece_move_t* out);
@@ -333,7 +335,7 @@ bool simple_chess_game_available_move(
  * \note The caller is responsible for freeing the returned game object
  *       using simple_chess_destroy_game().
  */
-simple_chess_game_t* simple_chess_copy_game(
+SIMPLECHESS_C_API simple_chess_game_t* simple_chess_copy_game(
 		const simple_chess_game_t* game,
 		simple_chess_error_t* error);
 
@@ -346,7 +348,7 @@ simple_chess_game_t* simple_chess_copy_game(
  *
  * \return true if the square is occupied, false if it is empty.
  */
-bool simple_chess_square_content_piece(
+SIMPLECHESS_C_API bool simple_chess_square_content_piece(
 		simple_chess_square_content_t content,
 		simple_chess_piece_t* out);
 
@@ -357,7 +359,7 @@ bool simple_chess_square_content_piece(
  *
  * \return The matching square content, never SIMPLE_CHESS_SQUARE_EMPTY.
  */
-simple_chess_square_content_t simple_chess_square_content_from_piece(
+SIMPLECHESS_C_API simple_chess_square_content_t simple_chess_square_content_from_piece(
 		simple_chess_piece_t piece);
 
 /**
@@ -368,7 +370,7 @@ simple_chess_square_content_t simple_chess_square_content_from_piece(
  *
  * \return true on success, false if \p index is above 63 or \p out is NULL.
  */
-bool simple_chess_square_from_index(uint8_t index, simple_chess_square_t* out);
+SIMPLECHESS_C_API bool simple_chess_square_from_index(uint8_t index, simple_chess_square_t* out);
 
 /**
  * \brief Convert a square to a board index.
@@ -380,7 +382,7 @@ bool simple_chess_square_from_index(uint8_t index, simple_chess_square_t* out);
  * \return true on success, false if \p square is off the board or \p out
  *         is NULL.
  */
-bool simple_chess_index_from_square(simple_chess_square_t square, uint8_t* out);
+SIMPLECHESS_C_API bool simple_chess_index_from_square(simple_chess_square_t square, uint8_t* out);
 
 /**
  * \brief Parse a square written in algebraic notation, such as "e4".
@@ -393,7 +395,7 @@ bool simple_chess_index_from_square(simple_chess_square_t square, uint8_t* out);
  *
  * \return true on success, false otherwise.
  */
-bool simple_chess_square_from_string(
+SIMPLECHESS_C_API bool simple_chess_square_from_string(
 		const char* algebraic,
 		simple_chess_square_t* out);
 
@@ -405,7 +407,7 @@ bool simple_chess_square_from_string(
  *            characters of the notation and a terminating NUL. Filled with
  *            an empty string if \p square is not a square of the board.
  */
-void simple_chess_square_to_string(simple_chess_square_t square, char* out);
+SIMPLECHESS_C_API void simple_chess_square_to_string(simple_chess_square_t square, char* out);
 
 /**
  * \brief Whether \p square names a square of the board.
@@ -414,7 +416,7 @@ void simple_chess_square_to_string(simple_chess_square_t square, char* out);
  *
  * \return true if the rank is 1-8 and the file 'a'-'h', false otherwise.
  */
-bool simple_chess_square_is_valid(simple_chess_square_t square);
+SIMPLECHESS_C_API bool simple_chess_square_is_valid(simple_chess_square_t square);
 
 /**
  * \brief The colour a square of the board is painted.
@@ -424,7 +426,7 @@ bool simple_chess_square_is_valid(simple_chess_square_t square);
  *
  * \return The colour the square is painted.
  */
-simple_chess_color_t simple_chess_square_color(simple_chess_square_t square);
+SIMPLECHESS_C_API simple_chess_color_t simple_chess_square_color(simple_chess_square_t square);
 
 /**
  * \brief Whether two moves describe the same thing.
@@ -434,7 +436,7 @@ simple_chess_color_t simple_chess_square_color(simple_chess_square_t square);
  *
  * \return true if the moves are equal, false otherwise.
  */
-bool simple_chess_piece_move_equals(
+SIMPLECHESS_C_API bool simple_chess_piece_move_equals(
 		simple_chess_piece_move_t a,
 		simple_chess_piece_move_t b);
 
@@ -460,7 +462,7 @@ bool simple_chess_piece_move_equals(
  *
  * \return true if the player to move has such a move, false otherwise.
  */
-bool simple_chess_find_move(
+SIMPLECHESS_C_API bool simple_chess_find_move(
 		const simple_chess_game_t* game,
 		simple_chess_square_t src,
 		simple_chess_square_t dst,
@@ -481,7 +483,7 @@ bool simple_chess_find_move(
  * \note This function must be called for every game object created by
  *       the library to avoid memory leaks.
  */
-void simple_chess_destroy_game(simple_chess_game_t* game);
+SIMPLECHESS_C_API void simple_chess_destroy_game(simple_chess_game_t* game);
 
 #ifdef __cplusplus
 }

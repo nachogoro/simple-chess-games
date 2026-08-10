@@ -1,6 +1,7 @@
 #ifndef GAME_STAGE_H_3064169C_7DBE_4CB3_91C2_EFE730CF43BB
 #define GAME_STAGE_H_3064169C_7DBE_4CB3_91C2_EFE730CF43BB
 
+#include <simplechess/Export.h>
 #include <simplechess/Board.h>
 #include <simplechess/Color.h>
 #include <simplechess/Piece.h>
@@ -51,7 +52,7 @@ namespace simplechess
 	 * color plays the next move, what castling rights remain, etc.), along
 	 * with the move which was last played to achieve the position.
 	 */
-	class GameStage
+	class SIMPLECHESS_API GameStage
 	{
 		public:
 			/**

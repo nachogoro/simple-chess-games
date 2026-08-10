@@ -1,6 +1,7 @@
 #ifndef PIECE_MOVE_H_565687CA_B90B_47F1_84E4_181A6503B9EE
 #define PIECE_MOVE_H_565687CA_B90B_47F1_84E4_181A6503B9EE
 
+#include <simplechess/Export.h>
 #include <simplechess/Exceptions.h>
 #include <simplechess/Piece.h>
 #include <simplechess/Square.h>
@@ -22,7 +23,7 @@ namespace simplechess
 	 * moved to f3"), without accounting for captures, checks, draw offers,
 	 * etc.
 	 */
-	class PieceMove
+	class SIMPLECHESS_API PieceMove
 	{
 		public:
 			/**

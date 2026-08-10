@@ -1,6 +1,7 @@
 #ifndef GAME_H_AA82C7D6_D956_405F_95B0_8A23678A5041
 #define GAME_H_AA82C7D6_D956_405F_95B0_8A23678A5041
 
+#include <simplechess/Export.h>
 #include <simplechess/Exceptions.h>
 #include <simplechess/GameStage.h>
 #include <simplechess/PieceMove.h>
@@ -153,7 +154,7 @@ namespace simplechess
 	 * The class is immutable, so all methods which would change its state
 	 * instead return a new copy of the object with the updated state.
 	 */
-	class Game
+	class SIMPLECHESS_API Game
 	{
 		public:
 			/**

@@ -1,6 +1,7 @@
 #ifndef EXCEPTION_H_797BE592_5F71_439B_A718_D0FDD651FED7
 #define EXCEPTION_H_797BE592_5F71_439B_A718_D0FDD651FED7
 
+#include <simplechess/Export.h>
 #include <string>
 #include <stdexcept>
 
@@ -13,7 +14,7 @@ namespace simplechess
 	 * Only the operations which advance a game throw this; the methods which
 	 * merely report on one never do.
 	 */
-	class IllegalStateException : public std::runtime_error
+	class SIMPLECHESS_API IllegalStateException : public std::runtime_error
 	{
 		public:
 			/**
@@ -36,7 +37,7 @@ namespace simplechess
 	 * while callers who want to tell the library's own argument errors apart
 	 * from everyone else's now can.
 	 */
-	class InvalidArgumentException : public std::invalid_argument
+	class SIMPLECHESS_API InvalidArgumentException : public std::invalid_argument
 	{
 		public:
 			/**
