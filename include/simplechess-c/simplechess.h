@@ -27,7 +27,7 @@ extern "C" {
  * \note The caller is responsible for freeing the returned game object
  *       using destroy_game().
  */
-game_t* simple_chess_create_new_game(void);
+simple_chess_game_t* simple_chess_create_new_game(void);
 
 /**
  * \brief Factory function to create a new game with a specific draw enforcement mode.
@@ -43,7 +43,7 @@ game_t* simple_chess_create_new_game(void);
  * \note The caller is responsible for freeing the returned game object
  *       using destroy_game().
  */
-game_t* simple_chess_create_new_game_ex(draw_enforcement_t draw_enforcement);
+simple_chess_game_t* simple_chess_create_new_game_ex(simple_chess_draw_enforcement_t draw_enforcement);
 
 /**
  * \brief Factory function to create a new game from a given board position.
@@ -65,7 +65,7 @@ game_t* simple_chess_create_new_game_ex(draw_enforcement_t draw_enforcement);
  * \note The caller is responsible for freeing the returned game object
  *       using destroy_game().
  */
-game_t* simple_chess_create_game_from_fen(const char* fen);
+simple_chess_game_t* simple_chess_create_game_from_fen(const char* fen);
 
 /**
  * \brief Factory function to create a new game from a FEN position with a
@@ -82,7 +82,7 @@ game_t* simple_chess_create_game_from_fen(const char* fen);
  * \note The caller is responsible for freeing the returned game object
  *       using destroy_game().
  */
-game_t* simple_chess_create_game_from_fen_ex(const char* fen, draw_enforcement_t draw_enforcement);
+simple_chess_game_t* simple_chess_create_game_from_fen_ex(const char* fen, simple_chess_draw_enforcement_t draw_enforcement);
 
 /**
  * \brief Make a move for the player whose turn it is to play.
@@ -95,14 +95,14 @@ game_t* simple_chess_create_game_from_fen_ex(const char* fen, draw_enforcement_t
  *
  * \return Pointer to new game state after the move, or NULL in the following
  *         circumstances:
- *         - The game has already concluded (state is not GameStatePlaying)
+ *         - The game has already concluded (state is not SIMPLE_CHESS_GAME_STATE_PLAYING)
  *         - The move is not valid for the current player
  *         - Memory allocation failure
  *
  * \note The caller is responsible for freeing the returned game object
  *       using destroy_game().
  */
-game_t* simple_chess_make_move(const game_t* game, piece_move_t move);
+simple_chess_game_t* simple_chess_make_move(const simple_chess_game_t* game, simple_chess_piece_move_t move);
 
 /**
  * \brief Make a move and optionally offer a draw.
@@ -116,14 +116,14 @@ game_t* simple_chess_make_move(const game_t* game, piece_move_t move);
  *
  * \return Pointer to new game state after the move, or NULL in the following
  *         circumstances:
- *         - The game has already concluded (state is not GameStatePlaying)
+ *         - The game has already concluded (state is not SIMPLE_CHESS_GAME_STATE_PLAYING)
  *         - The move is not valid for the current player
  *         - Memory allocation failure
  *
  * \note The caller is responsible for freeing the returned game object
  *       using destroy_game().
  */
-game_t* simple_chess_make_move_with_draw_offer(const game_t* game, piece_move_t move, bool offer_draw);
+simple_chess_game_t* simple_chess_make_move_with_draw_offer(const simple_chess_game_t* game, simple_chess_piece_move_t move, bool offer_draw);
 
 /**
  * \brief Claim a draw if one is available.
@@ -142,7 +142,7 @@ game_t* simple_chess_make_move_with_draw_offer(const game_t* game, piece_move_t 
  * \note The caller is responsible for freeing the returned game object
  *       using destroy_game().
  */
-game_t* simple_chess_claim_draw(const game_t* game);
+simple_chess_game_t* simple_chess_claim_draw(const simple_chess_game_t* game);
 
 /**
  * \brief Resign the game for the specified player.
@@ -160,12 +160,12 @@ game_t* simple_chess_claim_draw(const game_t* game);
  * \note The caller is responsible for freeing the returned game object
  *       using destroy_game().
  */
-game_t* simple_chess_resign(const game_t* game, color_t resigner);
+simple_chess_game_t* simple_chess_resign(const simple_chess_game_t* game, simple_chess_color_t resigner);
 
 /**
  * \brief Convert a board index to a square structure.
  *
- * Converts a linear board index (0-63) to a square_t structure with
+ * Converts a linear board index (0-63) to a simple_chess_square_t structure with
  * rank, file, color, and string representation.
  *
  * \param index Board index where 0=a1, 1=b1, ..., 63=h8.
@@ -175,12 +175,12 @@ game_t* simple_chess_resign(const game_t* game, color_t resigner);
  *
  * \note If index is out of range, the behavior is undefined.
  */
-square_t simple_chess_square_from_index(uint8_t index);
+simple_chess_square_t simple_chess_square_from_index(uint8_t index);
 
 /**
  * \brief Convert a square structure to a board index.
  *
- * Converts a square_t structure to a linear board index (0-63).
+ * Converts a simple_chess_square_t structure to a linear board index (0-63).
  *
  * \param square Square structure with valid rank (1-8) and file ('a'-'h').
  *
@@ -189,7 +189,7 @@ square_t simple_chess_square_from_index(uint8_t index);
  * \note If the square has invalid rank or file values, the behavior
  *       is undefined.
  */
-uint8_t simple_chess_index_from_square(square_t square);
+uint8_t simple_chess_index_from_square(simple_chess_square_t square);
 
 /**
  * \brief Free all memory associated with a game object.
@@ -204,7 +204,7 @@ uint8_t simple_chess_index_from_square(square_t square);
  * \note This function must be called for every game object created by
  *       the library to avoid memory leaks.
  */
-void destroy_game(game_t* game);
+void destroy_game(simple_chess_game_t* game);
 
 #ifdef __cplusplus
 }

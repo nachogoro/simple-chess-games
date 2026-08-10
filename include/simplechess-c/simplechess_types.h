@@ -16,50 +16,50 @@ extern "C" {
 	/**
 	 * \brief The color of each side in a chess game.
 	 */
-	typedef enum color_t {
-		ColorWhite,
-		ColorBlack
-	} color_t;
+	typedef enum simple_chess_color {
+		SIMPLE_CHESS_COLOR_WHITE,
+		SIMPLE_CHESS_COLOR_BLACK
+	} simple_chess_color_t;
 
 	/**
 	 * \brief Represents a square on the chess board.
 	 *
 	 * Squares are identified by rank (1-8) and file ('a'-'h').
 	 */
-	typedef struct square_t {
+	typedef struct simple_chess_square {
 		/** Rank (1-8) */
 		uint8_t rank;
 
 		/** File ('a'-'h') */
 		char file;
-	} square_t;
+	} simple_chess_square_t;
 
 	/**
 	 * \brief The type of a chess piece.
 	 */
-	typedef enum piece_type_t {
-		PieceTypePawn,
-		PieceTypeRook,
-		PieceTypeKnight,
-		PieceTypeBishop,
-		PieceTypeQueen,
-		PieceTypeKing
-	} piece_type_t;
+	typedef enum simple_chess_piece_type {
+		SIMPLE_CHESS_PIECE_TYPE_PAWN,
+		SIMPLE_CHESS_PIECE_TYPE_ROOK,
+		SIMPLE_CHESS_PIECE_TYPE_KNIGHT,
+		SIMPLE_CHESS_PIECE_TYPE_BISHOP,
+		SIMPLE_CHESS_PIECE_TYPE_QUEEN,
+		SIMPLE_CHESS_PIECE_TYPE_KING
+	} simple_chess_piece_type_t;
 
 	/**
 	 * \brief Represents a chess piece with its type and color.
 	 */
-	typedef struct piece_t {
+	typedef struct simple_chess_piece {
 		/**
 		 * \brief Type of the piece
 		 */
-		piece_type_t type;
+		simple_chess_piece_type_t type;
 
 		/**
 		 * \brief Color of the piece
 		 */
-		color_t color;
-	} piece_t;
+		simple_chess_color_t color;
+	} simple_chess_piece_t;
 
 	/**
 	 * \brief Describes a move which can be made by a player.
@@ -74,11 +74,11 @@ extern "C" {
 	 * moved to f3"), without accounting for captures, checks, draw offers,
 	 * etc.
 	 */
-	typedef struct piece_move_t {
+	typedef struct simple_chess_piece_move {
 		/**
 		 * \brief The piece whose movement is described.
 		 */
-		piece_t piece;
+		simple_chess_piece_t piece;
 
 		/**
 		 * \brief The original square of the moved piece.
@@ -86,7 +86,7 @@ extern "C" {
 		 * \note In the case of castling, it refers to the original square
 		 * of the King.
 		 */
-		square_t src;
+		simple_chess_square_t src;
 
 		/**
 		 * \brief The final square of the moved piece.
@@ -94,7 +94,7 @@ extern "C" {
 		 * \note In the case of castling, it refers to the final square
 		 * of the King.
 		 */
-		square_t dst;
+		simple_chess_square_t dst;
 
 		/**
 		 * \brief Indicates if the move represents a pawn promotion.
@@ -105,29 +105,29 @@ extern "C" {
 		 * \brief Returns the new type of the promoted pawn (only valid if
 		 * is_promotion is true).
 		 */
-		piece_type_t promoted_to;
-	} piece_move_t;
+		simple_chess_piece_type_t promoted_to;
+	} simple_chess_piece_move_t;
 
 	/**
 	 * \brief The different types of check which can be caused by a move.
 	 */
-	typedef enum check_type_t {
+	typedef enum simple_chess_check_type {
 		/**
 		 * \brief No check whatsoever.
 		 */
-		CheckTypeNone,
+		SIMPLE_CHESS_CHECK_TYPE_NONE,
 
 		/**
 		 * \brief Regular check (the other side still has valid moves to break the
 		 * check).
 		 */
-		CheckTypeCheck,
+		SIMPLE_CHESS_CHECK_TYPE_CHECK,
 
 		/**
 		 * \brief Checkmate (the other side has no valid moves).
 		 */
-		CheckTypeCheckMate
-	} check_type_t;
+		SIMPLE_CHESS_CHECK_TYPE_CHECKMATE
+	} simple_chess_check_type_t;
 
 	/**
 	 * \brief Describes a move that has been played in a game of chess.
@@ -138,12 +138,12 @@ extern "C" {
 	 * "The move included a draw offer", "The move resulted in checkmate",
 	 * etc.).
 	 */
-	typedef struct played_move_t {
+	typedef struct simple_chess_played_move {
 		/**
 		 * \brief The description of the move of the piece as a \ref
-		 * piece_move_t.
+		 * simple_chess_piece_move_t.
 		 */
-		piece_move_t move;
+		simple_chess_piece_move_t move;
 
 		/**
 		 * \brief Indicates if the move captured an opposing piece.
@@ -153,12 +153,12 @@ extern "C" {
 		/** \brief
 		 * The opposing piece that was captured (only if is_capture is true)
 		 */
-		piece_t captured_piece;
+		simple_chess_piece_t captured_piece;
 
 		/**
 		 * \brief The type of check delivered by the move.
 		 */
-		check_type_t check_type;
+		simple_chess_check_type_t check_type;
 
 		/**
 		 * \brief Whether the player offers a draw with this move.
@@ -169,7 +169,7 @@ extern "C" {
 		 * \brief The string representation of the move in algebraic notation.
 		 */
 		char in_algebraic_notation[8];
-	} played_move_t;
+	} simple_chess_played_move_t;
 
 	/**
 	 * \brief Castling rights bitfield values.
@@ -177,27 +177,27 @@ extern "C" {
 	 * These values can be combined using bitwise OR to represent
 	 * multiple castling rights.
 	 */
-	typedef enum castling_right_t {
+	typedef enum simple_chess_castling_right {
 		/**
 		 * \brief White can castle kingside
 		 */
-		CastlingRightWhiteKingSide = 0x01,
+		SIMPLE_CHESS_CASTLING_RIGHT_WHITE_KING_SIDE = 0x01,
 
 		/**
 		 * \brief White can castle queenside
 		 */
-		CastlingRightWhiteQueenSide = 0x02,
+		SIMPLE_CHESS_CASTLING_RIGHT_WHITE_QUEEN_SIDE = 0x02,
 
 		/**
 		 * \brief Black can castle kingside
 		 */
-		CastlingRightBlackKingSide = 0x04,
+		SIMPLE_CHESS_CASTLING_RIGHT_BLACK_KING_SIDE = 0x04,
 
 		/**
 		 * \brief Black can castle queenside
 		 */
-		CastlingRightBlackQueenSide = 0x08
-	} castling_right_t;
+		SIMPLE_CHESS_CASTLING_RIGHT_BLACK_QUEEN_SIDE = 0x08
+	} simple_chess_castling_right_t;
 
 	/**
 	 * \brief Represents the chess board state.
@@ -205,10 +205,10 @@ extern "C" {
 	 * The board is represented as a 64-element array where each element
 	 * corresponds to a square. Squares are indexed from "a1"=0 to "h8"=63.
 	 *
-	 * Auxiliary functions are provided to convert from square_t to index and
+	 * Auxiliary functions are provided to convert from simple_chess_square_t to index and
 	 * viceversa.
 	 */
-	typedef struct board_t {
+	typedef struct simple_chess_board {
 		/**
 		 * \brief Whether the i-th square is occupied by a piece or not.
 		 */
@@ -217,8 +217,8 @@ extern "C" {
 		/**
 		 * \brief The piece located at the i-th square (only if occupied[i] is true).
 		 */
-		piece_t piece_at[64];
-	} board_t;
+		simple_chess_piece_t piece_at[64];
+	} simple_chess_board_t;
 
 	/**
 	 * \brief Represents a complete game position.
@@ -227,16 +227,16 @@ extern "C" {
 	 * position, including board state, game rules state, and position
 	 * metadata.
 	 */
-	typedef struct game_stage_t {
+	typedef struct simple_chess_game_stage {
 		/**
 		 * \brief Current board position
 		 */
-		board_t board;
+		simple_chess_board_t board;
 
 		/**
 		 * \brief Whose turn it is
 		 */
-		color_t active_color;
+		simple_chess_color_t active_color;
 
 		/**
 		 * \brief Bitfield of available castling rights
@@ -261,63 +261,63 @@ extern "C" {
 		/**
 		 * \brief En passant target square (if has_en_passant_target is true)
 		 */
-		square_t en_passant_target;
+		simple_chess_square_t en_passant_target;
 
 		/**
 		 * \brief Current check status
 		 */
-		check_type_t check_status;
+		simple_chess_check_type_t check_status;
 
 		/**
 		 * \brief FEN representation of this position
 		 */
 		char fen[90];
-	} game_stage_t;
+	} simple_chess_game_stage_t;
 
 	/**
 	 * \brief The overall state of a chess game.
 	 */
-	typedef enum game_state_t {
+	typedef enum simple_chess_game_state {
 		/**
 		 * \brief The game is still being played
 		 */
-		GameStatePlaying,
+		SIMPLE_CHESS_GAME_STATE_PLAYING,
 
 		/**
 		 * \brief The game ended in a draw
 		 */
-		GameStateDrawn,
+		SIMPLE_CHESS_GAME_STATE_DRAWN,
 
 		/**
 		 * \brief The game ended with a victory for white
 		 */
-		GameStateWhiteWon,
+		SIMPLE_CHESS_GAME_STATE_WHITE_WON,
 
 		/**
 		 * \brief The game ended with a victory for black
 		 */
-		GameStateBlackWon
-	} game_state_t;
+		SIMPLE_CHESS_GAME_STATE_BLACK_WON
+	} simple_chess_game_state_t;
 
 	/**
 	 * \brief Reasons why a game might be drawn.
 	 */
-	typedef enum draw_reason_t {
+	typedef enum simple_chess_draw_reason {
 		/**
 		 * \brief Stalemate (the active side has no valid moves and is not in
 		 * check).
 		 */
-		DrawReasonStaleMate,
+		SIMPLE_CHESS_DRAW_REASON_STALEMATE,
 
 		/**
 		 * \brief Neither side has sufficient material to mate the other.
 		 */
-		DrawReasonInsufficientMaterial,
+		SIMPLE_CHESS_DRAW_REASON_INSUFFICIENT_MATERIAL,
 
 		/**
 		 * \brief A side offered a draw and it was accepted.
 		 */
-		DrawReasonOfferedAndAccepted,
+		SIMPLE_CHESS_DRAW_REASON_OFFERED_AND_ACCEPTED,
 
 		/**
 		 * \brief The same position has been reached 3 times or will be
@@ -325,14 +325,14 @@ extern "C" {
 		 *
 		 * \note See FIDE rule 9.2.1 * and 9.2.2.
 		 */
-		DrawReasonThreeFoldRepetition,
+		SIMPLE_CHESS_DRAW_REASON_THREEFOLD_REPETITION,
 
 		/**
 		 * \brief The same position has been reached 5 times.
 		 *
 		 * \note See FIDE rule 9.6.1.
 		 */
-		DrawReasonFiveFoldRepetition,
+		SIMPLE_CHESS_DRAW_REASON_FIVEFOLD_REPETITION,
 
 		/**
 		 * \brief At least fifty full moves (i.e. each side has played their
@@ -341,14 +341,14 @@ extern "C" {
 		 *
 		 * \note See FIDE rules 9.3.1 and 9.3.2.
 		 */
-		DrawReasonFiftyMoveRule,
+		SIMPLE_CHESS_DRAW_REASON_FIFTY_MOVE_RULE,
 
 		/**
 		 * \brief The opponent (inactive side) has only a king remaining,
 		 * making it impossible for them to win. The active side may claim
 		 * a draw. This is never automatically enforced.
 		 */
-		DrawReasonOpponentInsufficientMaterial,
+		SIMPLE_CHESS_DRAW_REASON_OPPONENT_INSUFFICIENT_MATERIAL,
 
 		/**
 		 * \brief At least seventy-five full moves (i.e. each side has played their
@@ -357,8 +357,8 @@ extern "C" {
 		 * \note See FIDE rule 9.6.2. If the 75th move results in checkmate,
 		 * the checkmate takes precedence over the draw rule.
 		 */
-		DrawReasonSeventyFiveMoveRule
-	} draw_reason_t;
+		SIMPLE_CHESS_DRAW_REASON_SEVENTY_FIVE_MOVE_RULE
+	} simple_chess_draw_reason_t;
 
 	/**
 	 * \brief Represents one entry in the game history.
@@ -366,7 +366,7 @@ extern "C" {
 	 * Each entry contains the position before a move was played
 	 * and the move that was played.
 	 */
-	typedef struct game_history_entry_t {
+	typedef struct simple_chess_game_history_entry {
 		/**
 		 * \brief FEN representation before this move
 		 */
@@ -376,25 +376,25 @@ extern "C" {
 		 *
 		 * \brief The move that was played
 		 */
-		played_move_t played_move;
-	} game_history_entry_t;
+		simple_chess_played_move_t played_move;
+	} simple_chess_game_history_entry_t;
 
 	/**
 	 * \brief Controls whether mandatory draw rules are automatically
 	 * enforced or only claimable.
 	 */
-	typedef enum draw_enforcement_t {
+	typedef enum simple_chess_draw_enforcement {
 		/**
 		 * \brief Mandatory FIDE draw conditions are automatically enforced.
 		 */
-		DrawEnforcementAutomatic,
+		SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC,
 
 		/**
 		 * \brief Mandatory FIDE draw conditions are only claimable, not
 		 * automatically enforced.
 		 */
-		DrawEnforcementClaimOnly
-	} draw_enforcement_t;
+		SIMPLE_CHESS_DRAW_ENFORCEMENT_CLAIM_ONLY
+	} simple_chess_draw_enforcement_t;
 
 	/**
 	 * \brief Represents a complete chess game with all state information.
@@ -403,21 +403,21 @@ extern "C" {
 	 * It contains the current position, game history, available moves,
 	 * and game status information.
 	 */
-	typedef struct game_t {
+	typedef struct simple_chess_game {
 		/**
 		 * \brief Current game state
 		 */
-		game_state_t state;
+		simple_chess_game_state_t state;
 
 		/**
-		 * \brief Reason for draw (if state is GameStateDrawn)
+		 * \brief Reason for draw (if state is SIMPLE_CHESS_GAME_STATE_DRAWN)
 		 */
-		draw_reason_t draw_reason;
+		simple_chess_draw_reason_t draw_reason;
 
 		/**
 		 * \brief Array of all moves played in the game
 		 */
-		game_history_entry_t* history;
+		simple_chess_game_history_entry_t* history;
 
 		/**
 		 * \brief Number of moves in history
@@ -427,7 +427,7 @@ extern "C" {
 		/**
 		 * \brief Array of all legal moves in current position
 		 */
-		piece_move_t* available_moves;
+		simple_chess_piece_move_t* available_moves;
 
 		/**
 		 * \brief Number of available moves
@@ -437,7 +437,7 @@ extern "C" {
 		/**
 		 * \brief Current position and game state
 		 */
-		game_stage_t current_stage;
+		simple_chess_game_stage_t current_stage;
 
 		/**
 		 * \brief Whether a draw can be claimed by the current player
@@ -448,13 +448,13 @@ extern "C" {
 		 *
 		 * \brief Reason a draw can be claimed (if is_draw_claimable is true)
 		 */
-		draw_reason_t reason_to_claim_draw;
+		simple_chess_draw_reason_t reason_to_claim_draw;
 
 		/**
 		 * \brief The draw enforcement mode of this game.
 		 */
-		draw_enforcement_t draw_enforcement;
-	} game_t;
+		simple_chess_draw_enforcement_t draw_enforcement;
+	} simple_chess_game_t;
 
 #ifdef __cplusplus
 }

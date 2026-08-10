@@ -7,10 +7,10 @@
 // Helper functions for C interface tests
 
 // Helper function to create a move
-static inline piece_move_t create_move(piece_type_t piece_type, color_t color,
+static inline simple_chess_piece_move_t create_move(simple_chess_piece_type_t piece_type, simple_chess_color_t color,
                                       uint8_t src_rank, char src_file,
                                       uint8_t dst_rank, char dst_file) {
-    piece_move_t move = {};  // Zero-initialize
+    simple_chess_piece_move_t move = {};  // Zero-initialize
     move.piece.type = piece_type;
     move.piece.color = color;
 
@@ -23,17 +23,17 @@ static inline piece_move_t create_move(piece_type_t piece_type, color_t color,
     move.dst.file = dst_file;
 
     move.is_promotion = false;
-    move.promoted_to = PieceTypePawn; // dummy value
+    move.promoted_to = SIMPLE_CHESS_PIECE_TYPE_PAWN; // dummy value
     return move;
 }
 
 // Helper function to create a promotion move
-static inline piece_move_t create_promotion_move(color_t color,
+static inline simple_chess_piece_move_t create_promotion_move(simple_chess_color_t color,
                                                 uint8_t src_rank, char src_file,
                                                 uint8_t dst_rank, char dst_file,
-                                                piece_type_t promoted_to) {
-    piece_move_t move = {};  // Zero-initialize
-    move.piece.type = PieceTypePawn;
+                                                simple_chess_piece_type_t promoted_to) {
+    simple_chess_piece_move_t move = {};  // Zero-initialize
+    move.piece.type = SIMPLE_CHESS_PIECE_TYPE_PAWN;
     move.piece.color = color;
 
     // Initialize source square

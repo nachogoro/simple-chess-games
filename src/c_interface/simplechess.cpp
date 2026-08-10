@@ -5,7 +5,7 @@
 
 using namespace conversion_utils;
 
-game_t* simple_chess_create_new_game() {
+simple_chess_game_t* simple_chess_create_new_game() {
 	try {
 		return c_game(simplechess::createNewGame());
 	} catch (...) {
@@ -13,7 +13,7 @@ game_t* simple_chess_create_new_game() {
 	}
 }
 
-game_t* simple_chess_create_new_game_ex(draw_enforcement_t draw_enforcement) {
+simple_chess_game_t* simple_chess_create_new_game_ex(simple_chess_draw_enforcement_t draw_enforcement) {
 	try {
 		return c_game(simplechess::createNewGame(cpp_draw_enforcement(draw_enforcement)));
 	} catch (...) {
@@ -21,7 +21,7 @@ game_t* simple_chess_create_new_game_ex(draw_enforcement_t draw_enforcement) {
 	}
 }
 
-game_t* simple_chess_create_game_from_fen(const char* fen) {
+simple_chess_game_t* simple_chess_create_game_from_fen(const char* fen) {
 	if (!fen) return nullptr;
 
 	try {
@@ -31,7 +31,7 @@ game_t* simple_chess_create_game_from_fen(const char* fen) {
 	}
 }
 
-game_t* simple_chess_create_game_from_fen_ex(const char* fen, draw_enforcement_t draw_enforcement) {
+simple_chess_game_t* simple_chess_create_game_from_fen_ex(const char* fen, simple_chess_draw_enforcement_t draw_enforcement) {
 	if (!fen) return nullptr;
 
 	try {
@@ -41,7 +41,7 @@ game_t* simple_chess_create_game_from_fen_ex(const char* fen, draw_enforcement_t
 	}
 }
 
-game_t* simple_chess_make_move(const game_t* game, piece_move_t move) {
+simple_chess_game_t* simple_chess_make_move(const simple_chess_game_t* game, simple_chess_piece_move_t move) {
 	if (!game) return nullptr;
 
 	try {
@@ -51,7 +51,7 @@ game_t* simple_chess_make_move(const game_t* game, piece_move_t move) {
 	}
 }
 
-game_t* simple_chess_make_move_with_draw_offer(const game_t* game, piece_move_t move, bool offer_draw) {
+simple_chess_game_t* simple_chess_make_move_with_draw_offer(const simple_chess_game_t* game, simple_chess_piece_move_t move, bool offer_draw) {
 	if (!game) return nullptr;
 
 	try {
@@ -63,7 +63,7 @@ game_t* simple_chess_make_move_with_draw_offer(const game_t* game, piece_move_t 
 	}
 }
 
-game_t* simple_chess_claim_draw(const game_t* game) {
+simple_chess_game_t* simple_chess_claim_draw(const simple_chess_game_t* game) {
 	if (!game) return nullptr;
 
 	try {
@@ -75,7 +75,7 @@ game_t* simple_chess_claim_draw(const game_t* game) {
 	}
 }
 
-game_t* simple_chess_resign(const game_t* game, color_t resigner) {
+simple_chess_game_t* simple_chess_resign(const simple_chess_game_t* game, simple_chess_color_t resigner) {
 	if (!game) return nullptr;
 
 	try {
@@ -87,20 +87,20 @@ game_t* simple_chess_resign(const game_t* game, color_t resigner) {
 	}
 }
 
-square_t simple_chess_square_from_index(uint8_t index) {
+simple_chess_square_t simple_chess_square_from_index(uint8_t index) {
 	uint8_t row = 1 + (index / 8);
 	char col = 'a' + (index % 8);
 	return {row, col};
 }
 
-uint8_t simple_chess_index_from_square(square_t square) {
+uint8_t simple_chess_index_from_square(simple_chess_square_t square) {
 	uint8_t row = square.rank - 1;
 	uint8_t col = square.file - 'a';
 	return row * 8 + col;
 
 }
 
-void destroy_game(game_t* game) {
+void destroy_game(simple_chess_game_t* game) {
 	if (!game) return;
 
 	delete[] game->history;

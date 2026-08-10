@@ -6,74 +6,74 @@
 #include <cstring>
 
 // C++ to C conversions
-color_t conversion_utils::c_color(simplechess::Color color) {
+simple_chess_color_t conversion_utils::c_color(simplechess::Color color) {
 	switch (color) {
 		case simplechess::Color::White:
-			return ColorWhite;
+			return SIMPLE_CHESS_COLOR_WHITE;
 		case simplechess::Color::Black:
-			return ColorBlack;
+			return SIMPLE_CHESS_COLOR_BLACK;
 	}
 
 	// Supress warning
-	return ColorWhite;
+	return SIMPLE_CHESS_COLOR_WHITE;
 }
 
-square_t conversion_utils::c_square(const simplechess::Square& square) {
+simple_chess_square_t conversion_utils::c_square(const simplechess::Square& square) {
 	return {square.rank(), square.file()};
 }
 
-piece_type_t conversion_utils::c_piece_type(simplechess::PieceType type) {
+simple_chess_piece_type_t conversion_utils::c_piece_type(simplechess::PieceType type) {
 	switch (type) {
 		case simplechess::PieceType::Pawn:
-			return PieceTypePawn;
+			return SIMPLE_CHESS_PIECE_TYPE_PAWN;
 		case simplechess::PieceType::Rook:
-			return PieceTypeRook;
+			return SIMPLE_CHESS_PIECE_TYPE_ROOK;
 		case simplechess::PieceType::Knight:
-			return PieceTypeKnight;
+			return SIMPLE_CHESS_PIECE_TYPE_KNIGHT;
 		case simplechess::PieceType::Bishop:
-			return PieceTypeBishop;
+			return SIMPLE_CHESS_PIECE_TYPE_BISHOP;
 		case simplechess::PieceType::Queen:
-			return PieceTypeQueen;
+			return SIMPLE_CHESS_PIECE_TYPE_QUEEN;
 		case simplechess::PieceType::King:
-			return PieceTypeKing;
+			return SIMPLE_CHESS_PIECE_TYPE_KING;
 	}
 
 	// Suppress warning
-	return PieceTypePawn;
+	return SIMPLE_CHESS_PIECE_TYPE_PAWN;
 }
 
-piece_t conversion_utils::c_piece(const simplechess::Piece& piece) {
+simple_chess_piece_t conversion_utils::c_piece(const simplechess::Piece& piece) {
 	return {c_piece_type(piece.type()), c_color(piece.color())};
 }
 
-piece_move_t conversion_utils::c_piece_move(const simplechess::PieceMove& move) {
+simple_chess_piece_move_t conversion_utils::c_piece_move(const simplechess::PieceMove& move) {
 	return {
 		c_piece(move.piece()),
 		c_square(move.src()),
 		c_square(move.dst()),
 		move.promoted().has_value(),
 		(move.promoted().has_value() ? c_piece_type(*move.promoted())
-		 : PieceTypePawn)
+		 : SIMPLE_CHESS_PIECE_TYPE_PAWN)
 	};
 }
 
-check_type_t conversion_utils::c_check_type(simplechess::CheckType check)
+simple_chess_check_type_t conversion_utils::c_check_type(simplechess::CheckType check)
 {
 	switch (check) {
 		case simplechess::CheckType::NoCheck:
-			return CheckTypeNone;
+			return SIMPLE_CHESS_CHECK_TYPE_NONE;
 		case simplechess::CheckType::Check:
-			return CheckTypeCheck;
+			return SIMPLE_CHESS_CHECK_TYPE_CHECK;
 		case simplechess::CheckType::CheckMate:
-			return CheckTypeCheckMate;
+			return SIMPLE_CHESS_CHECK_TYPE_CHECKMATE;
 	}
 
 	// Suppress warning
-	return CheckTypeNone;
+	return SIMPLE_CHESS_CHECK_TYPE_NONE;
 };
 
-played_move_t conversion_utils::c_played_move(const simplechess::PlayedMove& move) {
-	played_move_t result;
+simple_chess_played_move_t conversion_utils::c_played_move(const simplechess::PlayedMove& move) {
+	simple_chess_played_move_t result;
 	result.move = c_piece_move(move.pieceMove());
 
 	result.is_capture = move.capturedPiece().has_value();
@@ -88,38 +88,38 @@ played_move_t conversion_utils::c_played_move(const simplechess::PlayedMove& mov
 	return result;
 }
 
-castling_right_t conversion_utils::c_castling_rights(simplechess::CastlingRight right) {
+simple_chess_castling_right_t conversion_utils::c_castling_rights(simplechess::CastlingRight right) {
 	switch (right) {
 		case simplechess::CastlingRight::WhiteKingSide:
-			return CastlingRightWhiteKingSide;
+			return SIMPLE_CHESS_CASTLING_RIGHT_WHITE_KING_SIDE;
 		case simplechess::CastlingRight::WhiteQueenSide:
-			return CastlingRightWhiteQueenSide;
+			return SIMPLE_CHESS_CASTLING_RIGHT_WHITE_QUEEN_SIDE;
 		case simplechess::CastlingRight::BlackKingSide:
-			return CastlingRightBlackKingSide;
+			return SIMPLE_CHESS_CASTLING_RIGHT_BLACK_KING_SIDE;
 		case simplechess::CastlingRight::BlackQueenSide:
-			return CastlingRightBlackQueenSide;
+			return SIMPLE_CHESS_CASTLING_RIGHT_BLACK_QUEEN_SIDE;
 	}
 	// Suppress warning
-	return CastlingRightWhiteKingSide;
+	return SIMPLE_CHESS_CASTLING_RIGHT_WHITE_KING_SIDE;
 }
 
 uint8_t conversion_utils::c_castling_rights(uint8_t rights) {
 	uint8_t result{0};
 
 	if (rights & simplechess::CastlingRight::WhiteKingSide)
-		result |= CastlingRightWhiteKingSide;
+		result |= SIMPLE_CHESS_CASTLING_RIGHT_WHITE_KING_SIDE;
 	if (rights & simplechess::CastlingRight::WhiteQueenSide)
-		result |= CastlingRightWhiteQueenSide;
+		result |= SIMPLE_CHESS_CASTLING_RIGHT_WHITE_QUEEN_SIDE;
 	if (rights & simplechess::CastlingRight::BlackKingSide)
-		result |= CastlingRightBlackKingSide;
+		result |= SIMPLE_CHESS_CASTLING_RIGHT_BLACK_KING_SIDE;
 	if (rights & simplechess::CastlingRight::BlackQueenSide)
-		result |= CastlingRightBlackQueenSide;
+		result |= SIMPLE_CHESS_CASTLING_RIGHT_BLACK_QUEEN_SIDE;
 
 	return result;
 }
 
-board_t conversion_utils::c_board(const simplechess::Board& board) {
-	board_t result;
+simple_chess_board_t conversion_utils::c_board(const simplechess::Board& board) {
+	simple_chess_board_t result;
 	for (int i = 0; i < 64; ++i) {
 		uint8_t row = 1 + (i / 8);
 		char col = 'a' + (i % 8);
@@ -134,8 +134,8 @@ board_t conversion_utils::c_board(const simplechess::Board& board) {
 	return result;
 }
 
-game_stage_t conversion_utils::c_game_stage(const simplechess::GameStage& stage) {
-	game_stage_t result;
+simple_chess_game_stage_t conversion_utils::c_game_stage(const simplechess::GameStage& stage) {
+	simple_chess_game_stage_t result;
 	result.board = c_board(stage.board());
 	result.active_color = c_color(stage.activeColor());
 	result.castling_rights = c_castling_rights(stage.castlingRights());
@@ -151,51 +151,51 @@ game_stage_t conversion_utils::c_game_stage(const simplechess::GameStage& stage)
 	return result;
 }
 
-game_state_t conversion_utils::c_game_state(simplechess::GameState state) {
+simple_chess_game_state_t conversion_utils::c_game_state(simplechess::GameState state) {
 	switch(state) {
 		case simplechess::GameState::Playing:
-			return GameStatePlaying;
+			return SIMPLE_CHESS_GAME_STATE_PLAYING;
 		case simplechess::GameState::Drawn:
-			return GameStateDrawn;
+			return SIMPLE_CHESS_GAME_STATE_DRAWN;
 		case simplechess::GameState::WhiteWon:
-			return GameStateWhiteWon;
+			return SIMPLE_CHESS_GAME_STATE_WHITE_WON;
 		case simplechess::GameState::BlackWon:
-			return GameStateBlackWon;
+			return SIMPLE_CHESS_GAME_STATE_BLACK_WON;
 	}
 
 	// Suppress warning
-	return GameStatePlaying;
+	return SIMPLE_CHESS_GAME_STATE_PLAYING;
 }
 
-draw_reason_t conversion_utils::c_draw_reason(simplechess::DrawReason reason) {
+simple_chess_draw_reason_t conversion_utils::c_draw_reason(simplechess::DrawReason reason) {
 	switch (reason) {
 		case simplechess::DrawReason::StaleMate:
-			return DrawReasonStaleMate;
+			return SIMPLE_CHESS_DRAW_REASON_STALEMATE;
 		case simplechess::DrawReason::InsufficientMaterial:
-			return DrawReasonInsufficientMaterial;
+			return SIMPLE_CHESS_DRAW_REASON_INSUFFICIENT_MATERIAL;
 		case simplechess::DrawReason::OfferedAndAccepted:
-			return DrawReasonOfferedAndAccepted;
+			return SIMPLE_CHESS_DRAW_REASON_OFFERED_AND_ACCEPTED;
 		case simplechess::DrawReason::ThreeFoldRepetition:
-			return DrawReasonThreeFoldRepetition;
+			return SIMPLE_CHESS_DRAW_REASON_THREEFOLD_REPETITION;
 		case simplechess::DrawReason::FiveFoldRepetition:
-			return DrawReasonFiveFoldRepetition;
+			return SIMPLE_CHESS_DRAW_REASON_FIVEFOLD_REPETITION;
 		case simplechess::DrawReason::FiftyMoveRule:
-			return DrawReasonFiftyMoveRule;
+			return SIMPLE_CHESS_DRAW_REASON_FIFTY_MOVE_RULE;
 		case simplechess::DrawReason::SeventyFiveMoveRule:
-			return DrawReasonSeventyFiveMoveRule;
+			return SIMPLE_CHESS_DRAW_REASON_SEVENTY_FIVE_MOVE_RULE;
 		case simplechess::DrawReason::OpponentInsufficientMaterial:
-			return DrawReasonOpponentInsufficientMaterial;
+			return SIMPLE_CHESS_DRAW_REASON_OPPONENT_INSUFFICIENT_MATERIAL;
 	}
 
 	// Suppress warning
-	return DrawReasonStaleMate;
+	return SIMPLE_CHESS_DRAW_REASON_STALEMATE;
 }
 
-simplechess::DrawEnforcement conversion_utils::cpp_draw_enforcement(draw_enforcement_t enforcement) {
+simplechess::DrawEnforcement conversion_utils::cpp_draw_enforcement(simple_chess_draw_enforcement_t enforcement) {
 	switch (enforcement) {
-		case DrawEnforcementAutomatic:
+		case SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC:
 			return simplechess::DrawEnforcement::Automatic;
-		case DrawEnforcementClaimOnly:
+		case SIMPLE_CHESS_DRAW_ENFORCEMENT_CLAIM_ONLY:
 			return simplechess::DrawEnforcement::ClaimOnly;
 	}
 
@@ -203,27 +203,27 @@ simplechess::DrawEnforcement conversion_utils::cpp_draw_enforcement(draw_enforce
 	return simplechess::DrawEnforcement::Automatic;
 }
 
-draw_enforcement_t conversion_utils::c_draw_enforcement(simplechess::DrawEnforcement enforcement) {
+simple_chess_draw_enforcement_t conversion_utils::c_draw_enforcement(simplechess::DrawEnforcement enforcement) {
 	switch (enforcement) {
 		case simplechess::DrawEnforcement::Automatic:
-			return DrawEnforcementAutomatic;
+			return SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC;
 		case simplechess::DrawEnforcement::ClaimOnly:
-			return DrawEnforcementClaimOnly;
+			return SIMPLE_CHESS_DRAW_ENFORCEMENT_CLAIM_ONLY;
 	}
 
 	// Suppress warning
-	return DrawEnforcementAutomatic;
+	return SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC;
 }
 
-game_t* conversion_utils::c_game(const simplechess::Game& game) {
-	game_t* result = new game_t();
+simple_chess_game_t* conversion_utils::c_game(const simplechess::Game& game) {
+	simple_chess_game_t* result = new simple_chess_game_t();
 	result->state = c_game_state(game.gameState());
 	if (const std::optional<simplechess::DrawReason>& reason = game.drawReason())
 		result->draw_reason = c_draw_reason(*reason);
 
 	result->history_size = static_cast<uint16_t>(game.history().size());
 	if (result->history_size)
-		result->history = new game_history_entry_t[result->history_size];
+		result->history = new simple_chess_game_history_entry_t[result->history_size];
 
 	for (uint16_t i = 0; i < result->history_size; ++i) {
 		strncpy(result->history[i].fen, game.history()[i].stage.fen().c_str(), sizeof(result->history[i].fen) - 1);
@@ -233,7 +233,7 @@ game_t* conversion_utils::c_game(const simplechess::Game& game) {
 
 	result->available_move_count = static_cast<uint16_t>(game.allAvailableMoves().size());
 	if (result->available_move_count)
-		result->available_moves = new piece_move_t[result->available_move_count];
+		result->available_moves = new simple_chess_piece_move_t[result->available_move_count];
 
 	uint16_t i = 0;
 	for (const auto& pieceMove : game.allAvailableMoves()) {
@@ -254,11 +254,11 @@ game_t* conversion_utils::c_game(const simplechess::Game& game) {
 }
 
 // C to C++ conversions
-simplechess::Color conversion_utils::cpp_color(color_t color) {
+simplechess::Color conversion_utils::cpp_color(simple_chess_color_t color) {
 	switch (color) {
-		case ColorWhite:
+		case SIMPLE_CHESS_COLOR_WHITE:
 			return simplechess::Color::White;
-		case ColorBlack:
+		case SIMPLE_CHESS_COLOR_BLACK:
 			return simplechess::Color::Black;
 	}
 
@@ -266,25 +266,25 @@ simplechess::Color conversion_utils::cpp_color(color_t color) {
 	return simplechess::Color::White;
 }
 
-simplechess::Square conversion_utils::cpp_square(const square_t& square) {
+simplechess::Square conversion_utils::cpp_square(const simple_chess_square_t& square) {
 	return simplechess::Square::fromRankAndFile(
 			std::clamp<uint8_t>(square.rank, 1, 8),
 			std::clamp<char>(std::tolower(square.file), 'a', 'h'));
 }
 
-simplechess::PieceType conversion_utils::cpp_piece_type(piece_type_t type) {
+simplechess::PieceType conversion_utils::cpp_piece_type(simple_chess_piece_type_t type) {
 	switch (type) {
-		case PieceTypePawn:
+		case SIMPLE_CHESS_PIECE_TYPE_PAWN:
 			return simplechess::PieceType::Pawn;
-		case PieceTypeRook:
+		case SIMPLE_CHESS_PIECE_TYPE_ROOK:
 			return simplechess::PieceType::Rook;
-		case PieceTypeKnight:
+		case SIMPLE_CHESS_PIECE_TYPE_KNIGHT:
 			return simplechess::PieceType::Knight;
-		case PieceTypeBishop:
+		case SIMPLE_CHESS_PIECE_TYPE_BISHOP:
 			return simplechess::PieceType::Bishop;
-		case PieceTypeQueen:
+		case SIMPLE_CHESS_PIECE_TYPE_QUEEN:
 			return simplechess::PieceType::Queen;
-		case PieceTypeKing:
+		case SIMPLE_CHESS_PIECE_TYPE_KING:
 			return simplechess::PieceType::King;
 	}
 
@@ -292,11 +292,11 @@ simplechess::PieceType conversion_utils::cpp_piece_type(piece_type_t type) {
 	return simplechess::PieceType::Pawn;
 }
 
-simplechess::Piece conversion_utils::cpp_piece(const piece_t& piece) {
+simplechess::Piece conversion_utils::cpp_piece(const simple_chess_piece_t& piece) {
 	return simplechess::Piece(cpp_piece_type(piece.type), cpp_color(piece.color));
 }
 
-simplechess::PieceMove conversion_utils::cpp_piece_move(const piece_move_t& move) {
+simplechess::PieceMove conversion_utils::cpp_piece_move(const simple_chess_piece_move_t& move) {
 	if (move.is_promotion) {
 		return simplechess::PieceMove::pawnPromotion(
 				cpp_piece(move.piece),
@@ -311,13 +311,13 @@ simplechess::PieceMove conversion_utils::cpp_piece_move(const piece_move_t& move
 	}
 }
 
-simplechess::CheckType conversion_utils::cpp_check_type(check_type_t check) {
+simplechess::CheckType conversion_utils::cpp_check_type(simple_chess_check_type_t check) {
 	switch (check) {
-		case CheckTypeNone:
+		case SIMPLE_CHESS_CHECK_TYPE_NONE:
 			return simplechess::CheckType::NoCheck;
-		case CheckTypeCheck:
+		case SIMPLE_CHESS_CHECK_TYPE_CHECK:
 			return simplechess::CheckType::Check;
-		case CheckTypeCheckMate:
+		case SIMPLE_CHESS_CHECK_TYPE_CHECKMATE:
 			return simplechess::CheckType::CheckMate;
 	}
 
@@ -325,7 +325,7 @@ simplechess::CheckType conversion_utils::cpp_check_type(check_type_t check) {
 	return simplechess::CheckType::NoCheck;
 }
 
-simplechess::PlayedMove conversion_utils::cpp_played_move(const played_move_t& move) {
+simplechess::PlayedMove conversion_utils::cpp_played_move(const simple_chess_played_move_t& move) {
 	const auto pieceMove = cpp_piece_move(move.move);
 	std::optional<simplechess::Piece> captured;
 	if (move.is_capture) {
@@ -343,15 +343,15 @@ simplechess::PlayedMove conversion_utils::cpp_played_move(const played_move_t& m
 			algebraic);
 }
 
-simplechess::CastlingRight conversion_utils::cpp_castling_right(castling_right_t right) {
+simplechess::CastlingRight conversion_utils::cpp_castling_right(simple_chess_castling_right_t right) {
 	switch(right) {
-		case CastlingRightWhiteKingSide:
+		case SIMPLE_CHESS_CASTLING_RIGHT_WHITE_KING_SIDE:
 			return simplechess::CastlingRight::WhiteKingSide;
-		case CastlingRightWhiteQueenSide:
+		case SIMPLE_CHESS_CASTLING_RIGHT_WHITE_QUEEN_SIDE:
 			return simplechess::CastlingRight::WhiteQueenSide;
-		case CastlingRightBlackKingSide:
+		case SIMPLE_CHESS_CASTLING_RIGHT_BLACK_KING_SIDE:
 			return simplechess::CastlingRight::BlackKingSide;
-		case CastlingRightBlackQueenSide:
+		case SIMPLE_CHESS_CASTLING_RIGHT_BLACK_QUEEN_SIDE:
 			return simplechess::CastlingRight::BlackQueenSide;
 	}
 
@@ -362,22 +362,22 @@ simplechess::CastlingRight conversion_utils::cpp_castling_right(castling_right_t
 uint8_t conversion_utils::cpp_castling_rights(uint8_t rights) {
 
 	uint8_t result = 0;
-	if (rights & CastlingRightWhiteKingSide) {
+	if (rights & SIMPLE_CHESS_CASTLING_RIGHT_WHITE_KING_SIDE) {
 		result |= static_cast<uint8_t>(simplechess::CastlingRight::WhiteKingSide);
 	}
-	if (rights & CastlingRightWhiteQueenSide) {
+	if (rights & SIMPLE_CHESS_CASTLING_RIGHT_WHITE_QUEEN_SIDE) {
 		result |= static_cast<uint8_t>(simplechess::CastlingRight::WhiteQueenSide);
 	}
-	if (rights & CastlingRightBlackKingSide) {
+	if (rights & SIMPLE_CHESS_CASTLING_RIGHT_BLACK_KING_SIDE) {
 		result |= static_cast<uint8_t>(simplechess::CastlingRight::BlackKingSide);
 	}
-	if (rights & CastlingRightBlackQueenSide) {
+	if (rights & SIMPLE_CHESS_CASTLING_RIGHT_BLACK_QUEEN_SIDE) {
 		result |= static_cast<uint8_t>(simplechess::CastlingRight::BlackQueenSide);
 	}
 	return result;
 }
 
-simplechess::Board conversion_utils::cpp_board(const board_t& board) {
+simplechess::Board conversion_utils::cpp_board(const simple_chess_board_t& board) {
 	std::map<simplechess::Square, simplechess::Piece> position;
 	for (uint8_t index = 0; index < 64; ++index) {
 		if (!board.occupied[index]) continue;
@@ -389,7 +389,7 @@ simplechess::Board conversion_utils::cpp_board(const board_t& board) {
 	return simplechess::BoardBuilder::build(position);
 }
 
-simplechess::GameStage conversion_utils::cpp_game_stage(const game_stage_t& stage) {
+simplechess::GameStage conversion_utils::cpp_game_stage(const simple_chess_game_stage_t& stage) {
 	// The C representation already carries both the FEN and the check status,
 	// so the stage can be rebuilt from them as-is. Going through
 	// FenUtils::fromFenString instead would regenerate the FEN it was just
@@ -400,15 +400,15 @@ simplechess::GameStage conversion_utils::cpp_game_stage(const game_stage_t& stag
 			cpp_check_type(stage.check_status));
 }
 
-simplechess::GameState conversion_utils::cpp_game_state(game_state_t state) {
+simplechess::GameState conversion_utils::cpp_game_state(simple_chess_game_state_t state) {
 	switch (state) {
-		case GameStatePlaying:
+		case SIMPLE_CHESS_GAME_STATE_PLAYING:
 			return simplechess::GameState::Playing;
-		case GameStateDrawn:
+		case SIMPLE_CHESS_GAME_STATE_DRAWN:
 			return simplechess::GameState::Drawn;
-		case GameStateWhiteWon:
+		case SIMPLE_CHESS_GAME_STATE_WHITE_WON:
 			return simplechess::GameState::WhiteWon;
-		case GameStateBlackWon:
+		case SIMPLE_CHESS_GAME_STATE_BLACK_WON:
 			return simplechess::GameState::BlackWon;
 	}
 
@@ -416,23 +416,23 @@ simplechess::GameState conversion_utils::cpp_game_state(game_state_t state) {
 	return simplechess::GameState::Playing;
 }
 
-simplechess::DrawReason conversion_utils::cpp_draw_reason(draw_reason_t reason) {
+simplechess::DrawReason conversion_utils::cpp_draw_reason(simple_chess_draw_reason_t reason) {
 	switch (reason) {
-		case DrawReasonStaleMate:
+		case SIMPLE_CHESS_DRAW_REASON_STALEMATE:
 			return simplechess::DrawReason::StaleMate;
-		case DrawReasonInsufficientMaterial:
+		case SIMPLE_CHESS_DRAW_REASON_INSUFFICIENT_MATERIAL:
 			return simplechess::DrawReason::InsufficientMaterial;
-		case DrawReasonOfferedAndAccepted:
+		case SIMPLE_CHESS_DRAW_REASON_OFFERED_AND_ACCEPTED:
 			return simplechess::DrawReason::OfferedAndAccepted;
-		case DrawReasonThreeFoldRepetition:
+		case SIMPLE_CHESS_DRAW_REASON_THREEFOLD_REPETITION:
 			return simplechess::DrawReason::ThreeFoldRepetition;
-		case DrawReasonFiveFoldRepetition:
+		case SIMPLE_CHESS_DRAW_REASON_FIVEFOLD_REPETITION:
 			return simplechess::DrawReason::FiveFoldRepetition;
-		case DrawReasonFiftyMoveRule:
+		case SIMPLE_CHESS_DRAW_REASON_FIFTY_MOVE_RULE:
 			return simplechess::DrawReason::FiftyMoveRule;
-		case DrawReasonSeventyFiveMoveRule:
+		case SIMPLE_CHESS_DRAW_REASON_SEVENTY_FIVE_MOVE_RULE:
 			return simplechess::DrawReason::SeventyFiveMoveRule;
-		case DrawReasonOpponentInsufficientMaterial:
+		case SIMPLE_CHESS_DRAW_REASON_OPPONENT_INSUFFICIENT_MATERIAL:
 			return simplechess::DrawReason::OpponentInsufficientMaterial;
 	}
 
@@ -469,7 +469,7 @@ namespace {
 	}
 }
 
-simplechess::Game conversion_utils::cpp_game(const game_t& game) {
+simplechess::Game conversion_utils::cpp_game(const simple_chess_game_t& game) {
 	const auto state = cpp_game_state(game.state);
 
 	const std::optional<simplechess::DrawReason> drawReason = (state == simplechess::GameState::Drawn)

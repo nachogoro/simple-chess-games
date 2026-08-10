@@ -17,35 +17,35 @@
 
 /* Every public type, spelled without the struct/enum keyword C would
  * otherwise require. */
-static color_t              g_color;
-static square_t             g_square;
-static piece_type_t         g_piece_type;
-static piece_t              g_piece;
-static piece_move_t         g_piece_move;
-static check_type_t         g_check_type;
-static played_move_t        g_played_move;
-static castling_right_t     g_castling_right;
-static board_t              g_board;
-static game_stage_t         g_game_stage;
-static game_state_t         g_game_state;
-static draw_reason_t        g_draw_reason;
-static game_history_entry_t g_history_entry;
-static draw_enforcement_t   g_draw_enforcement;
+static simple_chess_color_t              g_color;
+static simple_chess_square_t             g_square;
+static simple_chess_piece_type_t         g_piece_type;
+static simple_chess_piece_t              g_piece;
+static simple_chess_piece_move_t         g_piece_move;
+static simple_chess_check_type_t         g_check_type;
+static simple_chess_played_move_t        g_played_move;
+static simple_chess_castling_right_t     g_castling_right;
+static simple_chess_board_t              g_board;
+static simple_chess_game_stage_t         g_game_stage;
+static simple_chess_game_state_t         g_game_state;
+static simple_chess_draw_reason_t        g_draw_reason;
+static simple_chess_game_history_entry_t g_history_entry;
+static simple_chess_draw_enforcement_t   g_draw_enforcement;
 
 int simple_chess_c_header_compile_check(void);
 
 int simple_chess_c_header_compile_check(void)
 {
-	game_t* game;
-	game_t* next;
+	simple_chess_game_t* game;
+	simple_chess_game_t* next;
 
-	g_color = ColorWhite;
-	g_piece_type = PieceTypePawn;
-	g_check_type = CheckTypeNone;
-	g_castling_right = CastlingRightWhiteKingSide;
-	g_game_state = GameStatePlaying;
-	g_draw_reason = DrawReasonStaleMate;
-	g_draw_enforcement = DrawEnforcementAutomatic;
+	g_color = SIMPLE_CHESS_COLOR_WHITE;
+	g_piece_type = SIMPLE_CHESS_PIECE_TYPE_PAWN;
+	g_check_type = SIMPLE_CHESS_CHECK_TYPE_NONE;
+	g_castling_right = SIMPLE_CHESS_CASTLING_RIGHT_WHITE_KING_SIDE;
+	g_game_state = SIMPLE_CHESS_GAME_STATE_PLAYING;
+	g_draw_reason = SIMPLE_CHESS_DRAW_REASON_STALEMATE;
+	g_draw_enforcement = SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC;
 
 	g_square = simple_chess_square_from_index(0);
 	g_piece.type = g_piece_type;
@@ -89,7 +89,7 @@ int simple_chess_c_header_compile_check(void)
 	next = simple_chess_claim_draw(game);
 	destroy_game(next);
 
-	next = simple_chess_resign(game, ColorWhite);
+	next = simple_chess_resign(game, SIMPLE_CHESS_COLOR_WHITE);
 	destroy_game(next);
 
 	(void) simple_chess_index_from_square(g_square);
