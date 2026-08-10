@@ -89,14 +89,15 @@ add_library(simple-chess-games-static STATIC $<TARGET_OBJECTS:core-objects>)
 target_include_directories(simple-chess-games-static PUBLIC include)
 target_link_libraries(simple-chess-games-static PRIVATE Boost::algorithm)
 
-# Set properties for C++ libraries
+# The headers are installed as whole directories further down, so no target
+# lists them: PUBLIC_HEADER installs them flattened into the include prefix,
+# which both collides with the rest of the system and breaks the paths the
+# headers use on each other.
 set_target_properties(simple-chess-games PROPERTIES
-	VERSION ${PROJECT_VERSION}
-	PUBLIC_HEADER "include/simplechess/Board.h;include/simplechess/Color.h;include/simplechess/Exceptions.h;include/simplechess/Game.h;include/simplechess/SimpleChess.h;include/simplechess/GameStage.h;include/simplechess/Piece.h;include/simplechess/PieceMove.h;include/simplechess/PlayedMove.h;include/simplechess/Square.h")
+	VERSION ${PROJECT_VERSION})
 
 set_target_properties(simple-chess-games-static PROPERTIES
-	VERSION ${PROJECT_VERSION}
-	PUBLIC_HEADER "include/simplechess/Board.h;include/simplechess/Color.h;include/simplechess/Exceptions.h;include/simplechess/Game.h;include/simplechess/SimpleChess.h;include/simplechess/GameStage.h;include/simplechess/Piece.h;include/simplechess/PieceMove.h;include/simplechess/PlayedMove.h;include/simplechess/Square.h")
+	VERSION ${PROJECT_VERSION})
 
 # ===== C LIBRARY =====
 
@@ -110,14 +111,11 @@ add_library(simple-chess-games-c-static STATIC $<TARGET_OBJECTS:core-objects> $<
 target_include_directories(simple-chess-games-c-static PUBLIC include)
 target_link_libraries(simple-chess-games-c-static PRIVATE Boost::algorithm)
 
-# Set properties for C libraries
 set_target_properties(simple-chess-games-c PROPERTIES
-	VERSION ${PROJECT_VERSION}
-	PUBLIC_HEADER "include/simplechess-c/simplechess.h;include/simplechess-c/simplechess_types.h")
+	VERSION ${PROJECT_VERSION})
 
 set_target_properties(simple-chess-games-c-static PROPERTIES
-	VERSION ${PROJECT_VERSION}
-	PUBLIC_HEADER "include/simplechess-c/simplechess.h;include/simplechess-c/simplechess_types.h")
+	VERSION ${PROJECT_VERSION})
 
 include(GNUInstallDirs)
 
@@ -130,6 +128,10 @@ FetchContent_Declare(
 )
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+# GoogleTest brings its own install rules, which would otherwise put the test
+# framework - headers, archives, CMake config and all - into the prefix this
+# library is installed to.
+set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 # Boost
@@ -144,13 +146,12 @@ set(BOOST_INCLUDE_LIBRARIES algorithm optional)
 FetchContent_MakeAvailable(Boost)
 
 # Install targets
-install(TARGETS simple-chess-games simple-chess-games-c
+install(TARGETS
+		simple-chess-games simple-chess-games-c
+		simple-chess-games-static simple-chess-games-c-static
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-
-install(TARGETS simple-chess-games-static simple-chess-games-c-static
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install directory structure for headers
 install(DIRECTORY include/simplechess DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
