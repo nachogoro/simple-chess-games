@@ -5,6 +5,8 @@
 #include <simplechess/Game.h>
 #include <simplechess/PieceMove.h>
 
+#include <optional>
+
 #include <string>
 
 namespace simplechess
@@ -50,6 +52,34 @@ namespace simplechess
 	Game createGameFromFen(
 			const std::string& fen,
 			DrawEnforcement drawEnforcement = DrawEnforcement::Automatic);
+
+	/**
+	 * \brief Finds the legal move which goes from \p src to \p dst, if
+	 * there is one.
+	 *
+	 * A \ref PieceMove names the piece which moves, which a caller who only
+	 * knows the two squares involved - a user interface reporting that a
+	 * piece was dragged from one square to another, say - would otherwise
+	 * have to look up on the board first. Searching the legal moves also
+	 * means the result is known to be playable.
+	 *
+	 * \note In the case of castling, \p src and \p dst refer to the
+	 * original and final squares of the King.
+	 *
+	 * \param game The game whose legal moves are searched.
+	 * \param src The square the piece moves from.
+	 * \param dst The square the piece moves to.
+	 * \param promotion The type the pawn is promoted to, for a move which
+	 * promotes one. An empty value matches a move which does not promote.
+	 *
+	 * \return The matching legal move, or an empty optional if the current
+	 * player has no such move available.
+	 */
+	std::optional<PieceMove> findMove(
+			const Game& game,
+			const Square& src,
+			const Square& dst,
+			const std::optional<PieceType>& promotion = {});
 
 	/**
 	 * \brief Make a move for the player whose turn it is to play.

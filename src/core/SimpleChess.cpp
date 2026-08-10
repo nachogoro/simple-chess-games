@@ -244,6 +244,25 @@ Game simplechess::createGameFromFen(
 	return makeMove(originalGame, *lastMove, false);
 }
 
+std::optional<PieceMove> simplechess::findMove(
+		const Game& game,
+		const Square& src,
+		const Square& dst,
+		const std::optional<PieceType>& promotion)
+{
+	for (const PieceMove& move : game.allAvailableMoves())
+	{
+		if (move.src() == src
+				&& move.dst() == dst
+				&& move.promoted() == promotion)
+		{
+			return move;
+		}
+	}
+
+	return {};
+}
+
 Game simplechess::makeMove(
 		const Game& game,
 		const PieceMove& move,

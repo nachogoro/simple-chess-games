@@ -1430,3 +1430,57 @@ TEST(MoveAvailabilityTest, PawnPromotion) {
 				PieceType::Queen),
 			InvalidArgumentException);
 }
+
+TEST(MoveAvailabilityTest, FindMoveBySourceAndDestination) {
+	const Game game = createNewGame();
+
+	// The caller does not have to know which piece stands on g1.
+	const std::optional<PieceMove> knightOut = findMove(
+			game,
+			Square::fromString("g1"),
+			Square::fromString("f3"));
+
+	ASSERT_TRUE(!!knightOut);
+	EXPECT_EQ(knightOut->piece(), Piece(PieceType::Knight, Color::White));
+	EXPECT_EQ(knightOut->src(), Square::fromString("g1"));
+	EXPECT_EQ(knightOut->dst(), Square::fromString("f3"));
+	EXPECT_EQ(knightOut->promoted(), std::optional<PieceType>());
+
+	// A move which is not legal in this position is not found, even though
+	// both squares exist.
+	EXPECT_EQ(
+			findMove(game, Square::fromString("e2"), Square::fromString("e5")),
+			std::optional<PieceMove>());
+
+	// Nor is a move of a piece belonging to the player who is not to play.
+	EXPECT_EQ(
+			findMove(game, Square::fromString("e7"), Square::fromString("e5")),
+			std::optional<PieceMove>());
+}
+
+TEST(MoveAvailabilityTest, FindMoveDistinguishesPromotions) {
+	const Game game = createGameFromFen("k7/5P2/8/8/8/8/8/4K3 w - - 0 1");
+
+	const std::optional<PieceMove> toQueen = findMove(
+			game,
+			Square::fromString("f7"),
+			Square::fromString("f8"),
+			PieceType::Queen);
+
+	const std::optional<PieceMove> toKnight = findMove(
+			game,
+			Square::fromString("f7"),
+			Square::fromString("f8"),
+			PieceType::Knight);
+
+	ASSERT_TRUE(!!toQueen);
+	ASSERT_TRUE(!!toKnight);
+	EXPECT_EQ(toQueen->promoted(), std::optional<PieceType>(PieceType::Queen));
+	EXPECT_EQ(toKnight->promoted(), std::optional<PieceType>(PieceType::Knight));
+
+	// The same two squares without naming a promotion describe a move which
+	// does not exist: a pawn reaching the last rank always promotes.
+	EXPECT_EQ(
+			findMove(game, Square::fromString("f7"), Square::fromString("f8")),
+			std::optional<PieceMove>());
+}
