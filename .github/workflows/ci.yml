@@ -1,0 +1,165 @@
+name: CI
+
+# The release workflow only runs on tags, so until now nothing checked a
+# change before it was released.
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTS=ON \
+            -DBUILD_BENCHMARKS=ON
+          cmake --build build --parallel $(nproc)
+
+      - name: C++ tests
+        run: ./build/run_cpp_tests
+
+      - name: C tests
+        run: ./build/run_c_tests
+
+      - name: Both APIs agree
+        run: ./build/bench_simplechess crosscheck
+
+  c-headers:
+    name: C headers compile as C
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # run_c_tests already builds a C translation unit against the headers,
+      # but only with the project's own compiler settings. This checks them
+      # on their own, the way a consumer meets them.
+      - name: Compile the C headers with a C compiler
+        run: |
+          for std in c99 c11 c17; do
+            echo "== $std =="
+            echo '#include <simplechess-c/simplechess.h>' | \
+              gcc -x c -std=$std -Wall -Wextra -Wpedantic -Werror \
+                  -Iinclude -fsyntax-only -
+          done
+
+  windows:
+    name: Windows cross-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install MinGW
+        run: sudo apt-get update && sudo apt-get install -y mingw-w64
+
+      - name: Cross-compile
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_TOOLCHAIN_FILE=cmake/windows-cross.cmake \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTS=OFF
+          cmake --build build --parallel $(nproc)
+
+      # Windows is the only platform where a declaration has to say whether
+      # it is being exported or imported, so it is the only one which can
+      # fail on that - and a DLL which exports nothing still builds.
+      - name: Each DLL exports only its own API
+        run: |
+          names() {
+            x86_64-w64-mingw32-objdump -p "$1" \
+              | sed -n '/\[Ordinal\/Name Pointer\] Table/,/^$/p' \
+              | sed -n 's/^.*\[ *[0-9]* *\] *+base\[ *[0-9]* *\] *[0-9a-f]* *//p'
+          }
+
+          names build/libsimple-chess-games-c.dll > c.txt
+          names build/libsimple-chess-games.dll   > cpp.txt
+
+          c_public=$(grep -c '^simple_chess_' c.txt || true)
+          c_leaked=$(grep -c '^_ZN\{0,1\}K\{0,1\}11simplechess' c.txt || true)
+          cpp_total=$(wc -l < cpp.txt)
+          cpp_details=$(grep -c 'details' cpp.txt || true)
+
+          echo "C DLL:   $c_public simple_chess_*, $c_leaked C++ symbols"
+          echo "C++ DLL: $cpp_total exported, $cpp_details internals"
+
+          # Before any symbol was marked, MinGW auto-exported everything and
+          # this DLL had 254 entries. Both numbers being right is what says
+          # the marking is in effect and correctly scoped.
+          [ "$c_public" -ge 25 ] || { echo "the C API is not being exported"; exit 1; }
+          [ "$c_leaked" -eq 0 ]  || { echo "the C DLL re-exports the C++ API"; exit 1; }
+          [ "$cpp_total" -ge 50 ] || { echo "the C++ API is not being exported"; exit 1; }
+          [ "$cpp_details" -eq 0 ] || { echo "the C++ DLL exports internals"; exit 1; }
+
+      - name: A consumer can link against it
+        run: |
+          cmake --install build --prefix "$PWD/prefix"
+          cmake -S tests/consumer -B consumer-build \
+            -DCMAKE_TOOLCHAIN_FILE=cmake/windows-cross.cmake \
+            -DCMAKE_PREFIX_PATH="$PWD/prefix"
+          cmake --build consumer-build --parallel $(nproc)
+
+  install:
+    name: Install and consume
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and install
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTS=OFF
+          cmake --build build --parallel $(nproc)
+          cmake --install build --prefix "$PWD/prefix"
+
+      - name: Only the library is installed
+        run: |
+          # A stray dependency installing itself into the prefix, or a header
+          # landing directly in include/, is a packaging bug which the build
+          # itself cannot see.
+          found=$(cd prefix && find . -type f -o -type l | sort)
+          echo "$found"
+          unexpected=$(echo "$found" | grep -vE \
+            '^\./(include/simplechess(-c)?/|lib/(libsimple-chess-games|cmake/simple-chess-games/))' \
+            || true)
+          if [ -n "$unexpected" ]; then
+            echo "unexpected files in the install prefix:"
+            echo "$unexpected"
+            exit 1
+          fi
+
+      - name: Build the out-of-tree consumers
+        run: |
+          cmake -S tests/consumer -B consumer-build \
+            -DCMAKE_PREFIX_PATH="$PWD/prefix"
+          cmake --build consumer-build --parallel $(nproc)
+
+      - name: Run them
+        run: |
+          export LD_LIBRARY_PATH="$PWD/prefix/lib"
+          ./consumer-build/consumer_cpp
+          ./consumer-build/consumer_c
+          ./consumer-build/consumer_cpp_static
+          ./consumer-build/consumer_c_static
+
+      - name: Shared libraries export only their own API
+        run: |
+          cpp_internals=$(nm -D --defined-only -C build/libsimple-chess-games.so \
+            | grep -c 'simplechess::details::' || true)
+          c_leaked=$(nm -D --defined-only -C build/libsimple-chess-games-c.so \
+            | grep -c 'simplechess::' || true)
+
+          echo "C++ library exports $cpp_internals internal symbols"
+          echo "C library exports $c_leaked C++ symbols"
+
+          if [ "$cpp_internals" -ne 0 ] || [ "$c_leaked" -ne 0 ]; then
+            exit 1
+          fi
