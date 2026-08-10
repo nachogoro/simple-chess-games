@@ -2,6 +2,7 @@
 #define SQUARE_H_95959D4D_51F1_4755_A8C4_542B83FBE505
 
 #include <simplechess/Color.h>
+#include <simplechess/Exceptions.h>
 
 #include <cstdint>
 #include <string>
@@ -22,7 +23,7 @@ namespace simplechess
 			 *
 			 * The method is case insensitive.
 			 *
-			 * \throws \ref std::invalid_argument if the rank or the file are
+			 * \throws \ref InvalidArgumentException if the rank or the file are
 			 * outside of their valid range.
 			 *
 			 * \param rank The rank of the square (a number between 1 and 8).
@@ -40,7 +41,7 @@ namespace simplechess
 			 *
 			 * The method is case insensitive.
 			 *
-			 * \throws \ref std::invalid_argument if \p algebraicSquare does
+			 * \throws \ref InvalidArgumentException if \p algebraicSquare does
 			 * not represent a valid square in algebraic notation.
 			 *
 			 * \param algebraicSquare A string representing a square in

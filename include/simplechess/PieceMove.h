@@ -1,6 +1,7 @@
 #ifndef PIECE_MOVE_H_565687CA_B90B_47F1_84E4_181A6503B9EE
 #define PIECE_MOVE_H_565687CA_B90B_47F1_84E4_181A6503B9EE
 
+#include <simplechess/Exceptions.h>
 #include <simplechess/Piece.h>
 #include <simplechess/Square.h>
 
@@ -50,7 +51,7 @@ namespace simplechess
 			/**
 			 * \brief Factory method to create a pawn-promotion \c PieceMove.
 			 *
-			 * \throws std::invalid_argument in the following
+			 * \throws \ref InvalidArgumentException in the following
 			 * circumstances:
 			 * - \p piece is not a pawn.
 			 * - \p promotedType is not one of \ref Rook, \ref

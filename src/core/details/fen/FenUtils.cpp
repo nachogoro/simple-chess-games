@@ -1,4 +1,5 @@
 #include "FenUtils.h"
+#include <simplechess/Exceptions.h>
 
 #include "../../../core/Builders.h"
 #include "FenParser.h"
@@ -34,7 +35,7 @@ char FenUtils::pieceToString(const Piece& piece)
 
 	if (type >= sizeof(letters) - 1)
 	{
-		throw std::invalid_argument("Cannot convert piece to FEN");
+		throw simplechess::InvalidArgumentException("Cannot convert piece to FEN");
 	}
 
 	return (piece.color() == Color::White)
@@ -59,7 +60,7 @@ Piece FenUtils::stringToPiece(const char c)
 		default: break;
 	}
 
-	throw std::invalid_argument(std::string("Character \'")
+	throw simplechess::InvalidArgumentException(std::string("Character \'")
 			+ c
 			+ "\' is not a piece-representing character in FEN notation");
 }
@@ -73,7 +74,7 @@ std::string FenUtils::fenForRepetitions(const std::string& fen)
 
 	if (afterEpTarget == std::string::npos)
 	{
-		throw std::invalid_argument(fen + " is not a valid FEN string");
+		throw simplechess::InvalidArgumentException(fen + " is not a valid FEN string");
 	}
 
 	return fen.substr(0, afterEpTarget);

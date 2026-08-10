@@ -36,7 +36,7 @@ namespace simplechess
 	 * history of the resulting \ref Game will not necessarily be of
 	 * much use.
 	 *
-	 * \throws std::invalid_argument if \p fen is not a valid FEN
+	 * \throws \ref InvalidArgumentException if \p fen is not a valid FEN
 	 * string.
 	 *
 	 * \param fen The representation of the initial position in

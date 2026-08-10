@@ -270,7 +270,7 @@ Square BoardAnalyzer::kingSquare(const Board& board, Color color)
 		}
 	}
 
-	throw std::invalid_argument("At least one king is missing from the board!");
+	throw simplechess::InvalidArgumentException("At least one king is missing from the board!");
 }
 
 Board BoardAnalyzer::makeMoveOnBoard(

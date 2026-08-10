@@ -1,4 +1,5 @@
 #include "AlgebraicNotationGenerator.h"
+#include <simplechess/Exceptions.h>
 
 #include "MoveValidator.h"
 
@@ -64,7 +65,7 @@ namespace
 				// Nothing
 				return "";
 		}
-		throw std::invalid_argument("Unknown piece type: " + std::to_string(static_cast<int>(type)));
+		throw simplechess::InvalidArgumentException("Unknown piece type: " + std::to_string(static_cast<int>(type)));
 	}
 
 	enum class CastlingType

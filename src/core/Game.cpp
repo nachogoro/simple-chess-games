@@ -1,4 +1,5 @@
 #include <simplechess/Game.h>
+#include <simplechess/Exceptions.h>
 
 #include "details/BoardAnalyzer.h"
 #include "details/DrawEvaluator.h"
@@ -35,7 +36,7 @@ Game::Game(
 	if ((gameState == GameState::Drawn && !drawReason)
 			|| (gameState != GameState::Drawn && drawReason))
 	{
-		throw std::invalid_argument(
+		throw simplechess::InvalidArgumentException(
 				"Inconsistent arguments related to draw reason");
 	}
 

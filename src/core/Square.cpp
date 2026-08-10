@@ -1,4 +1,5 @@
 #include <simplechess/Square.h>
+#include <simplechess/Exceptions.h>
 
 #include <stdexcept>
 #include <sstream>
@@ -12,7 +13,7 @@ Square Square::fromRankAndFile(uint8_t rank, char file)
 	{
 		std::stringstream ss;
 		ss << "Square is outside the boundaries: " << static_cast<int>(rank) << file;
-		throw std::invalid_argument(ss.str());
+		throw simplechess::InvalidArgumentException(ss.str());
 	}
 
 	return Square(rank, asciiToLower(file));
@@ -24,7 +25,7 @@ Square Square::fromString(const std::string& algebraicSquare)
 			|| !std::isalpha(algebraicSquare[0])
 			|| !std::isdigit(algebraicSquare[1]))
 	{
-		throw std::invalid_argument(algebraicSquare + " is not a valid square");
+		throw simplechess::InvalidArgumentException(algebraicSquare + " is not a valid square");
 	}
 
 	return fromRankAndFile(

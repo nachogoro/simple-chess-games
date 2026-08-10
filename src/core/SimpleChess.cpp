@@ -1,4 +1,5 @@
 #include <simplechess/SimpleChess.h>
+#include <simplechess/Exceptions.h>
 
 #include "Builders.h"
 #include "details/BoardAnalyzer.h"
@@ -53,13 +54,13 @@ namespace internal
 
 		if (whiteKings != 1 || blackKings != 1)
 		{
-			throw std::invalid_argument("Invalid number of kings on board");
+			throw simplechess::InvalidArgumentException("Invalid number of kings on board");
 		}
 
 		// 2. Validate that the color to move cannot be checking the opposite King
 		if (details::BoardAnalyzer::isInCheck(board, oppositeColor(activeColor)))
 		{
-			throw std::invalid_argument("Color to move is already checking");
+			throw simplechess::InvalidArgumentException("Color to move is already checking");
 		}
 
 		// 3. Validate castling rights consistency
@@ -72,7 +73,7 @@ namespace internal
 				&& (*board.pieceAt(Square::fromString("e1")) != whiteKing
 					|| *board.pieceAt(Square::fromString("h1")) != whiteRook))
 		{
-			throw std::invalid_argument(
+			throw simplechess::InvalidArgumentException(
 					"Kingside castling right for white is inconsistent with board state");
 		}
 
@@ -80,7 +81,7 @@ namespace internal
 				&& (*board.pieceAt(Square::fromString("e1")) != whiteKing
 					|| *board.pieceAt(Square::fromString("a1")) != whiteRook))
 		{
-			throw std::invalid_argument(
+			throw simplechess::InvalidArgumentException(
 					"Queenside castling right for white is inconsistent with board state");
 		}
 
@@ -88,7 +89,7 @@ namespace internal
 				&& (*board.pieceAt(Square::fromString("e8")) != blackKing
 					|| *board.pieceAt(Square::fromString("h8")) != blackRook))
 		{
-			throw std::invalid_argument(
+			throw simplechess::InvalidArgumentException(
 					"Kingside castling right for black is inconsistent with board state");
 		}
 
@@ -96,7 +97,7 @@ namespace internal
 				&& (*board.pieceAt(Square::fromString("e8")) != blackKing
 					|| *board.pieceAt(Square::fromString("a8")) != blackRook))
 		{
-			throw std::invalid_argument(
+			throw simplechess::InvalidArgumentException(
 					"Queenside castling right for black is inconsistent with board state");
 		}
 	}

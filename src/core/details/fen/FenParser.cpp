@@ -1,4 +1,5 @@
 #include "FenParser.h"
+#include <simplechess/Exceptions.h>
 #include "FenUtils.h"
 
 #include "../../Builders.h"
@@ -24,7 +25,7 @@ namespace internal
 
 		if (rows.size() != 8)
 		{
-			throw std::invalid_argument(piecePlacementFen
+			throw simplechess::InvalidArgumentException(piecePlacementFen
 					+ " is not a valid \"piece placement\" "
 					+ "field in a FEN string");
 		}
@@ -54,7 +55,7 @@ namespace internal
 					if (isLastCharNumber)
 					{
 						// Two digits in a row, error
-						throw std::invalid_argument(
+						throw simplechess::InvalidArgumentException(
 								piecePlacementFen
 								+ " is not a valid \"piece placement\" "
 								+ "field in a FEN string");
@@ -66,7 +67,7 @@ namespace internal
 
 					if (offset <= 0 || offset > 8)
 					{
-						throw std::invalid_argument(
+						throw simplechess::InvalidArgumentException(
 								piecePlacementFen
 								+ " is not a valid \"piece placement\" "
 								+ "field in a FEN string");
@@ -76,7 +77,7 @@ namespace internal
 
 					if (col > ('h' + 1))
 					{
-						throw std::invalid_argument(
+						throw simplechess::InvalidArgumentException(
 								piecePlacementFen
 								+ " is not a valid \"piece placement\" "
 								+ "field in a FEN string");
@@ -89,7 +90,7 @@ namespace internal
 
 				if (col < 'a' || col > 'h')
 				{
-					throw std::invalid_argument(
+					throw simplechess::InvalidArgumentException(
 								piecePlacementFen
 								+ " is not a valid \"piece placement\" "
 								+ "field in a FEN string");
@@ -116,7 +117,7 @@ namespace internal
 			return Color::Black;
 		}
 
-		throw std::invalid_argument(
+		throw simplechess::InvalidArgumentException(
 				str + " is not a valid \"active color\" field in a FEN string");
 	}
 
@@ -129,7 +130,7 @@ namespace internal
 
 		if (str.size() == 0 || str.size() > 4)
 		{
-			throw std::invalid_argument(
+			throw simplechess::InvalidArgumentException(
 					str
 					+ " is not a valid \"castling availability\" "
 					+ "field in a FEN string");
@@ -160,7 +161,7 @@ namespace internal
 			if (oldMask == mask)
 			{
 				// This was an invalid or a repeated character
-				throw std::invalid_argument(
+				throw simplechess::InvalidArgumentException(
 						str
 						+ " is not a valid \"castling availability\" "
 						+ "field in a FEN string");
@@ -186,7 +187,7 @@ namespace internal
 
 		if (number < 0 || number > UINT16_MAX)
 		{
-			throw std::invalid_argument(
+			throw simplechess::InvalidArgumentException(
 					str + " is not a valid \"move clock\" field in a FEN string");
 		}
 
@@ -217,7 +218,7 @@ FenParser FenParser::parse(const std::string& fen)
 
 	if (tokens.size() != 6)
 	{
-		throw std::invalid_argument(fen + " is not a valid FEN string");
+		throw simplechess::InvalidArgumentException(fen + " is not a valid FEN string");
 	}
 
 	const Board board = internal::parsePiecePlacement(tokens[0]);
@@ -233,7 +234,7 @@ FenParser FenParser::parse(const std::string& fen)
 				|| (epTarget->rank() == 6
 					&& board.pieceAt(Square::fromRankAndFile(5, epTarget->file())) != std::optional<Piece>({PieceType::Pawn, Color::Black}))))
 	{
-		throw std::invalid_argument(
+		throw simplechess::InvalidArgumentException(
 				"Found inconsistency between piece placement and "
 				"\"en passant target\" square in FEN string: "
 				+ fen);

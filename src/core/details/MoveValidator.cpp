@@ -1,4 +1,5 @@
 #include "MoveValidator.h"
+#include <simplechess/Exceptions.h>
 
 #include "BoardAccess.h"
 #include "BoardAnalyzer.h"
@@ -171,7 +172,7 @@ namespace
 				return;
 		}
 
-		throw std::invalid_argument(
+		throw simplechess::InvalidArgumentException(
 				std::string("Unknown piece type ")
 				+ std::to_string(static_cast<int>(piece.type())));
 	}
