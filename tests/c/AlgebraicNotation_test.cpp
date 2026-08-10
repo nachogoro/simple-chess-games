@@ -11,8 +11,8 @@ TEST(CAlgebraicNotationTest, PieceMoveNoCaptureNoCheckNoAmbiguity) {
 
     EXPECT_LAST_MOVE_NOTATION(updated_game, "Nb5");
 
-    destroy_game(game);
-    destroy_game(updated_game);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
 }
 
 TEST(CAlgebraicNotationTest, PieceMoveCaptureNoCheckNoAmbiguity) {
@@ -26,8 +26,8 @@ TEST(CAlgebraicNotationTest, PieceMoveCaptureNoCheckNoAmbiguity) {
 
     EXPECT_LAST_MOVE_NOTATION(updated_game, "Bxc4");
 
-    destroy_game(game);
-    destroy_game(updated_game);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
 }
 
 TEST(CAlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguity) {
@@ -41,8 +41,8 @@ TEST(CAlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguity) {
 
     EXPECT_LAST_MOVE_NOTATION(updated_game, "Qh3+");
 
-    destroy_game(game);
-    destroy_game(updated_game);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
 }
 
 TEST(CAlgebraicNotationTest, PieceMoveCaptureCheckNoAmbiguity) {
@@ -56,8 +56,8 @@ TEST(CAlgebraicNotationTest, PieceMoveCaptureCheckNoAmbiguity) {
 
     EXPECT_LAST_MOVE_NOTATION(updated_game, "Qxe4+");
 
-    destroy_game(game);
-    destroy_game(updated_game);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
 }
 
 TEST(CAlgebraicNotationTest, PieceMoveNoCaptureCheckMateNoAmbiguity) {
@@ -71,8 +71,8 @@ TEST(CAlgebraicNotationTest, PieceMoveNoCaptureCheckMateNoAmbiguity) {
 
     EXPECT_LAST_MOVE_NOTATION(updated_game, "Rh8#");
 
-    destroy_game(game);
-    destroy_game(updated_game);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
 }
 
 TEST(CAlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankAmbiguity) {
@@ -86,8 +86,8 @@ TEST(CAlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankAmbiguity) {
 
     EXPECT_LAST_MOVE_NOTATION(updated_game, "Rhd1");
 
-    destroy_game(game);
-    destroy_game(updated_game);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
 }
 
 TEST(CAlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankNoAmbiguity) {
@@ -101,8 +101,8 @@ TEST(CAlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankNoAmbiguity) {
 
     EXPECT_LAST_MOVE_NOTATION(updated_game, "Rh2");
 
-    destroy_game(game);
-    destroy_game(updated_game);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
 }
 
 TEST(CAlgebraicNotationTest, PieceMoveCaptureNoCheckSameFileAmbiguity) {
@@ -116,8 +116,8 @@ TEST(CAlgebraicNotationTest, PieceMoveCaptureNoCheckSameFileAmbiguity) {
 
     EXPECT_LAST_MOVE_NOTATION(updated_game, "B8xc6");
 
-    destroy_game(game);
-    destroy_game(updated_game);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
 }
 
 TEST(CAlgebraicNotationTest, PieceMoveCaptureCheckSameFileSameRankAmbiguity) {
@@ -131,8 +131,8 @@ TEST(CAlgebraicNotationTest, PieceMoveCaptureCheckSameFileSameRankAmbiguity) {
 
     EXPECT_LAST_MOVE_NOTATION(updated_game, "Ba8xc6+");
 
-    destroy_game(game);
-    destroy_game(updated_game);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
 }
 
 TEST(CAlgebraicNotationTest, PawnPromotionNoCaptureNoCheck) {
@@ -146,8 +146,8 @@ TEST(CAlgebraicNotationTest, PawnPromotionNoCaptureNoCheck) {
 
     EXPECT_LAST_MOVE_NOTATION(updated_game, "b8=Q");
 
-    destroy_game(game);
-    destroy_game(updated_game);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
 }
 
 TEST(CAlgebraicNotationTest, PawnPromotionCaptureCheck) {
@@ -161,8 +161,8 @@ TEST(CAlgebraicNotationTest, PawnPromotionCaptureCheck) {
 
     EXPECT_LAST_MOVE_NOTATION(updated_game, "bxc8=R+");
 
-    destroy_game(game);
-    destroy_game(updated_game);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
 }
 
 TEST(CAlgebraicNotationTest, PawnRegularMoveCaptureAmbiguityNoCheck) {
@@ -176,8 +176,8 @@ TEST(CAlgebraicNotationTest, PawnRegularMoveCaptureAmbiguityNoCheck) {
 
     EXPECT_LAST_MOVE_NOTATION(updated_game, "dxe4");
 
-    destroy_game(game);
-    destroy_game(updated_game);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
 }
 
 TEST(CAlgebraicNotationTest, PawnRegularMoveCaptureNoAmbiguityNoCheck) {
@@ -191,8 +191,8 @@ TEST(CAlgebraicNotationTest, PawnRegularMoveCaptureNoAmbiguityNoCheck) {
 
     EXPECT_LAST_MOVE_NOTATION(updated_game, "gxh4");
 
-    destroy_game(game);
-    destroy_game(updated_game);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
 }
 
 TEST(CAlgebraicNotationTest, PawnEnPassantCaptureNoAmbiguityNoCheck) {
@@ -206,8 +206,8 @@ TEST(CAlgebraicNotationTest, PawnEnPassantCaptureNoAmbiguityNoCheck) {
 
     EXPECT_LAST_MOVE_NOTATION(updated_game, "axb6");
 
-    destroy_game(game);
-    destroy_game(updated_game);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
 }
 
 TEST(CAlgebraicNotationTest, PawnEnPassantCaptureAmbiguityNoCheck) {
@@ -221,8 +221,8 @@ TEST(CAlgebraicNotationTest, PawnEnPassantCaptureAmbiguityNoCheck) {
 
     EXPECT_LAST_MOVE_NOTATION(updated_game, "axb6");
 
-    destroy_game(game);
-    destroy_game(updated_game);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
 }
 
 TEST(CAlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguityDrawOffer) {
@@ -236,8 +236,8 @@ TEST(CAlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguityDrawOffer) {
 
     EXPECT_LAST_MOVE_NOTATION(updated_game, "Qb4+(=)");
 
-    destroy_game(game);
-    destroy_game(updated_game);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
 }
 
 TEST(CAlgebraicNotationTest, CastlingKingsideNoCheck) {
@@ -251,8 +251,8 @@ TEST(CAlgebraicNotationTest, CastlingKingsideNoCheck) {
 
     EXPECT_LAST_MOVE_NOTATION(updated_game, "O-O");
 
-    destroy_game(game);
-    destroy_game(updated_game);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
 }
 
 TEST(CAlgebraicNotationTest, CastlingQueensideCheckmate) {
@@ -266,6 +266,6 @@ TEST(CAlgebraicNotationTest, CastlingQueensideCheckmate) {
 
     EXPECT_LAST_MOVE_NOTATION(updated_game, "O-O-O#");
 
-    destroy_game(game);
-    destroy_game(updated_game);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
 }

@@ -36,8 +36,8 @@ static void test_regular_non_capture_move(const char* fen,
     EXPECT_TRUE(is_square_empty(&after_move->current_stage.board, src_rank, src_file));
     EXPECT_TRUE(is_piece_at_square(&after_move->current_stage.board, dst_rank, dst_file, piece_type, color));
 
-    destroy_game(game);
-    destroy_game(after_move);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(after_move);
 }
 
 // Helper function for testing regular capture moves
@@ -60,8 +60,8 @@ static void test_regular_capture_move(const char* fen,
     EXPECT_TRUE(is_square_empty(&after_move->current_stage.board, src_rank, src_file));
     EXPECT_TRUE(is_piece_at_square(&after_move->current_stage.board, dst_rank, dst_file, piece_type, color));
 
-    destroy_game(game);
-    destroy_game(after_move);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(after_move);
 }
 
 TEST(CMovesOnBoardTest, PawnOnceForward) {
@@ -101,8 +101,8 @@ TEST(CMovesOnBoardTest, WhitePawnEnPassant) {
     EXPECT_TRUE(is_piece_at_square(&after_move->current_stage.board, 6, 'e', SIMPLE_CHESS_PIECE_TYPE_PAWN, SIMPLE_CHESS_COLOR_WHITE));
     EXPECT_TRUE(is_square_empty(&after_move->current_stage.board, 5, 'e')); // Black pawn captured
 
-    destroy_game(game);
-    destroy_game(after_move);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(after_move);
 }
 
 TEST(CMovesOnBoardTest, BlackPawnEnPassant) {
@@ -124,8 +124,8 @@ TEST(CMovesOnBoardTest, BlackPawnEnPassant) {
     EXPECT_TRUE(is_piece_at_square(&after_move->current_stage.board, 3, 'h', SIMPLE_CHESS_PIECE_TYPE_PAWN, SIMPLE_CHESS_COLOR_BLACK));
     EXPECT_TRUE(is_square_empty(&after_move->current_stage.board, 4, 'h')); // White pawn captured
 
-    destroy_game(game);
-    destroy_game(after_move);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(after_move);
 }
 
 TEST(CMovesOnBoardTest, PawnPromotionNoCapture) {
@@ -145,8 +145,8 @@ TEST(CMovesOnBoardTest, PawnPromotionNoCapture) {
     EXPECT_TRUE(is_square_empty(&after_move->current_stage.board, 2, 'g'));
     EXPECT_TRUE(is_piece_at_square(&after_move->current_stage.board, 1, 'g', SIMPLE_CHESS_PIECE_TYPE_QUEEN, SIMPLE_CHESS_COLOR_BLACK));
 
-    destroy_game(game);
-    destroy_game(after_move);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(after_move);
 }
 
 TEST(CMovesOnBoardTest, PawnPromotionCapture) {
@@ -166,8 +166,8 @@ TEST(CMovesOnBoardTest, PawnPromotionCapture) {
     EXPECT_TRUE(is_square_empty(&after_move->current_stage.board, 7, 'b'));
     EXPECT_TRUE(is_piece_at_square(&after_move->current_stage.board, 8, 'c', SIMPLE_CHESS_PIECE_TYPE_QUEEN, SIMPLE_CHESS_COLOR_WHITE));
 
-    destroy_game(game);
-    destroy_game(after_move);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(after_move);
 }
 
 TEST(CMovesOnBoardTest, KnightNoCapture) {
@@ -251,8 +251,8 @@ TEST(CMovesOnBoardTest, KingsideCastlingWhite) {
     EXPECT_TRUE(is_piece_at_square(&after_move->current_stage.board, 1, 'g', SIMPLE_CHESS_PIECE_TYPE_KING, SIMPLE_CHESS_COLOR_WHITE));
     EXPECT_TRUE(is_piece_at_square(&after_move->current_stage.board, 1, 'f', SIMPLE_CHESS_PIECE_TYPE_ROOK, SIMPLE_CHESS_COLOR_WHITE));
 
-    destroy_game(game);
-    destroy_game(after_move);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(after_move);
 }
 
 TEST(CMovesOnBoardTest, QueensideCastlingWhite) {
@@ -276,6 +276,6 @@ TEST(CMovesOnBoardTest, QueensideCastlingWhite) {
     EXPECT_TRUE(is_piece_at_square(&after_move->current_stage.board, 1, 'c', SIMPLE_CHESS_PIECE_TYPE_KING, SIMPLE_CHESS_COLOR_WHITE));
     EXPECT_TRUE(is_piece_at_square(&after_move->current_stage.board, 1, 'd', SIMPLE_CHESS_PIECE_TYPE_ROOK, SIMPLE_CHESS_COLOR_WHITE));
 
-    destroy_game(game);
-    destroy_game(after_move);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(after_move);
 }

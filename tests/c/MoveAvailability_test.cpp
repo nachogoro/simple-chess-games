@@ -39,7 +39,7 @@ TEST(CMoveAvailabilityTest, RegularGameMoves) {
     simple_chess_piece_move_t knight_b1_c3 = create_move(SIMPLE_CHESS_PIECE_TYPE_KNIGHT, SIMPLE_CHESS_COLOR_WHITE, 1, 'b', 3, 'c');
     EXPECT_TRUE(is_move_available(game, knight_b1_c3));
 
-    destroy_game(game);
+    simple_chess_destroy_game(game);
 }
 
 TEST(CMoveAvailabilityTest, KnightMovesUnobstructed) {
@@ -63,7 +63,7 @@ TEST(CMoveAvailabilityTest, KnightMovesUnobstructed) {
     simple_chess_piece_move_t knight_d4_c2 = create_move(SIMPLE_CHESS_PIECE_TYPE_KNIGHT, SIMPLE_CHESS_COLOR_WHITE, 4, 'd', 2, 'c');
     EXPECT_TRUE(is_move_available(game, knight_d4_c2));
 
-    destroy_game(game);
+    simple_chess_destroy_game(game);
 }
 
 TEST(CMoveAvailabilityTest, KnightMovesObstructedAttempt) {
@@ -83,7 +83,7 @@ TEST(CMoveAvailabilityTest, KnightMovesObstructedAttempt) {
     simple_chess_piece_move_t knight_d4_e6 = create_move(SIMPLE_CHESS_PIECE_TYPE_KNIGHT, SIMPLE_CHESS_COLOR_WHITE, 4, 'd', 6, 'e');
     EXPECT_TRUE(is_move_available(game, knight_d4_e6));
 
-    destroy_game(game);
+    simple_chess_destroy_game(game);
 }
 
 TEST(CMoveAvailabilityTest, RookMovesUnobstructed) {
@@ -107,7 +107,7 @@ TEST(CMoveAvailabilityTest, RookMovesUnobstructed) {
     simple_chess_piece_move_t rook_d5_h5 = create_move(SIMPLE_CHESS_PIECE_TYPE_ROOK, SIMPLE_CHESS_COLOR_WHITE, 5, 'd', 5, 'h');
     EXPECT_TRUE(is_move_available(game, rook_d5_h5));
 
-    destroy_game(game);
+    simple_chess_destroy_game(game);
 }
 
 TEST(CMoveAvailabilityTest, RookMovesObstructed) {
@@ -125,7 +125,7 @@ TEST(CMoveAvailabilityTest, RookMovesObstructed) {
     simple_chess_piece_move_t rook_d4_e4 = create_move(SIMPLE_CHESS_PIECE_TYPE_ROOK, SIMPLE_CHESS_COLOR_WHITE, 4, 'd', 4, 'e');
     EXPECT_TRUE(is_move_available(game, rook_d4_e4));
 
-    destroy_game(game);
+    simple_chess_destroy_game(game);
 }
 
 TEST(CMoveAvailabilityTest, WhiteCastlingUnobstructed) {
@@ -144,7 +144,7 @@ TEST(CMoveAvailabilityTest, WhiteCastlingUnobstructed) {
     simple_chess_piece_move_t queen_side_castle = create_move(SIMPLE_CHESS_PIECE_TYPE_KING, SIMPLE_CHESS_COLOR_WHITE, 1, 'e', 1, 'c');
     EXPECT_TRUE(is_move_available(game, queen_side_castle));
 
-    destroy_game(game);
+    simple_chess_destroy_game(game);
 }
 
 TEST(CMoveAvailabilityTest, WhiteCastlingUnavailable) {
@@ -159,7 +159,7 @@ TEST(CMoveAvailabilityTest, WhiteCastlingUnavailable) {
     simple_chess_piece_move_t queen_side_castle = create_move(SIMPLE_CHESS_PIECE_TYPE_KING, SIMPLE_CHESS_COLOR_WHITE, 1, 'e', 1, 'c');
     EXPECT_FALSE(is_move_available(game, queen_side_castle));
 
-    destroy_game(game);
+    simple_chess_destroy_game(game);
 }
 
 TEST(CMoveAvailabilityTest, EnPassantAvailable) {
@@ -171,7 +171,7 @@ TEST(CMoveAvailabilityTest, EnPassantAvailable) {
     simple_chess_piece_move_t en_passant = create_move(SIMPLE_CHESS_PIECE_TYPE_PAWN, SIMPLE_CHESS_COLOR_BLACK, 4, 'e', 3, 'f');
     EXPECT_TRUE(is_move_available(game, en_passant));
 
-    destroy_game(game);
+    simple_chess_destroy_game(game);
 }
 
 TEST(CMoveAvailabilityTest, PawnPromotion) {
@@ -194,5 +194,5 @@ TEST(CMoveAvailabilityTest, PawnPromotion) {
     simple_chess_piece_move_t promotion_capture = create_promotion_move(SIMPLE_CHESS_COLOR_WHITE, 7, 'f', 8, 'e', SIMPLE_CHESS_PIECE_TYPE_QUEEN);
     EXPECT_TRUE(is_move_available(game, promotion_capture));
 
-    destroy_game(game);
+    simple_chess_destroy_game(game);
 }

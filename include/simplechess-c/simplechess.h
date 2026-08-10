@@ -25,7 +25,7 @@ extern "C" {
  * \return Pointer to new game object, or NULL on memory allocation failure.
  *
  * \note The caller is responsible for freeing the returned game object
- *       using destroy_game().
+ *       using simple_chess_destroy_game().
  */
 simple_chess_game_t* simple_chess_create_new_game(void);
 
@@ -41,7 +41,7 @@ simple_chess_game_t* simple_chess_create_new_game(void);
  * \return Pointer to new game object, or NULL on memory allocation failure.
  *
  * \note The caller is responsible for freeing the returned game object
- *       using destroy_game().
+ *       using simple_chess_destroy_game().
  */
 simple_chess_game_t* simple_chess_create_new_game_ex(simple_chess_draw_enforcement_t draw_enforcement);
 
@@ -63,7 +63,7 @@ simple_chess_game_t* simple_chess_create_new_game_ex(simple_chess_draw_enforceme
  *         or memory allocation fails.
  *
  * \note The caller is responsible for freeing the returned game object
- *       using destroy_game().
+ *       using simple_chess_destroy_game().
  */
 simple_chess_game_t* simple_chess_create_game_from_fen(const char* fen);
 
@@ -80,7 +80,7 @@ simple_chess_game_t* simple_chess_create_game_from_fen(const char* fen);
  *         or memory allocation fails.
  *
  * \note The caller is responsible for freeing the returned game object
- *       using destroy_game().
+ *       using simple_chess_destroy_game().
  */
 simple_chess_game_t* simple_chess_create_game_from_fen_ex(const char* fen, simple_chess_draw_enforcement_t draw_enforcement);
 
@@ -100,7 +100,7 @@ simple_chess_game_t* simple_chess_create_game_from_fen_ex(const char* fen, simpl
  *         - Memory allocation failure
  *
  * \note The caller is responsible for freeing the returned game object
- *       using destroy_game().
+ *       using simple_chess_destroy_game().
  */
 simple_chess_game_t* simple_chess_make_move(const simple_chess_game_t* game, simple_chess_piece_move_t move);
 
@@ -121,7 +121,7 @@ simple_chess_game_t* simple_chess_make_move(const simple_chess_game_t* game, sim
  *         - Memory allocation failure
  *
  * \note The caller is responsible for freeing the returned game object
- *       using destroy_game().
+ *       using simple_chess_destroy_game().
  */
 simple_chess_game_t* simple_chess_make_move_with_draw_offer(const simple_chess_game_t* game, simple_chess_piece_move_t move, bool offer_draw);
 
@@ -140,7 +140,7 @@ simple_chess_game_t* simple_chess_make_move_with_draw_offer(const simple_chess_g
  *         - Memory allocation failure
  *
  * \note The caller is responsible for freeing the returned game object
- *       using destroy_game().
+ *       using simple_chess_destroy_game().
  */
 simple_chess_game_t* simple_chess_claim_draw(const simple_chess_game_t* game);
 
@@ -158,7 +158,7 @@ simple_chess_game_t* simple_chess_claim_draw(const simple_chess_game_t* game);
  *         - Memory allocation failure
  *
  * \note The caller is responsible for freeing the returned game object
- *       using destroy_game().
+ *       using simple_chess_destroy_game().
  */
 simple_chess_game_t* simple_chess_resign(const simple_chess_game_t* game, simple_chess_color_t resigner);
 
@@ -227,7 +227,7 @@ uint8_t simple_chess_index_from_square(simple_chess_square_t square);
  * \note This function must be called for every game object created by
  *       the library to avoid memory leaks.
  */
-void destroy_game(simple_chess_game_t* game);
+void simple_chess_destroy_game(simple_chess_game_t* game);
 
 #ifdef __cplusplus
 }

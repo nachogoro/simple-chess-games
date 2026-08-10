@@ -9,8 +9,8 @@ TEST(CResignationTest, WhiteResignInTheirTurn) {
 
     EXPECT_EQ(resigned_game->state, SIMPLE_CHESS_GAME_STATE_BLACK_WON);
 
-    destroy_game(starting_game);
-    destroy_game(resigned_game);
+    simple_chess_destroy_game(starting_game);
+    simple_chess_destroy_game(resigned_game);
 }
 
 TEST(CResignationTest, WhiteResignInBlackTurn) {
@@ -23,8 +23,8 @@ TEST(CResignationTest, WhiteResignInBlackTurn) {
 
     EXPECT_EQ(resigned_game->state, SIMPLE_CHESS_GAME_STATE_BLACK_WON);
 
-    destroy_game(starting_game);
-    destroy_game(resigned_game);
+    simple_chess_destroy_game(starting_game);
+    simple_chess_destroy_game(resigned_game);
 }
 
 TEST(CResignationTest, BlackResignInWhiteTurn) {
@@ -36,8 +36,8 @@ TEST(CResignationTest, BlackResignInWhiteTurn) {
 
     EXPECT_EQ(resigned_game->state, SIMPLE_CHESS_GAME_STATE_WHITE_WON);
 
-    destroy_game(starting_game);
-    destroy_game(resigned_game);
+    simple_chess_destroy_game(starting_game);
+    simple_chess_destroy_game(resigned_game);
 }
 
 TEST(CResignationTest, BlackResignInTheirTurn) {
@@ -50,8 +50,8 @@ TEST(CResignationTest, BlackResignInTheirTurn) {
 
     EXPECT_EQ(resigned_game->state, SIMPLE_CHESS_GAME_STATE_WHITE_WON);
 
-    destroy_game(starting_game);
-    destroy_game(resigned_game);
+    simple_chess_destroy_game(starting_game);
+    simple_chess_destroy_game(resigned_game);
 }
 
 TEST(CResignationTest, ResignWithNullGame) {

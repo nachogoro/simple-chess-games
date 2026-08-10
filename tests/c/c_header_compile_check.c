@@ -68,36 +68,36 @@ int simple_chess_c_header_compile_check(void)
 	}
 
 	next = simple_chess_create_new_game_ex(g_draw_enforcement);
-	destroy_game(next);
+	simple_chess_destroy_game(next);
 
 	next = simple_chess_create_game_from_fen("8/8/8/8/8/8/8/K6k w - - 0 1");
-	destroy_game(next);
+	simple_chess_destroy_game(next);
 
 	next = simple_chess_create_game_from_fen_ex(
 			"8/8/8/8/8/8/8/K6k w - - 0 1", g_draw_enforcement);
-	destroy_game(next);
+	simple_chess_destroy_game(next);
 
 	if (game->available_move_count > 0)
 	{
 		next = simple_chess_make_move(game, game->available_moves[0]);
-		destroy_game(next);
+		simple_chess_destroy_game(next);
 
 		next = simple_chess_make_move_with_draw_offer(
 				game, game->available_moves[0], true);
-		destroy_game(next);
+		simple_chess_destroy_game(next);
 	}
 
 	next = simple_chess_claim_draw(game);
-	destroy_game(next);
+	simple_chess_destroy_game(next);
 
 	next = simple_chess_resign(game, SIMPLE_CHESS_COLOR_WHITE);
-	destroy_game(next);
+	simple_chess_destroy_game(next);
 
 	(void) simple_chess_index_from_square(g_square);
 
 	g_square_content = simple_chess_square_content_from_piece(g_piece);
 	(void) simple_chess_square_content_piece(g_square_content, &g_piece);
 
-	destroy_game(game);
+	simple_chess_destroy_game(game);
 	return 0;
 }

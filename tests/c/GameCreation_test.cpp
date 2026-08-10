@@ -60,7 +60,7 @@ TEST(CGameCreationTest, RegularGameCreation) {
         }
     }
 
-    destroy_game(game);
+    simple_chess_destroy_game(game);
 }
 
 TEST(CGameCreationTest, GameCreationFromPosition1) {
@@ -84,7 +84,7 @@ TEST(CGameCreationTest, GameCreationFromPosition1) {
     EXPECT_TRUE(check_piece_at(board, 4, 'd', SIMPLE_CHESS_PIECE_TYPE_BISHOP, SIMPLE_CHESS_COLOR_WHITE));
     EXPECT_TRUE(check_piece_at(board, 3, 'e', SIMPLE_CHESS_PIECE_TYPE_KING, SIMPLE_CHESS_COLOR_WHITE));
 
-    destroy_game(game);
+    simple_chess_destroy_game(game);
 }
 
 TEST(CGameCreationTest, GameCreationFromPositionInCheckmate) {
@@ -94,7 +94,7 @@ TEST(CGameCreationTest, GameCreationFromPositionInCheckmate) {
 
     EXPECT_EQ(game->state, SIMPLE_CHESS_GAME_STATE_WHITE_WON);
 
-    destroy_game(game);
+    simple_chess_destroy_game(game);
 }
 
 TEST(CGameCreationTest, GameCreationFromPositionInStalemate) {
@@ -105,7 +105,7 @@ TEST(CGameCreationTest, GameCreationFromPositionInStalemate) {
     EXPECT_EQ(game->state, SIMPLE_CHESS_GAME_STATE_DRAWN);
     EXPECT_EQ(game->draw_reason, SIMPLE_CHESS_DRAW_REASON_STALEMATE);
 
-    destroy_game(game);
+    simple_chess_destroy_game(game);
 }
 
 TEST(CGameCreationTest, GameCreationWithTooManyKings) {

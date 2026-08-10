@@ -20,10 +20,10 @@ TEST(CMoveCounterTest, FullMoveCounterFromStart) {
     ASSERT_GAME_NOT_NULL(after_white_response);
     EXPECT_EQ(after_white_response->current_stage.full_moves, 2);
 
-    destroy_game(game);
-    destroy_game(after_first_white_move);
-    destroy_game(after_black_first_move);
-    destroy_game(after_white_response);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(after_first_white_move);
+    simple_chess_destroy_game(after_black_first_move);
+    simple_chess_destroy_game(after_white_response);
 }
 
 TEST(CMoveCounterTest, FullMoveCounterFromFenStartingWhite) {
@@ -47,10 +47,10 @@ TEST(CMoveCounterTest, FullMoveCounterFromFenStartingWhite) {
     ASSERT_GAME_NOT_NULL(after_white_next_move);
     EXPECT_EQ(after_white_next_move->current_stage.full_moves, 64);
 
-    destroy_game(game);
-    destroy_game(after_white_move);
-    destroy_game(after_black_response);
-    destroy_game(after_white_next_move);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(after_white_move);
+    simple_chess_destroy_game(after_black_response);
+    simple_chess_destroy_game(after_white_next_move);
 }
 
 TEST(CMoveCounterTest, FullMoveCounterFromFenStartingBlack) {
@@ -74,10 +74,10 @@ TEST(CMoveCounterTest, FullMoveCounterFromFenStartingBlack) {
     ASSERT_GAME_NOT_NULL(after_black_next_move);
     EXPECT_EQ(after_black_next_move->current_stage.full_moves, 53);
 
-    destroy_game(game);
-    destroy_game(after_black_move);
-    destroy_game(after_white_response);
-    destroy_game(after_black_next_move);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(after_black_move);
+    simple_chess_destroy_game(after_white_response);
+    simple_chess_destroy_game(after_black_next_move);
 }
 
 TEST(CMoveCounterTest, HalfMoveCounter) {
@@ -118,11 +118,11 @@ TEST(CMoveCounterTest, HalfMoveCounter) {
     ASSERT_GAME_NOT_NULL(after_black3);
     EXPECT_EQ(after_black3->current_stage.half_moves_since_last_capture_or_pawn_advance, 2);
 
-    destroy_game(game);
-    destroy_game(after_white1);
-    destroy_game(after_black1);
-    destroy_game(after_white2);
-    destroy_game(after_black2);
-    destroy_game(after_white3);
-    destroy_game(after_black3);
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(after_white1);
+    simple_chess_destroy_game(after_black1);
+    simple_chess_destroy_game(after_white2);
+    simple_chess_destroy_game(after_black2);
+    simple_chess_destroy_game(after_white3);
+    simple_chess_destroy_game(after_black3);
 }

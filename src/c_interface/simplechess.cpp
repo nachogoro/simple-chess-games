@@ -124,7 +124,7 @@ uint8_t simple_chess_index_from_square(simple_chess_square_t square) {
 
 }
 
-void destroy_game(simple_chess_game_t* game) {
+void simple_chess_destroy_game(simple_chess_game_t* game) {
 	if (!game) return;
 
 	delete[] game->history;

@@ -148,14 +148,14 @@ namespace
 				break;
 			}
 
-			destroy_game(game);
+			simple_chess_destroy_game(game);
 			game = next;
 			++plies;
 		}
 
 		if (game != nullptr)
 		{
-			destroy_game(game);
+			simple_chess_destroy_game(game);
 		}
 
 		return plies;
