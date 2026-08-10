@@ -11,6 +11,9 @@
  *                                public API reports over a set of games.
  *                                Capture it before and after a change and
  *                                diff: it must be byte-identical.
+ *   bench_simplechess crosscheck Play the same games through both APIs at
+ *                                once and check they agree at every ply.
+ *                                Exits non-zero if they do not.
  */
 
 #include <simplechess-c/simplechess.h>
@@ -341,6 +344,121 @@ namespace
 	}
 }
 
+namespace
+{
+	/**
+	 * Plays the same deterministic games through both APIs at once and
+	 * compares what each reports after every ply.
+	 *
+	 * The golden trace covers the C++ API alone. This covers the C one
+	 * against it, which is the only way to tell that the two are still
+	 * playing the same chess: the C API has no trace of its own to diff.
+	 */
+	int runCrossCheck()
+	{
+		unsigned mismatches = 0;
+		unsigned pliesChecked = 0;
+
+		for (const uint64_t seed : {1u, 2u, 3u, 4u, 5u})
+		{
+			Lcg rng(seed);
+			Game cppGame = createNewGame();
+			simple_chess_game_t* cGame = simple_chess_create_new_game(
+					SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, nullptr);
+
+			for (unsigned ply = 0; ply < 120; ++ply)
+			{
+				simple_chess_game_stage_t stage;
+				if (!cGame || !simple_chess_game_current_stage(cGame, &stage))
+				{
+					std::cout << "seed " << seed << " ply " << ply
+						<< ": C game is gone\n";
+					++mismatches;
+					break;
+				}
+
+				if (cppGame.currentStage().fen() != stage.fen)
+				{
+					std::cout << "seed " << seed << " ply " << ply
+						<< ": fen " << cppGame.currentStage().fen()
+						<< " != " << stage.fen << "\n";
+					++mismatches;
+					break;
+				}
+
+				if (static_cast<int>(cppGame.gameState())
+						!= static_cast<int>(simple_chess_game_state(cGame)))
+				{
+					std::cout << "seed " << seed << " ply " << ply
+						<< ": game state differs\n";
+					++mismatches;
+					break;
+				}
+
+				const size_t cppMoves = cppGame.allAvailableMoves().size();
+				if (cppMoves != simple_chess_game_available_move_count(cGame))
+				{
+					std::cout << "seed " << seed << " ply " << ply
+						<< ": move count " << cppMoves << " != "
+						<< simple_chess_game_available_move_count(cGame) << "\n";
+					++mismatches;
+					break;
+				}
+
+				if (cppGame.history().size()
+						!= simple_chess_game_history_size(cGame))
+				{
+					std::cout << "seed " << seed << " ply " << ply
+						<< ": history size differs\n";
+					++mismatches;
+					break;
+				}
+
+				++pliesChecked;
+
+				if (cppGame.gameState() != GameState::Playing || cppMoves == 0)
+				{
+					break;
+				}
+
+				// Both sides pick the same index, so they only stay in step
+				// if they order the moves the same way too.
+				const size_t choice = rng.below(cppMoves);
+
+				simple_chess_piece_move_t cMove;
+				simple_chess_game_available_move(
+						cGame, static_cast<uint16_t>(choice), &cMove);
+
+				const PieceMove& cppMove = cppGame.allAvailableMoves()[choice];
+				if (cMove.src.rank != cppMove.src().rank()
+						|| cMove.src.file != cppMove.src().file()
+						|| cMove.dst.rank != cppMove.dst().rank()
+						|| cMove.dst.file != cppMove.dst().file())
+				{
+					std::cout << "seed " << seed << " ply " << ply
+						<< ": move " << choice << " differs\n";
+					++mismatches;
+					break;
+				}
+
+				cppGame = makeMove(cppGame, cppMove);
+
+				simple_chess_game_t* next
+					= simple_chess_make_move(cGame, cMove, nullptr);
+				simple_chess_destroy_game(cGame);
+				cGame = next;
+			}
+
+			simple_chess_destroy_game(cGame);
+		}
+
+		std::cout << "checked " << pliesChecked << " plies, "
+			<< mismatches << " mismatches\n";
+
+		return (mismatches == 0) ? 0 : 1;
+	}
+}
+
 int main(const int argc, const char** argv)
 {
 	const std::string mode = (argc > 1) ? argv[1] : "bench";
@@ -348,6 +466,11 @@ int main(const int argc, const char** argv)
 	if (mode == "golden")
 	{
 		return runGolden();
+	}
+
+	if (mode == "crosscheck")
+	{
+		return runCrossCheck();
 	}
 
 	if (mode == "movedump")
@@ -388,7 +511,8 @@ int main(const int argc, const char** argv)
 
 	if (mode != "bench")
 	{
-		std::cerr << "usage: " << argv[0] << " [bench|golden|movedump]\n";
+		std::cerr << "usage: " << argv[0]
+			<< " [bench|golden|crosscheck|movedump]\n";
 		return 1;
 	}
 
