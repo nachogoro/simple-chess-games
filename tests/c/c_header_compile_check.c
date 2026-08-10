@@ -31,6 +31,7 @@ static simple_chess_game_state_t         g_game_state;
 static simple_chess_draw_reason_t        g_draw_reason;
 static simple_chess_game_history_entry_t g_history_entry;
 static simple_chess_draw_enforcement_t   g_draw_enforcement;
+static simple_chess_square_content_t     g_square_content;
 
 int simple_chess_c_header_compile_check(void);
 
@@ -56,7 +57,7 @@ int simple_chess_c_header_compile_check(void)
 	g_piece_move.is_promotion = false;
 	g_piece_move.promoted_to = g_piece_type;
 	g_played_move.move = g_piece_move;
-	g_board.occupied[0] = true;
+	g_board.squares[0] = SIMPLE_CHESS_SQUARE_WHITE_ROOK;
 	g_game_stage.active_color = g_color;
 	g_history_entry.played_move = g_played_move;
 
@@ -93,6 +94,9 @@ int simple_chess_c_header_compile_check(void)
 	destroy_game(next);
 
 	(void) simple_chess_index_from_square(g_square);
+
+	g_square_content = simple_chess_square_content_from_piece(g_piece);
+	(void) simple_chess_square_content_piece(g_square_content, &g_piece);
 
 	destroy_game(game);
 	return 0;

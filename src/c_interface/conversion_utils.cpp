@@ -126,10 +126,9 @@ simple_chess_board_t conversion_utils::c_board(const simplechess::Board& board) 
 		const auto square = simplechess::Square::fromRankAndFile(row, col);
 
 		const auto piece = board.pieceAt(square);
-		result.occupied[i] = piece.has_value();
-		if (piece) {
-			result.piece_at[i] = c_piece(*piece);
-		}
+		result.squares[i] = piece
+			? simple_chess_square_content_from_piece(c_piece(*piece))
+			: SIMPLE_CHESS_SQUARE_EMPTY;
 	}
 	return result;
 }
@@ -380,10 +379,13 @@ uint8_t conversion_utils::cpp_castling_rights(uint8_t rights) {
 simplechess::Board conversion_utils::cpp_board(const simple_chess_board_t& board) {
 	std::map<simplechess::Square, simplechess::Piece> position;
 	for (uint8_t index = 0; index < 64; ++index) {
-		if (!board.occupied[index]) continue;
+		simple_chess_piece_t piece;
+		if (!simple_chess_square_content_piece(board.squares[index], &piece))
+			continue;
+
 		position.insert({
 				cpp_square(simple_chess_square_from_index(index)),
-				cpp_piece(board.piece_at[index])
+				cpp_piece(piece)
 				});
 	}
 	return simplechess::BoardBuilder::build(position);

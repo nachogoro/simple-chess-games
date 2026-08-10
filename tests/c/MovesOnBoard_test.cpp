@@ -3,16 +3,17 @@
 // Helper function to check if a piece is at a specific position
 static bool is_piece_at_square(const simple_chess_board_t* board, uint8_t rank, char file, simple_chess_piece_type_t type, simple_chess_color_t color) {
     uint8_t index = (rank - 1) * 8 + (file - 'a');
-    if (!board->occupied[index]) {
+    simple_chess_piece_t piece;
+    if (!simple_chess_square_content_piece(board->squares[index], &piece)) {
         return false;
     }
-    return board->piece_at[index].type == type && board->piece_at[index].color == color;
+    return piece.type == type && piece.color == color;
 }
 
 // Helper function to check if a square is empty
 static bool is_square_empty(const simple_chess_board_t* board, uint8_t rank, char file) {
     uint8_t index = (rank - 1) * 8 + (file - 'a');
-    return !board->occupied[index];
+    return board->squares[index] == SIMPLE_CHESS_SQUARE_EMPTY;
 }
 
 // Helper function for testing regular non-capture moves

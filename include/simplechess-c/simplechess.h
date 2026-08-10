@@ -163,6 +163,29 @@ simple_chess_game_t* simple_chess_claim_draw(const simple_chess_game_t* game);
 simple_chess_game_t* simple_chess_resign(const simple_chess_game_t* game, simple_chess_color_t resigner);
 
 /**
+ * \brief Unpacks what stands on a square into a piece.
+ *
+ * \param content What the board reports for the square.
+ * \param out Filled with the piece standing there. Untouched if the square
+ *            is empty.
+ *
+ * \return true if the square is occupied, false if it is empty.
+ */
+bool simple_chess_square_content_piece(
+		simple_chess_square_content_t content,
+		simple_chess_piece_t* out);
+
+/**
+ * \brief What a square holding \p piece reports.
+ *
+ * \param piece The piece standing on the square.
+ *
+ * \return The matching square content, never SIMPLE_CHESS_SQUARE_EMPTY.
+ */
+simple_chess_square_content_t simple_chess_square_content_from_piece(
+		simple_chess_piece_t piece);
+
+/**
  * \brief Convert a board index to a square structure.
  *
  * Converts a linear board index (0-63) to a simple_chess_square_t structure with

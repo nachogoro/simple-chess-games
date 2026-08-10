@@ -87,6 +87,30 @@ simple_chess_game_t* simple_chess_resign(const simple_chess_game_t* game, simple
 	}
 }
 
+bool simple_chess_square_content_piece(
+		const simple_chess_square_content_t content,
+		simple_chess_piece_t* const out) {
+	if (content == SIMPLE_CHESS_SQUARE_EMPTY || !out) return false;
+
+	// The two colours are laid out as two consecutive runs of the six piece
+	// types, in the order simple_chess_piece_type_t declares them.
+	const int offset = content - SIMPLE_CHESS_SQUARE_WHITE_PAWN;
+	out->color = (offset < 6)
+		? SIMPLE_CHESS_COLOR_WHITE
+		: SIMPLE_CHESS_COLOR_BLACK;
+	out->type = static_cast<simple_chess_piece_type_t>(offset % 6);
+	return true;
+}
+
+simple_chess_square_content_t simple_chess_square_content_from_piece(
+		const simple_chess_piece_t piece) {
+	const int base = (piece.color == SIMPLE_CHESS_COLOR_WHITE)
+		? SIMPLE_CHESS_SQUARE_WHITE_PAWN
+		: SIMPLE_CHESS_SQUARE_BLACK_PAWN;
+
+	return static_cast<simple_chess_square_content_t>(base + piece.type);
+}
+
 simple_chess_square_t simple_chess_square_from_index(uint8_t index) {
 	uint8_t row = 1 + (index / 8);
 	char col = 'a' + (index % 8);

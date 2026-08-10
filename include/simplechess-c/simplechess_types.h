@@ -14,6 +14,25 @@ extern "C" {
 #endif
 
 	/**
+	 * \brief Size of the buffers holding a position in Forsyth-Edwards
+	 * Notation, the terminating NUL included.
+	 *
+	 * Comfortably above the longest FEN a legal position can produce, which
+	 * reaches 90 characters.
+	 */
+#define SIMPLE_CHESS_FEN_MAX 128
+
+	/**
+	 * \brief Size of the buffers holding a move in algebraic notation, the
+	 * terminating NUL included.
+	 *
+	 * The longest such move is seven characters (a disambiguated capture
+	 * delivering mate, "Qa1xb2#", or a promotion doing the same,
+	 * "exd8=Q#").
+	 */
+#define SIMPLE_CHESS_SAN_MAX 12
+
+	/**
 	 * \brief The color of each side in a chess game.
 	 */
 	typedef enum simple_chess_color {
@@ -168,7 +187,7 @@ extern "C" {
 		/**
 		 * \brief The string representation of the move in algebraic notation.
 		 */
-		char in_algebraic_notation[8];
+		char in_algebraic_notation[SIMPLE_CHESS_SAN_MAX];
 	} simple_chess_played_move_t;
 
 	/**
@@ -200,6 +219,35 @@ extern "C" {
 	} simple_chess_castling_right_t;
 
 	/**
+	 * \brief What occupies a square, if anything.
+	 *
+	 * A single value per square says both whether the square is occupied
+	 * and, if it is, by what, so there is no way to describe a square which
+	 * holds a piece and is empty at the same time.
+	 *
+	 * \ref simple_chess_square_content_piece() unpacks one into a \ref
+	 * simple_chess_piece_t.
+	 */
+	typedef enum simple_chess_square_content {
+		/** \brief Nothing stands on the square. */
+		SIMPLE_CHESS_SQUARE_EMPTY = 0,
+
+		SIMPLE_CHESS_SQUARE_WHITE_PAWN,
+		SIMPLE_CHESS_SQUARE_WHITE_ROOK,
+		SIMPLE_CHESS_SQUARE_WHITE_KNIGHT,
+		SIMPLE_CHESS_SQUARE_WHITE_BISHOP,
+		SIMPLE_CHESS_SQUARE_WHITE_QUEEN,
+		SIMPLE_CHESS_SQUARE_WHITE_KING,
+
+		SIMPLE_CHESS_SQUARE_BLACK_PAWN,
+		SIMPLE_CHESS_SQUARE_BLACK_ROOK,
+		SIMPLE_CHESS_SQUARE_BLACK_KNIGHT,
+		SIMPLE_CHESS_SQUARE_BLACK_BISHOP,
+		SIMPLE_CHESS_SQUARE_BLACK_QUEEN,
+		SIMPLE_CHESS_SQUARE_BLACK_KING
+	} simple_chess_square_content_t;
+
+	/**
 	 * \brief Represents the chess board state.
 	 *
 	 * The board is represented as a 64-element array where each element
@@ -210,14 +258,9 @@ extern "C" {
 	 */
 	typedef struct simple_chess_board {
 		/**
-		 * \brief Whether the i-th square is occupied by a piece or not.
+		 * \brief What stands on the i-th square.
 		 */
-		bool occupied[64];
-
-		/**
-		 * \brief The piece located at the i-th square (only if occupied[i] is true).
-		 */
-		simple_chess_piece_t piece_at[64];
+		simple_chess_square_content_t squares[64];
 	} simple_chess_board_t;
 
 	/**
@@ -271,7 +314,7 @@ extern "C" {
 		/**
 		 * \brief FEN representation of this position
 		 */
-		char fen[90];
+		char fen[SIMPLE_CHESS_FEN_MAX];
 	} simple_chess_game_stage_t;
 
 	/**
@@ -370,7 +413,7 @@ extern "C" {
 		/**
 		 * \brief FEN representation before this move
 		 */
-		char fen[90];
+		char fen[SIMPLE_CHESS_FEN_MAX];
 
 		/**
 		 *
