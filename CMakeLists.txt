@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(simple-chess-games VERSION 0.0.1 DESCRIPTION "Simple library to play chess games")
+project(simple-chess-games VERSION 2.0.0 DESCRIPTION "Simple library to play chess games")
 
 # Core chess engine sources
 set(core_sources
@@ -35,6 +35,8 @@ set(c_interface_sources
 	src/c_interface/conversion_utils.cpp)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Set default build type if not specified
@@ -131,7 +133,8 @@ target_link_libraries(simple-chess-games-static PRIVATE $<BUILD_INTERFACE:Boost:
 # which both collides with the rest of the system and breaks the paths the
 # headers use on each other.
 set_target_properties(simple-chess-games PROPERTIES
-	VERSION ${PROJECT_VERSION})
+	VERSION ${PROJECT_VERSION}
+	SOVERSION ${PROJECT_VERSION_MAJOR})
 
 set_target_properties(simple-chess-games-static PROPERTIES
 	VERSION ${PROJECT_VERSION})
@@ -156,7 +159,8 @@ target_compile_definitions(simple-chess-games-c-static PUBLIC SIMPLECHESS_STATIC
 target_link_libraries(simple-chess-games-c-static PRIVATE $<BUILD_INTERFACE:Boost::algorithm>)
 
 set_target_properties(simple-chess-games-c PROPERTIES
-	VERSION ${PROJECT_VERSION})
+	VERSION ${PROJECT_VERSION}
+	SOVERSION ${PROJECT_VERSION_MAJOR})
 
 set_target_properties(simple-chess-games-c-static PROPERTIES
 	VERSION ${PROJECT_VERSION})
