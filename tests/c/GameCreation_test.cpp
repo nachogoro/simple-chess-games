@@ -2,7 +2,8 @@
 
 // Helper function to check piece at specific board position
 bool check_piece_at(const simple_chess_board_t& board, uint8_t rank, char file, simple_chess_piece_type_t expected_type, simple_chess_color_t expected_color) {
-    uint8_t index = simple_chess_index_from_square({rank, file});
+    uint8_t index = 0;
+    EXPECT_TRUE(simple_chess_index_from_square({rank, file}, &index));
     simple_chess_piece_t piece;
     if (!simple_chess_square_content_piece(board.squares[index], &piece))
         return false;
@@ -55,7 +56,8 @@ TEST(CGameCreationTest, RegularGameCreation) {
     // Check empty squares in the middle
     for (uint8_t rank = 3; rank <= 6; rank++) {
         for (char file = 'a'; file <= 'h'; file++) {
-            uint8_t index = simple_chess_index_from_square({rank, file});
+            uint8_t index = 0;
+    EXPECT_TRUE(simple_chess_index_from_square({rank, file}, &index));
             EXPECT_EQ(board.squares[index], SIMPLE_CHESS_SQUARE_EMPTY)
                 << "Square " << file << rank << " should be empty";
         }

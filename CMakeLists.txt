@@ -197,6 +197,7 @@ if(BUILD_TESTS)
         tests/c/MoveAvailability_test.cpp
         tests/c/MovesOnBoard_test.cpp
         tests/c/Errors_test.cpp
+        tests/c/ValueHelpers_test.cpp
         # The only translation unit in the project compiled as C. It exists
         # so that the C headers are checked against a C compiler, which the
         # rest of this suite cannot do: GoogleTest needs C++.

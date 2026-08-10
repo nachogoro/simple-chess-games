@@ -39,6 +39,8 @@ int simple_chess_c_header_compile_check(void)
 	simple_chess_game_t* game;
 	simple_chess_game_t* next;
 	uint16_t count;
+	uint8_t g_index;
+	char g_algebraic[3];
 
 	g_color = SIMPLE_CHESS_COLOR_WHITE;
 	g_piece_type = SIMPLE_CHESS_PIECE_TYPE_PAWN;
@@ -49,12 +51,12 @@ int simple_chess_c_header_compile_check(void)
 	g_draw_enforcement = SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC;
 	g_square_content = SIMPLE_CHESS_SQUARE_EMPTY;
 
-	g_square = simple_chess_square_from_index(0);
+	(void) simple_chess_square_from_index(0, &g_square);
 	g_piece.type = g_piece_type;
 	g_piece.color = g_color;
 	g_piece_move.piece = g_piece;
 	g_piece_move.src = g_square;
-	g_piece_move.dst = simple_chess_square_from_index(1);
+	(void) simple_chess_square_from_index(1, &g_piece_move.dst);
 	g_piece_move.is_promotion = false;
 	g_piece_move.promoted_to = g_piece_type;
 	g_played_move.move = g_piece_move;
@@ -63,7 +65,12 @@ int simple_chess_c_header_compile_check(void)
 
 	g_square_content = simple_chess_square_content_from_piece(g_piece);
 	(void) simple_chess_square_content_piece(g_square_content, &g_piece);
-	(void) simple_chess_index_from_square(g_square);
+	(void) simple_chess_index_from_square(g_square, &g_index);
+	(void) simple_chess_square_from_string("e4", &g_square);
+	simple_chess_square_to_string(g_square, g_algebraic);
+	(void) simple_chess_square_is_valid(g_square);
+	g_color = simple_chess_square_color(g_square);
+	(void) simple_chess_piece_move_equals(g_piece_move, g_piece_move);
 
 	game = simple_chess_create_new_game(g_draw_enforcement, NULL);
 	if (game == NULL)
@@ -104,6 +111,9 @@ int simple_chess_c_header_compile_check(void)
 
 	next = simple_chess_resign(game, SIMPLE_CHESS_COLOR_WHITE, NULL);
 	simple_chess_destroy_game(next);
+
+	(void) simple_chess_find_move(
+			game, g_square, g_square, false, g_piece_type, &g_piece_move);
 
 	simple_chess_destroy_game(game);
 	return 0;

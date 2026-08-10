@@ -3,17 +3,8 @@
 // Helper function to check if a move is in the available moves array
 static bool is_move_available(const simple_chess_game_t* game, const simple_chess_piece_move_t& move) {
     for (uint16_t i = 0; i < simple_chess_game_available_move_count(game); i++) {
-        const simple_chess_piece_move_t& available = available_move(game, i);
-        if (available.piece.type == move.piece.type &&
-            available.piece.color == move.piece.color &&
-            available.src.rank == move.src.rank &&
-            available.src.file == move.src.file &&
-            available.dst.rank == move.dst.rank &&
-            available.dst.file == move.dst.file &&
-            available.is_promotion == move.is_promotion) {
-            if (!move.is_promotion || available.promoted_to == move.promoted_to) {
-                return true;
-            }
+        if (simple_chess_piece_move_equals(available_move(game, i), move)) {
+            return true;
         }
     }
     return false;

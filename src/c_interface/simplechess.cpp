@@ -297,17 +297,102 @@ simple_chess_square_content_t simple_chess_square_content_from_piece(
 	return static_cast<simple_chess_square_content_t>(base + piece.type);
 }
 
-simple_chess_square_t simple_chess_square_from_index(uint8_t index) {
-	uint8_t row = 1 + (index / 8);
-	char col = 'a' + (index % 8);
-	return {row, col};
+bool simple_chess_square_is_valid(const simple_chess_square_t square) {
+	return simplechess::Square::isInsideBoundaries(square.rank, square.file);
 }
 
-uint8_t simple_chess_index_from_square(simple_chess_square_t square) {
-	uint8_t row = square.rank - 1;
-	uint8_t col = square.file - 'a';
-	return row * 8 + col;
+bool simple_chess_square_from_index(
+		const uint8_t index,
+		simple_chess_square_t* const out) {
+	if (index >= 64 || !out) return false;
 
+	out->rank = static_cast<uint8_t>(1 + (index / 8));
+	out->file = static_cast<char>('a' + (index % 8));
+	return true;
+}
+
+bool simple_chess_index_from_square(
+		const simple_chess_square_t square,
+		uint8_t* const out) {
+	if (!out || !simple_chess_square_is_valid(square)) return false;
+
+	const uint8_t row = static_cast<uint8_t>(square.rank - 1);
+	const uint8_t col = static_cast<uint8_t>(
+			simplechess::asciiToLower(square.file) - 'a');
+	*out = static_cast<uint8_t>(row * 8 + col);
+	return true;
+}
+
+bool simple_chess_square_from_string(
+		const char* const algebraic,
+		simple_chess_square_t* const out) {
+	if (!algebraic || !out) return false;
+
+	try {
+		*out = c_square(simplechess::Square::fromString(algebraic));
+		return true;
+	} catch (const std::invalid_argument&) {
+		return false;
+	}
+}
+
+void simple_chess_square_to_string(
+		const simple_chess_square_t square,
+		char* const out) {
+	if (!out) return;
+
+	if (!simple_chess_square_is_valid(square)) {
+		out[0] = '\0';
+		return;
+	}
+
+	out[0] = simplechess::asciiToLower(square.file);
+	out[1] = static_cast<char>('0' + square.rank);
+	out[2] = '\0';
+}
+
+simple_chess_color_t simple_chess_square_color(const simple_chess_square_t square) {
+	return c_color(cpp_square(square).color());
+}
+
+bool simple_chess_piece_move_equals(
+		const simple_chess_piece_move_t a,
+		const simple_chess_piece_move_t b) {
+	return a.piece.type == b.piece.type
+		&& a.piece.color == b.piece.color
+		&& a.src.rank == b.src.rank
+		&& a.src.file == b.src.file
+		&& a.dst.rank == b.dst.rank
+		&& a.dst.file == b.dst.file
+		&& a.is_promotion == b.is_promotion
+		&& (!a.is_promotion || a.promoted_to == b.promoted_to);
+}
+
+bool simple_chess_find_move(
+		const simple_chess_game_t* const game,
+		const simple_chess_square_t src,
+		const simple_chess_square_t dst,
+		const bool is_promotion,
+		const simple_chess_piece_type_t promoted_to,
+		simple_chess_piece_move_t* const out) {
+	if (!game || !out
+			|| !simple_chess_square_is_valid(src)
+			|| !simple_chess_square_is_valid(dst)) {
+		return false;
+	}
+
+	const std::optional<simplechess::PieceMove> move = simplechess::findMove(
+			game->game,
+			cpp_square(src),
+			cpp_square(dst),
+			is_promotion
+				? std::make_optional(cpp_piece_type(promoted_to))
+				: std::nullopt);
+
+	if (!move) return false;
+
+	*out = c_piece_move(*move);
+	return true;
 }
 
 void simple_chess_destroy_game(simple_chess_game_t* game) {

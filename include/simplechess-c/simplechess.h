@@ -361,33 +361,112 @@ simple_chess_square_content_t simple_chess_square_content_from_piece(
 		simple_chess_piece_t piece);
 
 /**
- * \brief Convert a board index to a square structure.
- *
- * Converts a linear board index (0-63) to a simple_chess_square_t structure with
- * rank, file, color, and string representation.
+ * \brief Convert a board index to a square.
  *
  * \param index Board index where 0=a1, 1=b1, ..., 63=h8.
- *              Must be in range 0-63.
+ * \param out Filled with the square. Untouched if \p index is out of range.
  *
- * \return Square structure representing the position.
- *
- * \note If index is out of range, the behavior is undefined.
+ * \return true on success, false if \p index is above 63 or \p out is NULL.
  */
-simple_chess_square_t simple_chess_square_from_index(uint8_t index);
+bool simple_chess_square_from_index(uint8_t index, simple_chess_square_t* out);
 
 /**
- * \brief Convert a square structure to a board index.
+ * \brief Convert a square to a board index.
  *
- * Converts a simple_chess_square_t structure to a linear board index (0-63).
+ * \param square Square with a rank of 1-8 and a file of 'a'-'h'.
+ * \param out Filled with the board index, where 0=a1, 1=b1, ..., 63=h8.
+ *            Untouched if \p square is not a square of the board.
  *
- * \param square Square structure with valid rank (1-8) and file ('a'-'h').
- *
- * \return Board index where 0=a1, 1=b1, ..., 63=h8.
- *
- * \note If the square has invalid rank or file values, the behavior
- *       is undefined.
+ * \return true on success, false if \p square is off the board or \p out
+ *         is NULL.
  */
-uint8_t simple_chess_index_from_square(simple_chess_square_t square);
+bool simple_chess_index_from_square(simple_chess_square_t square, uint8_t* out);
+
+/**
+ * \brief Parse a square written in algebraic notation, such as "e4".
+ *
+ * The letter may be of either case.
+ *
+ * \param algebraic The square in algebraic notation.
+ * \param out Filled with the square. Untouched if \p algebraic does not
+ *            name one.
+ *
+ * \return true on success, false otherwise.
+ */
+bool simple_chess_square_from_string(
+		const char* algebraic,
+		simple_chess_square_t* out);
+
+/**
+ * \brief Write a square in algebraic notation, such as "e4".
+ *
+ * \param square The square to write.
+ * \param out Buffer of at least three characters, filled with the two
+ *            characters of the notation and a terminating NUL. Filled with
+ *            an empty string if \p square is not a square of the board.
+ */
+void simple_chess_square_to_string(simple_chess_square_t square, char* out);
+
+/**
+ * \brief Whether \p square names a square of the board.
+ *
+ * \param square The square to check.
+ *
+ * \return true if the rank is 1-8 and the file 'a'-'h', false otherwise.
+ */
+bool simple_chess_square_is_valid(simple_chess_square_t square);
+
+/**
+ * \brief The colour a square of the board is painted.
+ *
+ * \param square The square whose colour is wanted. Must be a square of the
+ *        board.
+ *
+ * \return The colour the square is painted.
+ */
+simple_chess_color_t simple_chess_square_color(simple_chess_square_t square);
+
+/**
+ * \brief Whether two moves describe the same thing.
+ *
+ * \param a First move.
+ * \param b Second move.
+ *
+ * \return true if the moves are equal, false otherwise.
+ */
+bool simple_chess_piece_move_equals(
+		simple_chess_piece_move_t a,
+		simple_chess_piece_move_t b);
+
+/**
+ * \brief Find the legal move which goes from \p src to \p dst.
+ *
+ * A move names the piece which moves, which a caller who only knows the two
+ * squares involved - a user interface reporting that a piece was dragged
+ * from one square to another, say - would otherwise have to look up on the
+ * board first. Searching the legal moves also means the result is known to
+ * be playable.
+ *
+ * \note In the case of castling, \p src and \p dst refer to the original
+ *       and final squares of the King.
+ *
+ * \param game The game whose legal moves are searched.
+ * \param src The square the piece moves from.
+ * \param dst The square the piece moves to.
+ * \param is_promotion Whether the move sought promotes a pawn.
+ * \param promoted_to The type the pawn is promoted to. Ignored unless
+ *        \p is_promotion is true.
+ * \param out Filled with the move. Untouched if there is no such move.
+ *
+ * \return true if the player to move has such a move, false otherwise.
+ */
+bool simple_chess_find_move(
+		const simple_chess_game_t* game,
+		simple_chess_square_t src,
+		simple_chess_square_t dst,
+		bool is_promotion,
+		simple_chess_piece_type_t promoted_to,
+		simple_chess_piece_move_t* out);
 
 /**
  * \brief Free all memory associated with a game object.

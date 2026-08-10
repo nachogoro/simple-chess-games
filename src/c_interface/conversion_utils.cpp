@@ -345,10 +345,10 @@ simplechess::Board conversion_utils::cpp_board(const simple_chess_board_t& board
 		if (!simple_chess_square_content_piece(board.squares[index], &piece))
 			continue;
 
-		position.insert({
-				cpp_square(simple_chess_square_from_index(index)),
-				cpp_piece(piece)
-				});
+		simple_chess_square_t square;
+		simple_chess_square_from_index(index, &square);
+
+		position.insert({cpp_square(square), cpp_piece(piece)});
 	}
 	return simplechess::BoardBuilder::build(position);
 }
