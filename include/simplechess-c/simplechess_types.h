@@ -344,20 +344,20 @@ extern "C" {
 		SIMPLE_CHESS_DRAW_REASON_FIFTY_MOVE_RULE,
 
 		/**
-		 * \brief The opponent (inactive side) has only a king remaining,
-		 * making it impossible for them to win. The active side may claim
-		 * a draw. This is never automatically enforced.
-		 */
-		SIMPLE_CHESS_DRAW_REASON_OPPONENT_INSUFFICIENT_MATERIAL,
-
-		/**
 		 * \brief At least seventy-five full moves (i.e. each side has played their
 		 * move) have been played since the last capture or pawn move.
 		 *
 		 * \note See FIDE rule 9.6.2. If the 75th move results in checkmate,
 		 * the checkmate takes precedence over the draw rule.
 		 */
-		SIMPLE_CHESS_DRAW_REASON_SEVENTY_FIVE_MOVE_RULE
+		SIMPLE_CHESS_DRAW_REASON_SEVENTY_FIVE_MOVE_RULE,
+
+		/**
+		 * \brief The opponent (inactive side) has only a king remaining,
+		 * making it impossible for them to win. The active side may claim
+		 * a draw. This is never automatically enforced.
+		 */
+		SIMPLE_CHESS_DRAW_REASON_OPPONENT_INSUFFICIENT_MATERIAL
 	} simple_chess_draw_reason_t;
 
 	/**
