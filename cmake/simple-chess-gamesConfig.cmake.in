@@ -1,0 +1,8 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/simple-chess-gamesTargets.cmake")
+
+# Boost is used only inside the implementation, and only its header-only
+# algorithm library, so a consumer has nothing to find.
+
+check_required_components(simple-chess-games)

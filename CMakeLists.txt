@@ -63,6 +63,8 @@ endif()
 # Enable fPIC for all targets (required for shared libraries)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+include(GNUInstallDirs)
+
 # ===== OBJECT LIBRARIES (compiled once, reused) =====
 
 # Core engine object library - compiled once with fPIC
@@ -79,15 +81,27 @@ target_compile_options(c-interface-objects PRIVATE ${COMMON_FLAGS})
 
 # ===== C++ LIBRARY =====
 
+# Boost is wrapped in BUILD_INTERFACE on the libraries below. Only its
+# header-only algorithm library is used, and only inside implementation
+# files, so an installed archive needs nothing from it - but a static
+# library passes even its PRIVATE dependencies on to whoever links it, and
+# exporting one which is not itself exported is an error.
+
 # Shared C++ library
 add_library(simple-chess-games SHARED $<TARGET_OBJECTS:core-objects>)
-target_include_directories(simple-chess-games PUBLIC include)
-target_link_libraries(simple-chess-games PRIVATE Boost::algorithm)
+add_library(SimpleChess::simple-chess-games ALIAS simple-chess-games)
+target_include_directories(simple-chess-games PUBLIC
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+target_link_libraries(simple-chess-games PRIVATE $<BUILD_INTERFACE:Boost::algorithm>)
 
 # Static C++ library
 add_library(simple-chess-games-static STATIC $<TARGET_OBJECTS:core-objects>)
-target_include_directories(simple-chess-games-static PUBLIC include)
-target_link_libraries(simple-chess-games-static PRIVATE Boost::algorithm)
+add_library(SimpleChess::simple-chess-games-static ALIAS simple-chess-games-static)
+target_include_directories(simple-chess-games-static PUBLIC
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+target_link_libraries(simple-chess-games-static PRIVATE $<BUILD_INTERFACE:Boost::algorithm>)
 
 # The headers are installed as whole directories further down, so no target
 # lists them: PUBLIC_HEADER installs them flattened into the include prefix,
@@ -103,21 +117,25 @@ set_target_properties(simple-chess-games-static PROPERTIES
 
 # Shared C library (includes both core and C interface)
 add_library(simple-chess-games-c SHARED $<TARGET_OBJECTS:core-objects> $<TARGET_OBJECTS:c-interface-objects>)
-target_include_directories(simple-chess-games-c PUBLIC include)
-target_link_libraries(simple-chess-games-c PRIVATE Boost::algorithm)
+add_library(SimpleChess::simple-chess-games-c ALIAS simple-chess-games-c)
+target_include_directories(simple-chess-games-c PUBLIC
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+target_link_libraries(simple-chess-games-c PRIVATE $<BUILD_INTERFACE:Boost::algorithm>)
 
 # Static C library
 add_library(simple-chess-games-c-static STATIC $<TARGET_OBJECTS:core-objects> $<TARGET_OBJECTS:c-interface-objects>)
-target_include_directories(simple-chess-games-c-static PUBLIC include)
-target_link_libraries(simple-chess-games-c-static PRIVATE Boost::algorithm)
+add_library(SimpleChess::simple-chess-games-c-static ALIAS simple-chess-games-c-static)
+target_include_directories(simple-chess-games-c-static PUBLIC
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+target_link_libraries(simple-chess-games-c-static PRIVATE $<BUILD_INTERFACE:Boost::algorithm>)
 
 set_target_properties(simple-chess-games-c PROPERTIES
 	VERSION ${PROJECT_VERSION})
 
 set_target_properties(simple-chess-games-c-static PROPERTIES
 	VERSION ${PROJECT_VERSION})
-
-include(GNUInstallDirs)
 
 # Google Test
 include(FetchContent)
@@ -149,9 +167,35 @@ FetchContent_MakeAvailable(Boost)
 install(TARGETS
 		simple-chess-games simple-chess-games-c
 		simple-chess-games-static simple-chess-games-c-static
+	EXPORT simple-chess-gamesTargets
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+# So that a consumer can find_package(simple-chess-games) and link
+# SimpleChess::simple-chess-games, rather than naming the library file and
+# setting include paths by hand.
+install(EXPORT simple-chess-gamesTargets
+	FILE simple-chess-gamesTargets.cmake
+	NAMESPACE SimpleChess::
+	DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/simple-chess-games)
+
+include(CMakePackageConfigHelpers)
+
+configure_package_config_file(
+	${CMAKE_CURRENT_SOURCE_DIR}/cmake/simple-chess-gamesConfig.cmake.in
+	${CMAKE_CURRENT_BINARY_DIR}/simple-chess-gamesConfig.cmake
+	INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/simple-chess-games)
+
+write_basic_package_version_file(
+	${CMAKE_CURRENT_BINARY_DIR}/simple-chess-gamesConfigVersion.cmake
+	VERSION ${PROJECT_VERSION}
+	COMPATIBILITY SameMajorVersion)
+
+install(FILES
+		${CMAKE_CURRENT_BINARY_DIR}/simple-chess-gamesConfig.cmake
+		${CMAKE_CURRENT_BINARY_DIR}/simple-chess-gamesConfigVersion.cmake
+	DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/simple-chess-games)
 
 # Install directory structure for headers
 install(DIRECTORY include/simplechess DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
