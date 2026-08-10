@@ -1375,18 +1375,6 @@ TEST(MoveAvailabilityTest, PawnPromotion) {
 				Square::fromRankAndFile(8, 'f'),
 				PieceType::Bishop);
 
-	const PieceMove wrongPromotionKing = PieceMove::pawnPromotion(
-				{PieceType::Pawn, Color::White},
-				Square::fromRankAndFile(7, 'f'),
-				Square::fromRankAndFile(8, 'f'),
-				PieceType::King);
-
-	const PieceMove wrongPromotionPawn = PieceMove::pawnPromotion(
-				{PieceType::Pawn, Color::White},
-				Square::fromRankAndFile(7, 'f'),
-				Square::fromRankAndFile(8, 'f'),
-				PieceType::King);
-
 	const PieceMove promotionQueenWithCapture = PieceMove::pawnPromotion(
 				{PieceType::Pawn, Color::White},
 				Square::fromRankAndFile(7, 'f'),
@@ -1411,18 +1399,6 @@ TEST(MoveAvailabilityTest, PawnPromotion) {
 				Square::fromRankAndFile(8, 'e'),
 				PieceType::Bishop);
 
-	const PieceMove wrongPromotionKingWithCapture = PieceMove::pawnPromotion(
-				{PieceType::Pawn, Color::White},
-				Square::fromRankAndFile(7, 'f'),
-				Square::fromRankAndFile(8, 'e'),
-				PieceType::King);
-
-	const PieceMove wrongPromotionPawnWithCapture = PieceMove::pawnPromotion(
-				{PieceType::Pawn, Color::White},
-				Square::fromRankAndFile(7, 'f'),
-				Square::fromRankAndFile(8, 'e'),
-				PieceType::King);
-
 	const std::vector<PieceMove>& availableMoves = game.allAvailableMoves();
 	EXPECT_EQ(countMoves(availableMoves, promotionQueen), 1);
 	EXPECT_EQ(countMoves(availableMoves, promotionQueenWithCapture), 1);
@@ -1432,8 +1408,25 @@ TEST(MoveAvailabilityTest, PawnPromotion) {
 	EXPECT_EQ(countMoves(availableMoves, promotionKnightWithCapture), 1);
 	EXPECT_EQ(countMoves(availableMoves, promotionBishop), 1);
 	EXPECT_EQ(countMoves(availableMoves, promotionBishopWithCapture), 1);
-	EXPECT_EQ(countMoves(availableMoves, wrongPromotionKing), 0);
-	EXPECT_EQ(countMoves(availableMoves, wrongPromotionKingWithCapture), 0);
-	EXPECT_EQ(countMoves(availableMoves, wrongPromotionPawn), 0);
-	EXPECT_EQ(countMoves(availableMoves, wrongPromotionPawnWithCapture), 0);
+	// Promoting to a king or staying a pawn is not a move which can be
+	// described at all, so it never reaches the point of being looked for
+	// among the available ones.
+	for (const PieceType wrongType : {PieceType::King, PieceType::Pawn})
+	{
+		EXPECT_THROW_CUSTOM(
+				PieceMove::pawnPromotion(
+					{PieceType::Pawn, Color::White},
+					Square::fromRankAndFile(7, 'f'),
+					Square::fromRankAndFile(8, 'f'),
+					wrongType),
+				InvalidArgumentException);
+	}
+
+	EXPECT_THROW_CUSTOM(
+			PieceMove::pawnPromotion(
+				{PieceType::Knight, Color::White},
+				Square::fromRankAndFile(7, 'f'),
+				Square::fromRankAndFile(8, 'f'),
+				PieceType::Queen),
+			InvalidArgumentException);
 }

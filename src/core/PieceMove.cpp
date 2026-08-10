@@ -20,6 +20,19 @@ PieceMove PieceMove::pawnPromotion(
 		const Square& dst,
 		const PieceType promotedType)
 {
+	if (piece.type() != PieceType::Pawn)
+	{
+		throw InvalidArgumentException(
+				"Only a pawn can be promoted");
+	}
+
+	if (promotedType == PieceType::Pawn || promotedType == PieceType::King)
+	{
+		throw InvalidArgumentException(
+				"A pawn can only be promoted to a rook, a knight, a bishop "
+				"or a queen");
+	}
+
 	return PieceMove(
 			piece,
 			src,
