@@ -1,7 +1,8 @@
 #include "TestUtils.h"
 
 TEST(CMoveCounterTest, FullMoveCounterFromStart) {
-    simple_chess_game_t* game = simple_chess_create_new_game();
+    simple_chess_game_t* game = simple_chess_create_new_game(
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
     EXPECT_EQ(game->current_stage.full_moves, 1);
 
@@ -28,7 +29,8 @@ TEST(CMoveCounterTest, FullMoveCounterFromStart) {
 
 TEST(CMoveCounterTest, FullMoveCounterFromFenStartingWhite) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "8/4k3/6p1/2n5/7P/2RB4/1K6/8 w - - 0 63");
+        "8/4k3/6p1/2n5/7P/2RB4/1K6/8 w - - 0 63",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
     EXPECT_EQ(game->current_stage.full_moves, 63);
 
@@ -55,7 +57,8 @@ TEST(CMoveCounterTest, FullMoveCounterFromFenStartingWhite) {
 
 TEST(CMoveCounterTest, FullMoveCounterFromFenStartingBlack) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "8/4k3/6p1/2n5/7P/2RB4/1K6/8 b - - 0 51");
+        "8/4k3/6p1/2n5/7P/2RB4/1K6/8 b - - 0 51",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
     EXPECT_EQ(game->current_stage.full_moves, 51);
 
@@ -81,7 +84,8 @@ TEST(CMoveCounterTest, FullMoveCounterFromFenStartingBlack) {
 }
 
 TEST(CMoveCounterTest, HalfMoveCounter) {
-    simple_chess_game_t* game = simple_chess_create_new_game();
+    simple_chess_game_t* game = simple_chess_create_new_game(
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
     EXPECT_EQ(game->current_stage.half_moves_since_last_capture_or_pawn_advance, 0);
 

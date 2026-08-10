@@ -2,7 +2,8 @@
 
 TEST(CAlgebraicNotationTest, PieceMoveNoCaptureNoCheckNoAmbiguity) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "r1bqkb1r/pppppppp/2n5/8/4n1Q1/2N5/PPPP1PPP/R1B1KBNR w KQkq - 0 1");
+        "r1bqkb1r/pppppppp/2n5/8/4n1Q1/2N5/PPPP1PPP/R1B1KBNR w KQkq - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_KNIGHT, SIMPLE_CHESS_COLOR_WHITE, 3, 'c', 5, 'b');
@@ -17,7 +18,8 @@ TEST(CAlgebraicNotationTest, PieceMoveNoCaptureNoCheckNoAmbiguity) {
 
 TEST(CAlgebraicNotationTest, PieceMoveCaptureNoCheckNoAmbiguity) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "r1bqkb1r/pppppppp/2n5/8/2n1P1Q1/2N5/PPP2PPP/R1B1KBNR w KQkq - 0 1");
+        "r1bqkb1r/pppppppp/2n5/8/2n1P1Q1/2N5/PPP2PPP/R1B1KBNR w KQkq - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_BISHOP, SIMPLE_CHESS_COLOR_WHITE, 1, 'f', 4, 'c');
@@ -32,7 +34,8 @@ TEST(CAlgebraicNotationTest, PieceMoveCaptureNoCheckNoAmbiguity) {
 
 TEST(CAlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguity) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "q1q5/q4k2/2P5/3r4/2P1B3/5K2/Q7/8 b - - 1 1");
+        "q1q5/q4k2/2P5/3r4/2P1B3/5K2/Q7/8 b - - 1 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_QUEEN, SIMPLE_CHESS_COLOR_BLACK, 8, 'c', 3, 'h');
@@ -47,7 +50,8 @@ TEST(CAlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguity) {
 
 TEST(CAlgebraicNotationTest, PieceMoveCaptureCheckNoAmbiguity) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "q7/1P3k2/8/3r4/2P1B2q/5K2/Q7/8 b - - 1 1");
+        "q7/1P3k2/8/3r4/2P1B2q/5K2/Q7/8 b - - 1 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_QUEEN, SIMPLE_CHESS_COLOR_BLACK, 4, 'h', 4, 'e');
@@ -62,7 +66,8 @@ TEST(CAlgebraicNotationTest, PieceMoveCaptureCheckNoAmbiguity) {
 
 TEST(CAlgebraicNotationTest, PieceMoveNoCaptureCheckMateNoAmbiguity) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "4k3/R6R/8/8/8/8/8/4K3 w - - 0 1");
+        "4k3/R6R/8/8/8/8/8/4K3 w - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_ROOK, SIMPLE_CHESS_COLOR_WHITE, 7, 'h', 8, 'h');
@@ -77,7 +82,8 @@ TEST(CAlgebraicNotationTest, PieceMoveNoCaptureCheckMateNoAmbiguity) {
 
 TEST(CAlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankAmbiguity) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "8/4k3/8/8/8/6K1/8/R6R w - - 0 1");
+        "8/4k3/8/8/8/6K1/8/R6R w - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_ROOK, SIMPLE_CHESS_COLOR_WHITE, 1, 'h', 1, 'd');
@@ -92,7 +98,8 @@ TEST(CAlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankAmbiguity) {
 
 TEST(CAlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankNoAmbiguity) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "8/4k3/8/8/8/6K1/8/R6R w - - 0 1");
+        "8/4k3/8/8/8/6K1/8/R6R w - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_ROOK, SIMPLE_CHESS_COLOR_WHITE, 1, 'h', 2, 'h');
@@ -107,7 +114,8 @@ TEST(CAlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankNoAmbiguity) {
 
 TEST(CAlgebraicNotationTest, PieceMoveCaptureNoCheckSameFileAmbiguity) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "b4k2/8/2P5/8/b7/8/8/5K2 b - - 0 1");
+        "b4k2/8/2P5/8/b7/8/8/5K2 b - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_BISHOP, SIMPLE_CHESS_COLOR_BLACK, 8, 'a', 6, 'c');
@@ -122,7 +130,8 @@ TEST(CAlgebraicNotationTest, PieceMoveCaptureNoCheckSameFileAmbiguity) {
 
 TEST(CAlgebraicNotationTest, PieceMoveCaptureCheckSameFileSameRankAmbiguity) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "b3bk2/8/2P5/8/b7/5K2/8/8 b - - 0 1");
+        "b3bk2/8/2P5/8/b7/5K2/8/8 b - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_BISHOP, SIMPLE_CHESS_COLOR_BLACK, 8, 'a', 6, 'c');
@@ -137,7 +146,8 @@ TEST(CAlgebraicNotationTest, PieceMoveCaptureCheckSameFileSameRankAmbiguity) {
 
 TEST(CAlgebraicNotationTest, PawnPromotionNoCaptureNoCheck) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "2rk4/1P6/8/5K2/8/8/8/8 w - - 0 1");
+        "2rk4/1P6/8/5K2/8/8/8/8 w - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_promotion_move(SIMPLE_CHESS_COLOR_WHITE, 7, 'b', 8, 'b', SIMPLE_CHESS_PIECE_TYPE_QUEEN);
@@ -152,7 +162,8 @@ TEST(CAlgebraicNotationTest, PawnPromotionNoCaptureNoCheck) {
 
 TEST(CAlgebraicNotationTest, PawnPromotionCaptureCheck) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "2rk4/1P6/8/5K2/8/8/8/8 w - - 0 1");
+        "2rk4/1P6/8/5K2/8/8/8/8 w - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_promotion_move(SIMPLE_CHESS_COLOR_WHITE, 7, 'b', 8, 'c', SIMPLE_CHESS_PIECE_TYPE_ROOK);
@@ -167,7 +178,8 @@ TEST(CAlgebraicNotationTest, PawnPromotionCaptureCheck) {
 
 TEST(CAlgebraicNotationTest, PawnRegularMoveCaptureAmbiguityNoCheck) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "k7/8/8/3p1p2/4N3/8/8/7K b - - 0 1");
+        "k7/8/8/3p1p2/4N3/8/8/7K b - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_PAWN, SIMPLE_CHESS_COLOR_BLACK, 5, 'd', 4, 'e');
@@ -182,7 +194,8 @@ TEST(CAlgebraicNotationTest, PawnRegularMoveCaptureAmbiguityNoCheck) {
 
 TEST(CAlgebraicNotationTest, PawnRegularMoveCaptureNoAmbiguityNoCheck) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "k7/8/8/6pp/7N/8/8/7K b - - 0 1");
+        "k7/8/8/6pp/7N/8/8/7K b - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_PAWN, SIMPLE_CHESS_COLOR_BLACK, 5, 'g', 4, 'h');
@@ -197,7 +210,8 @@ TEST(CAlgebraicNotationTest, PawnRegularMoveCaptureNoAmbiguityNoCheck) {
 
 TEST(CAlgebraicNotationTest, PawnEnPassantCaptureNoAmbiguityNoCheck) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "7k/8/8/Pp6/8/7K/8/8 w - b6 0 1");
+        "7k/8/8/Pp6/8/7K/8/8 w - b6 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_PAWN, SIMPLE_CHESS_COLOR_WHITE, 5, 'a', 6, 'b');
@@ -212,7 +226,8 @@ TEST(CAlgebraicNotationTest, PawnEnPassantCaptureNoAmbiguityNoCheck) {
 
 TEST(CAlgebraicNotationTest, PawnEnPassantCaptureAmbiguityNoCheck) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "7k/8/8/PpP5/8/7K/8/8 w - b6 0 1");
+        "7k/8/8/PpP5/8/7K/8/8 w - b6 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_PAWN, SIMPLE_CHESS_COLOR_WHITE, 5, 'a', 6, 'b');
@@ -227,7 +242,8 @@ TEST(CAlgebraicNotationTest, PawnEnPassantCaptureAmbiguityNoCheck) {
 
 TEST(CAlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguityDrawOffer) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "8/8/3K4/8/Q7/8/p7/1k6 w - - 0 1");
+        "8/8/3K4/8/Q7/8/p7/1k6 w - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_QUEEN, SIMPLE_CHESS_COLOR_WHITE, 4, 'a', 4, 'b');
@@ -242,7 +258,8 @@ TEST(CAlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguityDrawOffer) {
 
 TEST(CAlgebraicNotationTest, CastlingKingsideNoCheck) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "8/8/8/8/6k1/8/4PP1P/4K2R w K - 0 1");
+        "8/8/8/8/6k1/8/4PP1P/4K2R w K - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_KING, SIMPLE_CHESS_COLOR_WHITE, 1, 'e', 1, 'g');
@@ -257,7 +274,8 @@ TEST(CAlgebraicNotationTest, CastlingKingsideNoCheck) {
 
 TEST(CAlgebraicNotationTest, CastlingQueensideCheckmate) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "r3k1K1/1q6/8/8/8/8/8/8 b q - 0 1");
+        "r3k1K1/1q6/8/8/8/8/8/8 b q - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_KING, SIMPLE_CHESS_COLOR_BLACK, 8, 'e', 8, 'c');

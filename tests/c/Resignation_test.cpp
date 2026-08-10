@@ -1,7 +1,8 @@
 #include "TestUtils.h"
 
 TEST(CResignationTest, WhiteResignInTheirTurn) {
-    simple_chess_game_t* starting_game = simple_chess_create_new_game();
+    simple_chess_game_t* starting_game = simple_chess_create_new_game(
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(starting_game);
 
     simple_chess_game_t* resigned_game = simple_chess_resign(starting_game, SIMPLE_CHESS_COLOR_WHITE);
@@ -15,7 +16,8 @@ TEST(CResignationTest, WhiteResignInTheirTurn) {
 
 TEST(CResignationTest, WhiteResignInBlackTurn) {
     simple_chess_game_t* starting_game = simple_chess_create_game_from_fen(
-        "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
+        "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(starting_game);
 
     simple_chess_game_t* resigned_game = simple_chess_resign(starting_game, SIMPLE_CHESS_COLOR_WHITE);
@@ -28,7 +30,8 @@ TEST(CResignationTest, WhiteResignInBlackTurn) {
 }
 
 TEST(CResignationTest, BlackResignInWhiteTurn) {
-    simple_chess_game_t* starting_game = simple_chess_create_new_game();
+    simple_chess_game_t* starting_game = simple_chess_create_new_game(
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(starting_game);
 
     simple_chess_game_t* resigned_game = simple_chess_resign(starting_game, SIMPLE_CHESS_COLOR_BLACK);
@@ -42,7 +45,8 @@ TEST(CResignationTest, BlackResignInWhiteTurn) {
 
 TEST(CResignationTest, BlackResignInTheirTurn) {
     simple_chess_game_t* starting_game = simple_chess_create_game_from_fen(
-        "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
+        "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(starting_game);
 
     simple_chess_game_t* resigned_game = simple_chess_resign(starting_game, SIMPLE_CHESS_COLOR_BLACK);

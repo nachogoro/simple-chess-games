@@ -130,7 +130,8 @@ namespace
 	unsigned playRandomGameThroughC(const uint64_t seed, const unsigned maxPlies)
 	{
 		Lcg rng(seed);
-		simple_chess_game_t* game = simple_chess_create_new_game();
+		simple_chess_game_t* game = simple_chess_create_new_game(
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
 		unsigned plies = 0;
 
 		while (game != nullptr

@@ -61,19 +61,21 @@ int simple_chess_c_header_compile_check(void)
 	g_game_stage.active_color = g_color;
 	g_history_entry.played_move = g_played_move;
 
-	game = simple_chess_create_new_game();
+	game = simple_chess_create_new_game(
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
 	if (game == NULL)
 	{
 		return 1;
 	}
 
-	next = simple_chess_create_new_game_ex(g_draw_enforcement);
+	next = simple_chess_create_new_game(g_draw_enforcement);
 	simple_chess_destroy_game(next);
 
-	next = simple_chess_create_game_from_fen("8/8/8/8/8/8/8/K6k w - - 0 1");
+	next = simple_chess_create_game_from_fen("8/8/8/8/8/8/8/K6k w - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
 	simple_chess_destroy_game(next);
 
-	next = simple_chess_create_game_from_fen_ex(
+	next = simple_chess_create_game_from_fen(
 			"8/8/8/8/8/8/8/K6k w - - 0 1", g_draw_enforcement);
 	simple_chess_destroy_game(next);
 

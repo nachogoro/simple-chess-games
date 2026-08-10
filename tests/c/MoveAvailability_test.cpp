@@ -20,7 +20,8 @@ static bool is_move_available(const simple_chess_game_t* game, const simple_ches
 }
 
 TEST(CMoveAvailabilityTest, RegularGameMoves) {
-    simple_chess_game_t* game = simple_chess_create_new_game();
+    simple_chess_game_t* game = simple_chess_create_new_game(
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     // New game should have 20 possible moves (16 pawn moves + 4 knight moves)
@@ -44,7 +45,8 @@ TEST(CMoveAvailabilityTest, RegularGameMoves) {
 
 TEST(CMoveAvailabilityTest, KnightMovesUnobstructed) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "7k/8/8/8/3N4/8/8/K7 w - - 0 1");
+        "7k/8/8/8/3N4/8/8/K7 w - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     // Knight on d4 should have 8 possible moves + king moves (3)
@@ -70,7 +72,8 @@ TEST(CMoveAvailabilityTest, KnightMovesObstructedAttempt) {
     // This test proves that the knight is unaffected by pieces "on its path"
     // to its destination squares
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "7k/8/8/2rrr3/2rNr3/2rrr3/8/K7 w - - 0 1");
+        "7k/8/8/2rrr3/2rNr3/2rrr3/8/K7 w - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     // Knight on d4 should still have 8 possible moves + king moves (3)
@@ -88,7 +91,8 @@ TEST(CMoveAvailabilityTest, KnightMovesObstructedAttempt) {
 
 TEST(CMoveAvailabilityTest, RookMovesUnobstructed) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "4k3/8/8/3R4/8/8/8/4K3 w - - 0 1");
+        "4k3/8/8/3R4/8/8/8/4K3 w - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     // Rook on d5 should have 14 moves + king moves (5) = 19 total
@@ -112,7 +116,8 @@ TEST(CMoveAvailabilityTest, RookMovesUnobstructed) {
 
 TEST(CMoveAvailabilityTest, RookMovesObstructed) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "7k/r5r1/3r4/8/1r1R2r1/8/1r3r2/2K5 w - - 0 1");
+        "7k/r5r1/3r4/8/1r1R2r1/8/1r3r2/2K5 w - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     // Rook on d4 with obstructions should have limited moves + king move (1) = 11 total
@@ -130,7 +135,8 @@ TEST(CMoveAvailabilityTest, RookMovesObstructed) {
 
 TEST(CMoveAvailabilityTest, WhiteCastlingUnobstructed) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "1k6/8/8/8/8/8/8/R3K2R w KQ - 0 1");
+        "1k6/8/8/8/8/8/8/R3K2R w KQ - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     // Should include both castling moves
@@ -149,7 +155,8 @@ TEST(CMoveAvailabilityTest, WhiteCastlingUnobstructed) {
 
 TEST(CMoveAvailabilityTest, WhiteCastlingUnavailable) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "1k6/8/8/8/8/8/8/R3K2R w - - 0 1");
+        "1k6/8/8/8/8/8/8/R3K2R w - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     // Castling should not be available (no castling rights in FEN)
@@ -164,7 +171,8 @@ TEST(CMoveAvailabilityTest, WhiteCastlingUnavailable) {
 
 TEST(CMoveAvailabilityTest, EnPassantAvailable) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "rnbqkbnr/pppp1ppp/8/8/4pP2/4P3/PPPP2PP/RNBQKBNR b KQkq f3 0 1");
+        "rnbqkbnr/pppp1ppp/8/8/4pP2/4P3/PPPP2PP/RNBQKBNR b KQkq f3 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     // En passant move should be available
@@ -176,7 +184,8 @@ TEST(CMoveAvailabilityTest, EnPassantAvailable) {
 
 TEST(CMoveAvailabilityTest, PawnPromotion) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "2k1n3/5Pb1/8/3p4/8/K7/8/8 w - - 0 1");
+        "2k1n3/5Pb1/8/3p4/8/K7/8/8 w - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     // Should have promotion moves (4 for straight, 4 for capture) + other moves

@@ -21,7 +21,8 @@ static void test_regular_non_capture_move(const char* fen,
                                         simple_chess_piece_type_t piece_type, simple_chess_color_t color,
                                         uint8_t src_rank, char src_file,
                                         uint8_t dst_rank, char dst_file) {
-    simple_chess_game_t* game = simple_chess_create_game_from_fen(fen);
+    simple_chess_game_t* game = simple_chess_create_game_from_fen(fen,
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     // Verify the piece is at source position before move
@@ -45,7 +46,8 @@ static void test_regular_capture_move(const char* fen,
                                     simple_chess_piece_type_t piece_type, simple_chess_color_t color,
                                     uint8_t src_rank, char src_file,
                                     uint8_t dst_rank, char dst_file) {
-    simple_chess_game_t* game = simple_chess_create_game_from_fen(fen);
+    simple_chess_game_t* game = simple_chess_create_game_from_fen(fen,
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     // Verify the piece is at source position before move
@@ -84,7 +86,8 @@ TEST(CMovesOnBoardTest, PawnCapture) {
 
 TEST(CMovesOnBoardTest, WhitePawnEnPassant) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "rnbqkbnr/pppp1ppp/8/3Pp3/8/8/PPP1PPPP/RNBQKBNR w KQkq e6 0 1");
+        "rnbqkbnr/pppp1ppp/8/3Pp3/8/8/PPP1PPPP/RNBQKBNR w KQkq e6 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     // Verify initial state: white pawn on d5, black pawn on e5
@@ -107,7 +110,8 @@ TEST(CMovesOnBoardTest, WhitePawnEnPassant) {
 
 TEST(CMovesOnBoardTest, BlackPawnEnPassant) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "8/4k3/8/8/6pP/8/1K6/8 b - h3 0 1");
+        "8/4k3/8/8/6pP/8/1K6/8 b - h3 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     // Verify initial state: black pawn on g4, white pawn on h4
@@ -130,7 +134,8 @@ TEST(CMovesOnBoardTest, BlackPawnEnPassant) {
 
 TEST(CMovesOnBoardTest, PawnPromotionNoCapture) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "8/4k3/8/2q5/7P/2RQ4/1K4p1/8 b - - 0 1");
+        "8/4k3/8/2q5/7P/2RQ4/1K4p1/8 b - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     // Verify initial state: black pawn on g2
@@ -151,7 +156,8 @@ TEST(CMovesOnBoardTest, PawnPromotionNoCapture) {
 
 TEST(CMovesOnBoardTest, PawnPromotionCapture) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "2q5/1P2k3/8/8/8/2RQ4/1K4p1/8 w - - 0 1");
+        "2q5/1P2k3/8/8/8/2RQ4/1K4p1/8 w - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     // Verify initial state: white pawn on b7, black queen on c8
@@ -232,7 +238,8 @@ TEST(CMovesOnBoardTest, KingCapture) {
 
 TEST(CMovesOnBoardTest, KingsideCastlingWhite) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "r2qkbnr/ppp2ppp/2np4/1B2p3/6b1/4PN2/PPPP1PPP/RNBQK2R w KQkq - 0 1");
+        "r2qkbnr/ppp2ppp/2np4/1B2p3/6b1/4PN2/PPPP1PPP/RNBQK2R w KQkq - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     // Verify initial state: king on e1, rook on h1
@@ -257,7 +264,8 @@ TEST(CMovesOnBoardTest, KingsideCastlingWhite) {
 
 TEST(CMovesOnBoardTest, QueensideCastlingWhite) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "r2qkbnr/ppp2ppp/2np4/4p3/6b1/2NPP3/PPPBQPPP/R3KBNR w KQkq - 0 1");
+        "r2qkbnr/ppp2ppp/2np4/4p3/6b1/2NPP3/PPPBQPPP/R3KBNR w KQkq - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     // Verify initial state: king on e1, rook on a1

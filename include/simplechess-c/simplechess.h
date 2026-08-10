@@ -20,20 +20,7 @@ extern "C" {
  * \brief Factory function to create a new game from the standard starting position.
  *
  * Creates a new chess game in the initial starting position with all pieces
- * in their standard locations. Mandatory draw rules are automatically enforced.
- *
- * \return Pointer to new game object, or NULL on memory allocation failure.
- *
- * \note The caller is responsible for freeing the returned game object
- *       using simple_chess_destroy_game().
- */
-simple_chess_game_t* simple_chess_create_new_game(void);
-
-/**
- * \brief Factory function to create a new game with a specific draw enforcement mode.
- *
- * Creates a new chess game in the initial starting position with the
- * specified draw enforcement mode.
+ * in their standard locations.
  *
  * \param draw_enforcement Controls whether mandatory FIDE draw conditions
  *        are automatically enforced or only claimable.
@@ -43,13 +30,14 @@ simple_chess_game_t* simple_chess_create_new_game(void);
  * \note The caller is responsible for freeing the returned game object
  *       using simple_chess_destroy_game().
  */
-simple_chess_game_t* simple_chess_create_new_game_ex(simple_chess_draw_enforcement_t draw_enforcement);
+simple_chess_game_t* simple_chess_create_new_game(
+		simple_chess_draw_enforcement_t draw_enforcement);
 
 /**
  * \brief Factory function to create a new game from a given board position.
  *
  * The original position of the board is given as a string in
- * Forsyth-Edwards Notation (FEN). Mandatory draw rules are automatically enforced.
+ * Forsyth-Edwards Notation (FEN).
  *
  * \note FEN descriptions only give limited information about the
  *       history of the game. In particular, one cannot enforce certain
@@ -58,21 +46,6 @@ simple_chess_game_t* simple_chess_create_new_game_ex(simple_chess_draw_enforceme
  *
  * \param fen The representation of the initial position in
  *            Forsyth-Edwards Notation. Must be a valid FEN string.
- *
- * \return Pointer to new game object, or NULL if the FEN string is invalid
- *         or memory allocation fails.
- *
- * \note The caller is responsible for freeing the returned game object
- *       using simple_chess_destroy_game().
- */
-simple_chess_game_t* simple_chess_create_game_from_fen(const char* fen);
-
-/**
- * \brief Factory function to create a new game from a FEN position with a
- * specific draw enforcement mode.
- *
- * \param fen The representation of the initial position in
- *            Forsyth-Edwards Notation. Must be a valid FEN string.
  * \param draw_enforcement Controls whether mandatory FIDE draw conditions
  *        are automatically enforced or only claimable.
  *
@@ -82,7 +55,9 @@ simple_chess_game_t* simple_chess_create_game_from_fen(const char* fen);
  * \note The caller is responsible for freeing the returned game object
  *       using simple_chess_destroy_game().
  */
-simple_chess_game_t* simple_chess_create_game_from_fen_ex(const char* fen, simple_chess_draw_enforcement_t draw_enforcement);
+simple_chess_game_t* simple_chess_create_game_from_fen(
+		const char* fen,
+		simple_chess_draw_enforcement_t draw_enforcement);
 
 /**
  * \brief Make a move for the player whose turn it is to play.

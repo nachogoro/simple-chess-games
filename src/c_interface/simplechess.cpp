@@ -5,15 +5,7 @@
 
 using namespace conversion_utils;
 
-simple_chess_game_t* simple_chess_create_new_game() {
-	try {
-		return c_game(simplechess::createNewGame());
-	} catch (...) {
-		return nullptr;
-	}
-}
-
-simple_chess_game_t* simple_chess_create_new_game_ex(simple_chess_draw_enforcement_t draw_enforcement) {
+simple_chess_game_t* simple_chess_create_new_game(simple_chess_draw_enforcement_t draw_enforcement) {
 	try {
 		return c_game(simplechess::createNewGame(cpp_draw_enforcement(draw_enforcement)));
 	} catch (...) {
@@ -21,17 +13,7 @@ simple_chess_game_t* simple_chess_create_new_game_ex(simple_chess_draw_enforceme
 	}
 }
 
-simple_chess_game_t* simple_chess_create_game_from_fen(const char* fen) {
-	if (!fen) return nullptr;
-
-	try {
-		return c_game(simplechess::createGameFromFen(fen));
-	} catch (...) {
-		return nullptr;
-	}
-}
-
-simple_chess_game_t* simple_chess_create_game_from_fen_ex(const char* fen, simple_chess_draw_enforcement_t draw_enforcement) {
+simple_chess_game_t* simple_chess_create_game_from_fen(const char* fen, simple_chess_draw_enforcement_t draw_enforcement) {
 	if (!fen) return nullptr;
 
 	try {

@@ -10,7 +10,8 @@ bool check_piece_at(const simple_chess_board_t* board, uint8_t rank, char file, 
 }
 
 TEST(CGameCreationTest, RegularGameCreation) {
-    simple_chess_game_t* game = simple_chess_create_new_game();
+    simple_chess_game_t* game = simple_chess_create_new_game(
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     EXPECT_EQ(game->state, SIMPLE_CHESS_GAME_STATE_PLAYING);
@@ -65,7 +66,8 @@ TEST(CGameCreationTest, RegularGameCreation) {
 
 TEST(CGameCreationTest, GameCreationFromPosition1) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "5rk1/3Q1p1p/6p1/8/3B4/4K3/8/8 b - - 0 1");
+        "5rk1/3Q1p1p/6p1/8/3B4/4K3/8/8 b - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     EXPECT_EQ(game->state, SIMPLE_CHESS_GAME_STATE_PLAYING);
@@ -89,7 +91,8 @@ TEST(CGameCreationTest, GameCreationFromPosition1) {
 
 TEST(CGameCreationTest, GameCreationFromPositionInCheckmate) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "6kr/5Q1p/3N2p1/8/8/4K3/8/8 b - - 0 1");
+        "6kr/5Q1p/3N2p1/8/8/4K3/8/8 b - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     EXPECT_EQ(game->state, SIMPLE_CHESS_GAME_STATE_WHITE_WON);
@@ -99,7 +102,8 @@ TEST(CGameCreationTest, GameCreationFromPositionInCheckmate) {
 
 TEST(CGameCreationTest, GameCreationFromPositionInStalemate) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "7k/5Qr1/5Q2/5B2/8/4K3/8/8 b - - 0 1");
+        "7k/5Qr1/5Q2/5B2/8/4K3/8/8 b - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
     EXPECT_EQ(game->state, SIMPLE_CHESS_GAME_STATE_DRAWN);
@@ -110,7 +114,8 @@ TEST(CGameCreationTest, GameCreationFromPositionInStalemate) {
 
 TEST(CGameCreationTest, GameCreationWithTooManyKings) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "5kk1/5Qr1/5Q2/5B2/8/4K3/8/8 b - - 0 1");
+        "5kk1/5Qr1/5Q2/5B2/8/4K3/8/8 b - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
 
     // C interface should return null on invalid FEN
     EXPECT_EQ(game, nullptr);
@@ -118,7 +123,8 @@ TEST(CGameCreationTest, GameCreationWithTooManyKings) {
 
 TEST(CGameCreationTest, GameCreationWithTooFewKings) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "8/5Qr1/5Q2/5B2/8/4K3/8/8 b - - 0 1");
+        "8/5Qr1/5Q2/5B2/8/4K3/8/8 b - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
 
     // C interface should return null on invalid FEN
     EXPECT_EQ(game, nullptr);
@@ -126,14 +132,16 @@ TEST(CGameCreationTest, GameCreationWithTooFewKings) {
 
 TEST(CGameCreationTest, GameCreationActiveSideAlreadyChecking) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
-        "k4n2/5n1K/8/8/8/8/8/6r1 b - - 0 1");
+        "k4n2/5n1K/8/8/8/8/8/6r1 b - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
 
     // C interface should return null on invalid FEN
     EXPECT_EQ(game, nullptr);
 }
 
 TEST(CGameCreationTest, GameCreationWithNullFen) {
-    simple_chess_game_t* game = simple_chess_create_game_from_fen(nullptr);
+    simple_chess_game_t* game = simple_chess_create_game_from_fen(nullptr,
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
 
     // C interface should return null when passed null FEN
     EXPECT_EQ(game, nullptr);
