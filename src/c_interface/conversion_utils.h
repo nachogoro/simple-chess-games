@@ -1,8 +1,8 @@
 #ifndef CONVERSION_UTILS_H_8B2A9F4D_7C1E_4B5A_9D6F_3E8C2A5B7D19
 #define CONVERSION_UTILS_H_8B2A9F4D_7C1E_4B5A_9D6F_3E8C2A5B7D19
 
-#include <c/simplechess/simplechess.h>
-#include <cpp/simplechess/SimpleChess.h>
+#include <simplechess-c/simplechess.h>
+#include <simplechess/SimpleChess.h>
 
 
 namespace conversion_utils {

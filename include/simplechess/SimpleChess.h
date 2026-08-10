@@ -1,9 +1,9 @@
 #ifndef SIMPLE_CHESS_H_83ECD5A4_C290_4A1B_8127_33357F92414E
 #define SIMPLE_CHESS_H_83ECD5A4_C290_4A1B_8127_33357F92414E
 
-#include <cpp/simplechess/Color.h>
-#include <cpp/simplechess/Game.h>
-#include <cpp/simplechess/PieceMove.h>
+#include <simplechess/Color.h>
+#include <simplechess/Game.h>
+#include <simplechess/PieceMove.h>
 
 #include <string>
 

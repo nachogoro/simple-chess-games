@@ -1,7 +1,7 @@
 #ifndef GAME_STAGE_UPDATE_H_098D59B8_936E_4A7B_9A79_F4385132B35F
 #define GAME_STAGE_UPDATE_H_098D59B8_936E_4A7B_9A79_F4385132B35F
 
-#include <cpp/simplechess/GameStage.h>
+#include <simplechess/GameStage.h>
 
 #include "MoveValidator.h"
 

@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <cpp/simplechess/SimpleChess.h>
+#include <simplechess/SimpleChess.h>
 
 #include <boost/optional/optional_io.hpp>
 

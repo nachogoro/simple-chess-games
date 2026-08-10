@@ -1,10 +1,10 @@
 #ifndef BOARD_ANALYZER_H_9FC5BA38_BA75_4088_AB11_9AF9248ACD36
 #define BOARD_ANALYZER_H_9FC5BA38_BA75_4088_AB11_9AF9248ACD36
 
-#include <cpp/simplechess/Board.h>
-#include <cpp/simplechess/Color.h>
-#include <cpp/simplechess/PieceMove.h>
-#include <cpp/simplechess/Square.h>
+#include <simplechess/Board.h>
+#include <simplechess/Color.h>
+#include <simplechess/PieceMove.h>
+#include <simplechess/Square.h>
 
 #include <optional>
 

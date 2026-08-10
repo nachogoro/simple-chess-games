@@ -1,4 +1,4 @@
-#include <cpp/simplechess/Board.h>
+#include <simplechess/Board.h>
 
 #include "details/BoardAccess.h"
 

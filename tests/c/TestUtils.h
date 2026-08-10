@@ -1,7 +1,7 @@
 #ifndef TEST_UTILS_C_H
 #define TEST_UTILS_C_H
 
-#include <c/simplechess/simplechess.h>
+#include <simplechess-c/simplechess.h>
 #include <gtest/gtest.h>
 
 // Helper functions for C interface tests

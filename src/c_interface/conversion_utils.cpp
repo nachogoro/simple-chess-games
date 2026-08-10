@@ -1,5 +1,5 @@
 #include "conversion_utils.h"
-#include "cpp/simplechess/SimpleChess.h"
+#include "simplechess/SimpleChess.h"
 #include "../core/Builders.h"
 #include "../core/details/fen/FenUtils.h"
 #include <algorithm>

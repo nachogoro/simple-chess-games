@@ -1,6 +1,6 @@
 #include "KingMove.h"
 
-#include <cpp/simplechess/GameStage.h>
+#include <simplechess/GameStage.h>
 #include "../BoardAnalyzer.h"
 
 using namespace simplechess;

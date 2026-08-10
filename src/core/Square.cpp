@@ -1,4 +1,4 @@
-#include <cpp/simplechess/Square.h>
+#include <simplechess/Square.h>
 
 #include <stdexcept>
 #include <sstream>

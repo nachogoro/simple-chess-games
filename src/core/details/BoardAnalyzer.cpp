@@ -4,7 +4,7 @@
 #include "BoardAccess.h"
 #include "MoveValidator.h"
 
-#include <cpp/simplechess/Exceptions.h>
+#include <simplechess/Exceptions.h>
 
 #include <algorithm>
 #include <array>

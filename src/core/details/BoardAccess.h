@@ -1,9 +1,9 @@
 #ifndef BOARD_ACCESS_H_5C6A0D2E_4F1B_47A9_9B7E_0C3E9D5A1F84
 #define BOARD_ACCESS_H_5C6A0D2E_4F1B_47A9_9B7E_0C3E9D5A1F84
 
-#include <cpp/simplechess/Board.h>
-#include <cpp/simplechess/Piece.h>
-#include <cpp/simplechess/Square.h>
+#include <simplechess/Board.h>
+#include <simplechess/Piece.h>
+#include <simplechess/Square.h>
 
 #include <array>
 #include <cstdint>

@@ -1,11 +1,11 @@
 #ifndef GAME_H_AA82C7D6_D956_405F_95B0_8A23678A5041
 #define GAME_H_AA82C7D6_D956_405F_95B0_8A23678A5041
 
-#include <cpp/simplechess/Exceptions.h>
-#include <cpp/simplechess/GameStage.h>
-#include <cpp/simplechess/PieceMove.h>
-#include <cpp/simplechess/PlayedMove.h>
-#include <cpp/simplechess/Square.h>
+#include <simplechess/Exceptions.h>
+#include <simplechess/GameStage.h>
+#include <simplechess/PieceMove.h>
+#include <simplechess/PlayedMove.h>
+#include <simplechess/Square.h>
 
 #include <optional>
 

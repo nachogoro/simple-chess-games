@@ -3,7 +3,7 @@
 #include "../../../core/Builders.h"
 #include "FenParser.h"
 
-#include <cpp/simplechess/GameStage.h>
+#include <simplechess/GameStage.h>
 
 #include <stdexcept>
 

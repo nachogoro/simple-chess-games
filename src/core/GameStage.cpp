@@ -1,4 +1,4 @@
-#include <cpp/simplechess/GameStage.h>
+#include <simplechess/GameStage.h>
 
 using namespace simplechess;
 

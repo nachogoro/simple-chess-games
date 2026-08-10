@@ -64,19 +64,19 @@ The build produces four libraries:
 
 This library provides two complete APIs for the same chess engine:
 
-### C++ API (`include/cpp/simplechess/`)
+### C++ API (`include/simplechess/`)
 Modern C++17 interface with exception-based error handling:
 ```cpp
-#include "cpp/simplechess/Game.h"
+#include "simplechess/Game.h"
 
 Game game = createGame();
 Game newGame = makeMove(game, move);  // Returns new game state
 ```
 
-### C API (`include/c/simplechess/`)
+### C API (`include/simplechess-c/`)
 C-compatible interface with NULL return codes for errors:
 ```c
-#include "c/simplechess/simplechess.h"
+#include "simplechess-c/simplechess.h"
 
 game_t* game = simple_chess_create_game();
 game_t* newGame = simple_chess_make_move(game, move);

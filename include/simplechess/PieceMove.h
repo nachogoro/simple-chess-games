@@ -1,8 +1,8 @@
 #ifndef PIECE_MOVE_H_565687CA_B90B_47F1_84E4_181A6503B9EE
 #define PIECE_MOVE_H_565687CA_B90B_47F1_84E4_181A6503B9EE
 
-#include <cpp/simplechess/Piece.h>
-#include <cpp/simplechess/Square.h>
+#include <simplechess/Piece.h>
+#include <simplechess/Square.h>
 
 #include <optional>
 

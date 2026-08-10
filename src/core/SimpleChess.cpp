@@ -1,4 +1,4 @@
-#include <cpp/simplechess/SimpleChess.h>
+#include <simplechess/SimpleChess.h>
 
 #include "Builders.h"
 #include "details/BoardAnalyzer.h"

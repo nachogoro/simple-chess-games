@@ -1,11 +1,11 @@
 #ifndef GAME_STAGE_H_3064169C_7DBE_4CB3_91C2_EFE730CF43BB
 #define GAME_STAGE_H_3064169C_7DBE_4CB3_91C2_EFE730CF43BB
 
-#include <cpp/simplechess/Board.h>
-#include <cpp/simplechess/Color.h>
-#include <cpp/simplechess/Piece.h>
-#include <cpp/simplechess/PlayedMove.h>
-#include <cpp/simplechess/Square.h>
+#include <simplechess/Board.h>
+#include <simplechess/Color.h>
+#include <simplechess/Piece.h>
+#include <simplechess/PlayedMove.h>
+#include <simplechess/Square.h>
 
 #include <optional>
 

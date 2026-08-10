@@ -1,7 +1,7 @@
 #ifndef FEN_UTILS_H_74319100_580E_47C2_8610_E38B9948AA96
 #define FEN_UTILS_H_74319100_580E_47C2_8610_E38B9948AA96
 
-#include <cpp/simplechess/GameStage.h>
+#include <simplechess/GameStage.h>
 
 #include <string>
 

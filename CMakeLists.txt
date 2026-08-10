@@ -92,11 +92,11 @@ target_link_libraries(simple-chess-games-static PRIVATE Boost::algorithm)
 # Set properties for C++ libraries
 set_target_properties(simple-chess-games PROPERTIES
 	VERSION ${PROJECT_VERSION}
-	PUBLIC_HEADER "include/cpp/simplechess/Board.h;include/cpp/simplechess/Color.h;include/cpp/simplechess/Exceptions.h;include/cpp/simplechess/Game.h;include/cpp/simplechess/SimpleChess.h;include/cpp/simplechess/GameStage.h;include/cpp/simplechess/Piece.h;include/cpp/simplechess/PieceMove.h;include/cpp/simplechess/PlayedMove.h;include/cpp/simplechess/Square.h")
+	PUBLIC_HEADER "include/simplechess/Board.h;include/simplechess/Color.h;include/simplechess/Exceptions.h;include/simplechess/Game.h;include/simplechess/SimpleChess.h;include/simplechess/GameStage.h;include/simplechess/Piece.h;include/simplechess/PieceMove.h;include/simplechess/PlayedMove.h;include/simplechess/Square.h")
 
 set_target_properties(simple-chess-games-static PROPERTIES
 	VERSION ${PROJECT_VERSION}
-	PUBLIC_HEADER "include/cpp/simplechess/Board.h;include/cpp/simplechess/Color.h;include/cpp/simplechess/Exceptions.h;include/cpp/simplechess/Game.h;include/cpp/simplechess/SimpleChess.h;include/cpp/simplechess/GameStage.h;include/cpp/simplechess/Piece.h;include/cpp/simplechess/PieceMove.h;include/cpp/simplechess/PlayedMove.h;include/cpp/simplechess/Square.h")
+	PUBLIC_HEADER "include/simplechess/Board.h;include/simplechess/Color.h;include/simplechess/Exceptions.h;include/simplechess/Game.h;include/simplechess/SimpleChess.h;include/simplechess/GameStage.h;include/simplechess/Piece.h;include/simplechess/PieceMove.h;include/simplechess/PlayedMove.h;include/simplechess/Square.h")
 
 # ===== C LIBRARY =====
 
@@ -113,11 +113,11 @@ target_link_libraries(simple-chess-games-c-static PRIVATE Boost::algorithm)
 # Set properties for C libraries
 set_target_properties(simple-chess-games-c PROPERTIES
 	VERSION ${PROJECT_VERSION}
-	PUBLIC_HEADER "include/c/simplechess/simplechess.h")
+	PUBLIC_HEADER "include/simplechess-c/simplechess.h;include/simplechess-c/simplechess_types.h")
 
 set_target_properties(simple-chess-games-c-static PROPERTIES
 	VERSION ${PROJECT_VERSION}
-	PUBLIC_HEADER "include/c/simplechess/simplechess.h")
+	PUBLIC_HEADER "include/simplechess-c/simplechess.h;include/simplechess-c/simplechess_types.h")
 
 include(GNUInstallDirs)
 
@@ -153,8 +153,8 @@ install(TARGETS simple-chess-games-static simple-chess-games-c-static
 	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Install directory structure for headers
-install(DIRECTORY include/cpp DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(DIRECTORY include/c DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY include/simplechess DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY include/simplechess-c DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Option to build tests (enabled by default)
 option(BUILD_TESTS "Build test executables" ON)

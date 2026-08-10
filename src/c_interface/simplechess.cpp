@@ -1,5 +1,5 @@
-#include <c/simplechess/simplechess.h>
-#include <cpp/simplechess/SimpleChess.h>
+#include <simplechess-c/simplechess.h>
+#include <simplechess/SimpleChess.h>
 
 #include "conversion_utils.h"
 
