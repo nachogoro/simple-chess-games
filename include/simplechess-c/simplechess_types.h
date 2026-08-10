@@ -16,40 +16,40 @@ extern "C" {
 	/**
 	 * \brief The color of each side in a chess game.
 	 */
-	enum color_t {
+	typedef enum color_t {
 		ColorWhite,
 		ColorBlack
-	};
+	} color_t;
 
 	/**
 	 * \brief Represents a square on the chess board.
 	 *
 	 * Squares are identified by rank (1-8) and file ('a'-'h').
 	 */
-	struct square_t {
+	typedef struct square_t {
 		/** Rank (1-8) */
 		uint8_t rank;
 
 		/** File ('a'-'h') */
 		char file;
-	};
+	} square_t;
 
 	/**
 	 * \brief The type of a chess piece.
 	 */
-	enum piece_type_t {
+	typedef enum piece_type_t {
 		PieceTypePawn,
 		PieceTypeRook,
 		PieceTypeKnight,
 		PieceTypeBishop,
 		PieceTypeQueen,
 		PieceTypeKing
-	};
+	} piece_type_t;
 
 	/**
 	 * \brief Represents a chess piece with its type and color.
 	 */
-	struct piece_t {
+	typedef struct piece_t {
 		/**
 		 * \brief Type of the piece
 		 */
@@ -59,7 +59,7 @@ extern "C" {
 		 * \brief Color of the piece
 		 */
 		color_t color;
-	};
+	} piece_t;
 
 	/**
 	 * \brief Describes a move which can be made by a player.
@@ -74,7 +74,7 @@ extern "C" {
 	 * moved to f3"), without accounting for captures, checks, draw offers,
 	 * etc.
 	 */
-	struct piece_move_t {
+	typedef struct piece_move_t {
 		/**
 		 * \brief The piece whose movement is described.
 		 */
@@ -106,12 +106,12 @@ extern "C" {
 		 * is_promotion is true).
 		 */
 		piece_type_t promoted_to;
-	};
+	} piece_move_t;
 
 	/**
 	 * \brief The different types of check which can be caused by a move.
 	 */
-	enum check_type_t {
+	typedef enum check_type_t {
 		/**
 		 * \brief No check whatsoever.
 		 */
@@ -127,7 +127,7 @@ extern "C" {
 		 * \brief Checkmate (the other side has no valid moves).
 		 */
 		CheckTypeCheckMate
-	};
+	} check_type_t;
 
 	/**
 	 * \brief Describes a move that has been played in a game of chess.
@@ -138,7 +138,7 @@ extern "C" {
 	 * "The move included a draw offer", "The move resulted in checkmate",
 	 * etc.).
 	 */
-	struct played_move_t {
+	typedef struct played_move_t {
 		/**
 		 * \brief The description of the move of the piece as a \ref
 		 * piece_move_t.
@@ -169,7 +169,7 @@ extern "C" {
 		 * \brief The string representation of the move in algebraic notation.
 		 */
 		char in_algebraic_notation[8];
-	};
+	} played_move_t;
 
 	/**
 	 * \brief Castling rights bitfield values.
@@ -177,7 +177,7 @@ extern "C" {
 	 * These values can be combined using bitwise OR to represent
 	 * multiple castling rights.
 	 */
-	enum castling_right_t {
+	typedef enum castling_right_t {
 		/**
 		 * \brief White can castle kingside
 		 */
@@ -197,7 +197,7 @@ extern "C" {
 		 * \brief Black can castle queenside
 		 */
 		CastlingRightBlackQueenSide = 0x08
-	};
+	} castling_right_t;
 
 	/**
 	 * \brief Represents the chess board state.
@@ -208,7 +208,7 @@ extern "C" {
 	 * Auxiliary functions are provided to convert from square_t to index and
 	 * viceversa.
 	 */
-	struct board_t {
+	typedef struct board_t {
 		/**
 		 * \brief Whether the i-th square is occupied by a piece or not.
 		 */
@@ -218,7 +218,7 @@ extern "C" {
 		 * \brief The piece located at the i-th square (only if occupied[i] is true).
 		 */
 		piece_t piece_at[64];
-	};
+	} board_t;
 
 	/**
 	 * \brief Represents a complete game position.
@@ -227,7 +227,7 @@ extern "C" {
 	 * position, including board state, game rules state, and position
 	 * metadata.
 	 */
-	struct game_stage_t {
+	typedef struct game_stage_t {
 		/**
 		 * \brief Current board position
 		 */
@@ -272,12 +272,12 @@ extern "C" {
 		 * \brief FEN representation of this position
 		 */
 		char fen[90];
-	};
+	} game_stage_t;
 
 	/**
 	 * \brief The overall state of a chess game.
 	 */
-	enum game_state_t {
+	typedef enum game_state_t {
 		/**
 		 * \brief The game is still being played
 		 */
@@ -297,13 +297,12 @@ extern "C" {
 		 * \brief The game ended with a victory for black
 		 */
 		GameStateBlackWon
-	};
+	} game_state_t;
 
 	/**
 	 * \brief Reasons why a game might be drawn.
 	 */
-	enum draw_reason_t
-	{
+	typedef enum draw_reason_t {
 		/**
 		 * \brief Stalemate (the active side has no valid moves and is not in
 		 * check).
@@ -359,7 +358,7 @@ extern "C" {
 		 * the checkmate takes precedence over the draw rule.
 		 */
 		DrawReasonSeventyFiveMoveRule
-	};
+	} draw_reason_t;
 
 	/**
 	 * \brief Represents one entry in the game history.
@@ -367,7 +366,7 @@ extern "C" {
 	 * Each entry contains the position before a move was played
 	 * and the move that was played.
 	 */
-	struct game_history_entry_t {
+	typedef struct game_history_entry_t {
 		/**
 		 * \brief FEN representation before this move
 		 */
@@ -378,13 +377,13 @@ extern "C" {
 		 * \brief The move that was played
 		 */
 		played_move_t played_move;
-	};
+	} game_history_entry_t;
 
 	/**
 	 * \brief Controls whether mandatory draw rules are automatically
 	 * enforced or only claimable.
 	 */
-	enum draw_enforcement_t {
+	typedef enum draw_enforcement_t {
 		/**
 		 * \brief Mandatory FIDE draw conditions are automatically enforced.
 		 */
@@ -395,7 +394,7 @@ extern "C" {
 		 * automatically enforced.
 		 */
 		DrawEnforcementClaimOnly
-	};
+	} draw_enforcement_t;
 
 	/**
 	 * \brief Represents a complete chess game with all state information.
@@ -404,7 +403,7 @@ extern "C" {
 	 * It contains the current position, game history, available moves,
 	 * and game status information.
 	 */
-	struct game_t {
+	typedef struct game_t {
 		/**
 		 * \brief Current game state
 		 */
@@ -455,7 +454,7 @@ extern "C" {
 		 * \brief The draw enforcement mode of this game.
 		 */
 		draw_enforcement_t draw_enforcement;
-	};
+	} game_t;
 
 #ifdef __cplusplus
 }

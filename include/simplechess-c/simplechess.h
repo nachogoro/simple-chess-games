@@ -27,7 +27,7 @@ extern "C" {
  * \note The caller is responsible for freeing the returned game object
  *       using destroy_game().
  */
-game_t* simple_chess_create_new_game();
+game_t* simple_chess_create_new_game(void);
 
 /**
  * \brief Factory function to create a new game with a specific draw enforcement mode.

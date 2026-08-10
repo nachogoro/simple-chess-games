@@ -195,10 +195,16 @@ if(BUILD_TESTS)
         tests/c/Resignation_test.cpp
         tests/c/MoveCounter_test.cpp
         tests/c/MoveAvailability_test.cpp
-        tests/c/MovesOnBoard_test.cpp)
+        tests/c/MovesOnBoard_test.cpp
+        # The only translation unit in the project compiled as C. It exists
+        # so that the C headers are checked against a C compiler, which the
+        # rest of this suite cannot do: GoogleTest needs C++.
+        tests/c/c_header_compile_check.c)
     target_include_directories(run_c_tests PRIVATE include)
     target_include_directories(run_c_tests PRIVATE tests/c)
     target_link_libraries(run_c_tests gtest_main simple-chess-games-c)
+    set_source_files_properties(tests/c/c_header_compile_check.c PROPERTIES
+        COMPILE_OPTIONS "-std=c99;-Wall;-Wextra;-Wpedantic;-Werror")
 
     include(GoogleTest)
     gtest_discover_tests(run_cpp_tests)
