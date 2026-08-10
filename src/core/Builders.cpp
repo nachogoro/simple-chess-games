@@ -90,7 +90,7 @@ Game GameBuilder::build(
 		const std::optional<DrawReason>& drawReason,
 		std::vector<std::pair<GameStage, PlayedMove>> history,
 		GameStage currentStage,
-		std::set<PieceMove> allAvailableMoves,
+		std::vector<PieceMove> allAvailableMoves,
 		const std::optional<DrawReason>& reasonToClaimDraw,
 		const DrawEnforcement drawEnforcement,
 		std::map<std::string, uint8_t> previouslyReachedPositions)

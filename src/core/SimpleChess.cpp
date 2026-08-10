@@ -7,10 +7,29 @@
 #include "details/fen/FenParser.h"
 #include "details/fen/FenUtils.h"
 
+#include <algorithm>
+
 using namespace simplechess;
 
 namespace internal
 {
+	/**
+	 * Moves are generated one source square at a time, so they come out in
+	 * whatever order move generation happens to visit the board in. The
+	 * public interface promises them ordered by PieceMove::operator<
+	 * instead, so they are sorted here - once per move actually played,
+	 * rather than on every position examined while working out what those
+	 * moves are.
+	 *
+	 * Duplicates are impossible (see MoveValidator::allAvailableMoves), so
+	 * there is nothing to remove afterwards.
+	 */
+	std::vector<PieceMove> orderedMoves(std::vector<PieceMove> moves)
+	{
+		std::sort(moves.begin(), moves.end());
+		return moves;
+	}
+
 	void validateGamePosition(const Board& board, Color activeColor, uint8_t castlingRights)
 	{
 		// 1. Validate that there is exactly one King per side
@@ -177,13 +196,7 @@ Game simplechess::createGameFromFen(
 				information.reasonItWasDrawn,
 				{},
 				{currentStage},
-				// The public interface hands the available moves out as an
-				// ordered set, so this is where the generated moves become
-				// one - once per move actually played, rather than on every
-				// position examined while working out what those moves are.
-				std::set<PieceMove>(
-						information.availableMoves.begin(),
-						information.availableMoves.end()),
+				internal::orderedMoves(information.availableMoves),
 				information.reasonToClaimDraw,
 				drawEnforcement);
 	}
@@ -223,9 +236,7 @@ Game simplechess::createGameFromFen(
 		information.reasonItWasDrawn,
 		{}, // empty history
 		originalStage,
-		std::set<PieceMove>(
-				information.availableMoves.begin(),
-				information.availableMoves.end()),
+		internal::orderedMoves(information.availableMoves),
 		information.reasonToClaimDraw,
 		drawEnforcement);
 
@@ -242,9 +253,9 @@ Game simplechess::makeMove(
 		throw IllegalStateException("Attempted to make a move in finished game");
 	}
 
-	const std::set<PieceMove> validMoves = game.allAvailableMoves();
+	const std::vector<PieceMove>& validMoves = game.allAvailableMoves();
 
-	if (validMoves.count(move) == 0)
+	if (std::find(validMoves.begin(), validMoves.end(), move) == validMoves.end())
 	{
 		throw IllegalStateException("Attempted to make invalid move");
 	}
@@ -288,13 +299,7 @@ Game simplechess::makeMove(
 			information.reasonItWasDrawn,
 			std::move(nextHistory),
 			next.stage,
-			// The public interface hands the available moves out as an ordered
-			// set, so this is where the generated moves become one - once per
-			// move actually played, rather than on every position examined
-			// while working out what those moves are.
-			std::set<PieceMove>(
-					information.availableMoves.begin(),
-					information.availableMoves.end()),
+			internal::orderedMoves(information.availableMoves),
 			information.reasonToClaimDraw,
 			drawEnforcement,
 			std::move(nextReachedPositions));

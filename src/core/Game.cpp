@@ -19,7 +19,7 @@ Game::Game(
 		const std::optional<DrawReason>& drawReason,
 		std::vector<std::pair<GameStage, PlayedMove>> history,
 		GameStage currentStage,
-		std::set<PieceMove> allAvailableMoves,
+		std::vector<PieceMove> allAvailableMoves,
 		const std::optional<DrawReason>& reasonToClaimDraw,
 		const DrawEnforcement drawEnforcement,
 		std::map<std::string, uint8_t> previouslyReachedPositions)
@@ -77,22 +77,22 @@ Color Game::activeColor() const
 	return currentStage().activeColor();
 }
 
-std::set<PieceMove> Game::availableMovesForPiece(const Square& square) const
+std::vector<PieceMove> Game::availableMovesForPiece(const Square& square) const
 {
-	std::set<PieceMove> result;
+	std::vector<PieceMove> result;
 
 	for (const auto& move : allAvailableMoves())
 	{
 		if (move.src() == square)
 		{
-			result.insert(move);
+			result.push_back(move);
 		}
 	}
 
 	return result;
 }
 
-const std::set<PieceMove>& Game::allAvailableMoves() const
+const std::vector<PieceMove>& Game::allAvailableMoves() const
 {
 	return mAllAvailableMoves;
 }

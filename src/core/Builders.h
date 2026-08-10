@@ -69,7 +69,7 @@ namespace simplechess
 					const std::optional<DrawReason>& drawReason,
 					std::vector<std::pair<GameStage, PlayedMove>> history,
 					GameStage currentStage,
-					std::set<PieceMove> allAvailableMoves,
+					std::vector<PieceMove> allAvailableMoves,
 					const std::optional<DrawReason>& reasonToClaimDraw,
 					DrawEnforcement drawEnforcement = DrawEnforcement::Automatic,
 					std::map<std::string, uint8_t> previouslyReachedPositions = {});

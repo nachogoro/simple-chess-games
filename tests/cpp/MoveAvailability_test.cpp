@@ -1,3 +1,5 @@
+#include "TestUtils.h"
+
 #include <gtest/gtest.h>
 
 #include <simplechess/SimpleChess.h>
@@ -112,9 +114,9 @@ TEST(MoveAvailabilityTest, RegularGameMoves) {
 				Square::fromRankAndFile(3, 'h')),
 	};
 
-	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
+	const std::vector<PieceMove>& availableMoves = game.allAvailableMoves();
 	EXPECT_EQ(availableMoves.size(), expectedAvailableMoves.size());
-	EXPECT_EQ(availableMoves, expectedAvailableMoves);
+	EXPECT_EQ(availableMoves, asVector(expectedAvailableMoves));
 }
 
 TEST(MoveAvailabilityTest, KnightMovesUnobstructed) {
@@ -179,9 +181,9 @@ TEST(MoveAvailabilityTest, KnightMovesUnobstructed) {
 				Square::fromRankAndFile(2, 'e'))
 	};
 
-	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
+	const std::vector<PieceMove>& availableMoves = game.allAvailableMoves();
 	EXPECT_EQ(availableMoves.size(), expectedAvailableMoves.size());
-	EXPECT_EQ(availableMoves, expectedAvailableMoves);
+	EXPECT_EQ(availableMoves, asVector(expectedAvailableMoves));
 }
 
 TEST(MoveAvailabilityTest, KnightMovesObstructedAttempt) {
@@ -248,9 +250,9 @@ TEST(MoveAvailabilityTest, KnightMovesObstructedAttempt) {
 				Square::fromRankAndFile(2, 'e'))
 	};
 
-	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
+	const std::vector<PieceMove>& availableMoves = game.allAvailableMoves();
 	EXPECT_EQ(availableMoves.size(), expectedAvailableMoves.size());
-	EXPECT_EQ(availableMoves, expectedAvailableMoves);
+	EXPECT_EQ(availableMoves, asVector(expectedAvailableMoves));
 }
 
 TEST(MoveAvailabilityTest, BishopMovesUnobstructed) {
@@ -415,9 +417,9 @@ TEST(MoveAvailabilityTest, BishopMovesUnobstructed) {
 				Square::fromRankAndFile(2, 'h')),
 	};
 
-	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
+	const std::vector<PieceMove>& availableMoves = game.allAvailableMoves();
 	EXPECT_EQ(availableMoves.size(), expectedAvailableMoves.size());
-	EXPECT_EQ(availableMoves, expectedAvailableMoves);
+	EXPECT_EQ(availableMoves, asVector(expectedAvailableMoves));
 }
 
 TEST(MoveAvailabilityTest, BishopMovesObstructed) {
@@ -482,9 +484,9 @@ TEST(MoveAvailabilityTest, BishopMovesObstructed) {
 				Square::fromRankAndFile(2, 'f'))
 	};
 
-	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
+	const std::vector<PieceMove>& availableMoves = game.allAvailableMoves();
 	EXPECT_EQ(availableMoves.size(), expectedAvailableMoves.size());
-	EXPECT_EQ(availableMoves, expectedAvailableMoves);
+	EXPECT_EQ(availableMoves, asVector(expectedAvailableMoves));
 }
 
 TEST(MoveAvailabilityTest, RookMovesUnobstructed) {
@@ -589,9 +591,9 @@ TEST(MoveAvailabilityTest, RookMovesUnobstructed) {
 				Square::fromRankAndFile(1, 'd'))
 	};
 
-	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
+	const std::vector<PieceMove>& availableMoves = game.allAvailableMoves();
 	EXPECT_EQ(availableMoves.size(), expectedAvailableMoves.size());
-	EXPECT_EQ(availableMoves, expectedAvailableMoves);
+	EXPECT_EQ(availableMoves, asVector(expectedAvailableMoves));
 }
 
 TEST(MoveAvailabilityTest, RookMovesObstructed) {
@@ -656,9 +658,9 @@ TEST(MoveAvailabilityTest, RookMovesObstructed) {
 				Square::fromRankAndFile(1, 'd'))
 	};
 
-	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
+	const std::vector<PieceMove>& availableMoves = game.allAvailableMoves();
 	EXPECT_EQ(availableMoves.size(), expectedAvailableMoves.size());
-	EXPECT_EQ(availableMoves, expectedAvailableMoves);
+	EXPECT_EQ(availableMoves, asVector(expectedAvailableMoves));
 }
 
 TEST(MoveAvailabilityTest, QueenMovesUnobstructed) {
@@ -828,9 +830,9 @@ TEST(MoveAvailabilityTest, QueenMovesUnobstructed) {
 				Square::fromRankAndFile(1, 'd'))
 	};
 
-	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
+	const std::vector<PieceMove>& availableMoves = game.allAvailableMoves();
 	EXPECT_EQ(availableMoves.size(), expectedAvailableMoves.size());
-	EXPECT_EQ(availableMoves, expectedAvailableMoves);
+	EXPECT_EQ(availableMoves, asVector(expectedAvailableMoves));
 }
 
 TEST(MoveAvailabilityTest, QueenMovesObstructed) {
@@ -945,9 +947,9 @@ TEST(MoveAvailabilityTest, QueenMovesObstructed) {
 				Square::fromRankAndFile(2, 'f'))
 	};
 
-	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
+	const std::vector<PieceMove>& availableMoves = game.allAvailableMoves();
 	EXPECT_EQ(availableMoves.size(), expectedAvailableMoves.size());
-	EXPECT_EQ(availableMoves, expectedAvailableMoves);
+	EXPECT_EQ(availableMoves, asVector(expectedAvailableMoves));
 }
 
 TEST(MoveAvailabilityTest, WhiteCastlingUnobstructed) {
@@ -1062,9 +1064,9 @@ TEST(MoveAvailabilityTest, WhiteCastlingUnobstructed) {
 				Square::fromRankAndFile(1, 'g')),
 	};
 
-	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
+	const std::vector<PieceMove>& availableMoves = game.allAvailableMoves();
 	EXPECT_EQ(availableMoves.size(), expectedAvailableMoves.size());
-	EXPECT_EQ(availableMoves, expectedAvailableMoves);
+	EXPECT_EQ(availableMoves, asVector(expectedAvailableMoves));
 }
 
 TEST(MoveAvailabilityTest, WhiteCastlingQueensideObstructed) {
@@ -1171,9 +1173,9 @@ TEST(MoveAvailabilityTest, WhiteCastlingQueensideObstructed) {
 				Square::fromRankAndFile(1, 'g')),
 	};
 
-	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
+	const std::vector<PieceMove>& availableMoves = game.allAvailableMoves();
 	EXPECT_EQ(availableMoves.size(), expectedAvailableMoves.size());
-	EXPECT_EQ(availableMoves, expectedAvailableMoves);
+	EXPECT_EQ(availableMoves, asVector(expectedAvailableMoves));
 }
 
 TEST(MoveAvailabilityTest, WhiteCastlingBothObstructed) {
@@ -1276,9 +1278,9 @@ TEST(MoveAvailabilityTest, WhiteCastlingBothObstructed) {
 				Square::fromRankAndFile(1, 'f')),
 	};
 
-	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
+	const std::vector<PieceMove>& availableMoves = game.allAvailableMoves();
 	EXPECT_EQ(availableMoves.size(), expectedAvailableMoves.size());
-	EXPECT_EQ(availableMoves, expectedAvailableMoves);
+	EXPECT_EQ(availableMoves, asVector(expectedAvailableMoves));
 }
 
 TEST(MoveAvailabilityTest, WhiteCastlingUnavailable) {
@@ -1295,9 +1297,9 @@ TEST(MoveAvailabilityTest, WhiteCastlingUnavailable) {
 				Square::fromRankAndFile(1, 'e'),
 				Square::fromRankAndFile(1, 'c'));
 
-	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
-	EXPECT_EQ(availableMoves.count(kingSideCastling), 0);
-	EXPECT_EQ(availableMoves.count(queenSideCastling), 0);
+	const std::vector<PieceMove>& availableMoves = game.allAvailableMoves();
+	EXPECT_EQ(countMoves(availableMoves, kingSideCastling), 0);
+	EXPECT_EQ(countMoves(availableMoves, queenSideCastling), 0);
 }
 
 TEST(MoveAvailabilityTest, BlackCastlingInCheck) {
@@ -1314,9 +1316,9 @@ TEST(MoveAvailabilityTest, BlackCastlingInCheck) {
 				Square::fromRankAndFile(8, 'e'),
 				Square::fromRankAndFile(8, 'c'));
 
-	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
-	EXPECT_EQ(availableMoves.count(kingSideCastling), 0);
-	EXPECT_EQ(availableMoves.count(queenSideCastling), 0);
+	const std::vector<PieceMove>& availableMoves = game.allAvailableMoves();
+	EXPECT_EQ(countMoves(availableMoves, kingSideCastling), 0);
+	EXPECT_EQ(countMoves(availableMoves, queenSideCastling), 0);
 }
 
 TEST(MoveAvailabilityTest, EnPassantAvailable) {
@@ -1328,8 +1330,8 @@ TEST(MoveAvailabilityTest, EnPassantAvailable) {
 				Square::fromRankAndFile(4, 'e'),
 				Square::fromRankAndFile(3, 'f'));
 
-	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
-	EXPECT_EQ(availableMoves.count(enPassant), 1);
+	const std::vector<PieceMove>& availableMoves = game.allAvailableMoves();
+	EXPECT_EQ(countMoves(availableMoves, enPassant), 1);
 }
 
 TEST(MoveAvailabilityTest, EnPassantWouldLeaveInCheck) {
@@ -1341,8 +1343,8 @@ TEST(MoveAvailabilityTest, EnPassantWouldLeaveInCheck) {
 				Square::fromRankAndFile(5, 'e'),
 				Square::fromRankAndFile(6, 'd'));
 
-	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
-	EXPECT_EQ(availableMoves.count(enPassant), 0);
+	const std::vector<PieceMove>& availableMoves = game.allAvailableMoves();
+	EXPECT_EQ(countMoves(availableMoves, enPassant), 0);
 }
 
 TEST(MoveAvailabilityTest, PawnPromotion) {
@@ -1421,17 +1423,17 @@ TEST(MoveAvailabilityTest, PawnPromotion) {
 				Square::fromRankAndFile(8, 'e'),
 				PieceType::King);
 
-	const std::set<PieceMove> availableMoves = game.allAvailableMoves();
-	EXPECT_EQ(availableMoves.count(promotionQueen), 1);
-	EXPECT_EQ(availableMoves.count(promotionQueenWithCapture), 1);
-	EXPECT_EQ(availableMoves.count(promotionRook), 1);
-	EXPECT_EQ(availableMoves.count(promotionRookWithCapture), 1);
-	EXPECT_EQ(availableMoves.count(promotionKnight), 1);
-	EXPECT_EQ(availableMoves.count(promotionKnightWithCapture), 1);
-	EXPECT_EQ(availableMoves.count(promotionBishop), 1);
-	EXPECT_EQ(availableMoves.count(promotionBishopWithCapture), 1);
-	EXPECT_EQ(availableMoves.count(wrongPromotionKing), 0);
-	EXPECT_EQ(availableMoves.count(wrongPromotionKingWithCapture), 0);
-	EXPECT_EQ(availableMoves.count(wrongPromotionPawn), 0);
-	EXPECT_EQ(availableMoves.count(wrongPromotionPawnWithCapture), 0);
+	const std::vector<PieceMove>& availableMoves = game.allAvailableMoves();
+	EXPECT_EQ(countMoves(availableMoves, promotionQueen), 1);
+	EXPECT_EQ(countMoves(availableMoves, promotionQueenWithCapture), 1);
+	EXPECT_EQ(countMoves(availableMoves, promotionRook), 1);
+	EXPECT_EQ(countMoves(availableMoves, promotionRookWithCapture), 1);
+	EXPECT_EQ(countMoves(availableMoves, promotionKnight), 1);
+	EXPECT_EQ(countMoves(availableMoves, promotionKnightWithCapture), 1);
+	EXPECT_EQ(countMoves(availableMoves, promotionBishop), 1);
+	EXPECT_EQ(countMoves(availableMoves, promotionBishopWithCapture), 1);
+	EXPECT_EQ(countMoves(availableMoves, wrongPromotionKing), 0);
+	EXPECT_EQ(countMoves(availableMoves, wrongPromotionKingWithCapture), 0);
+	EXPECT_EQ(countMoves(availableMoves, wrongPromotionPawn), 0);
+	EXPECT_EQ(countMoves(availableMoves, wrongPromotionPawnWithCapture), 0);
 }

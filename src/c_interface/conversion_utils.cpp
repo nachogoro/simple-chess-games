@@ -501,9 +501,10 @@ simplechess::Game conversion_utils::cpp_game(const game_t& game) {
 	}
 
 	simplechess::GameStage currentStage = cpp_game_stage(game.current_stage);
-	std::set<simplechess::PieceMove> allAvailableMoves;
+	std::vector<simplechess::PieceMove> allAvailableMoves;
+	allAvailableMoves.reserve(game.available_move_count);
 	for (uint16_t index = 0; index < game.available_move_count; ++index) {
-		allAvailableMoves.insert(cpp_piece_move(game.available_moves[index]));
+		allAvailableMoves.push_back(cpp_piece_move(game.available_moves[index]));
 	}
 
 	std::optional<simplechess::DrawReason> reasonToClaimDraw;

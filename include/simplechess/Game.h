@@ -10,7 +10,6 @@
 #include <optional>
 
 #include <map>
-#include <set>
 #include <string>
 #include <utility>
 #include <vector>
@@ -199,15 +198,18 @@ namespace simplechess
 			 * \param square The \ref Square whose piece is being queried.
 			 * \return All the possible moves for the piece.
 			 */
-			std::set<PieceMove> availableMovesForPiece(const Square& square) const;
+			std::vector<PieceMove> availableMovesForPiece(const Square& square) const;
 
 			/**
 			 * \brief Returns all available moves for the player whose turn it
 			 * is to play.
 			 *
+			 * The moves are ordered by \ref PieceMove::operator<, and contain
+			 * no duplicates.
+			 *
 			 * \return All the possible moves for the current player.
 			 */
-			const std::set<PieceMove>& allAvailableMoves() const;
+			const std::vector<PieceMove>& allAvailableMoves() const;
 
 			/**
 			 * \brief Returns an optional value containing the reason under
@@ -260,7 +262,7 @@ namespace simplechess
 					const std::optional<DrawReason>& drawReason,
 					std::vector<std::pair<GameStage, PlayedMove>> history,
 					GameStage currentStage,
-					std::set<PieceMove> allAvailableMoves,
+					std::vector<PieceMove> allAvailableMoves,
 					const std::optional<DrawReason>& reasonToClaimDraw,
 					DrawEnforcement drawEnforcement,
 					std::map<std::string, uint8_t> previouslyReachedPositions);
@@ -281,7 +283,7 @@ namespace simplechess
 			std::optional<DrawReason> mReasonGameWasDrawn;
 			std::vector<std::pair<GameStage, PlayedMove>> mHistory;
 			GameStage mCurrentStage;
-			std::set<PieceMove> mAllAvailableMoves;
+			std::vector<PieceMove> mAllAvailableMoves;
 			std::optional<DrawReason> mReasonToClaimDraw;
 			DrawEnforcement mDrawEnforcement;
 			std::map<std::string, uint8_t> mPreviouslyReachedPositions;

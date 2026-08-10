@@ -1,3 +1,5 @@
+#include "TestUtils.h"
+
 #include <gtest/gtest.h>
 #include <simplechess/SimpleChess.h>
 
@@ -478,7 +480,8 @@ namespace {
 	bool canCastleQueenside(const Game& game, const uint8_t rank) {
 		const Piece king = {PieceType::King, game.activeColor()};
 
-		return game.allAvailableMoves().count(
+		return countMoves(
+				game.allAvailableMoves(),
 				PieceMove::regularMove(
 					king,
 					Square::fromRankAndFile(rank, 'e'),
@@ -509,7 +512,8 @@ namespace {
 	bool canCastleKingside(const Game& game, const uint8_t rank) {
 		const Piece king = {PieceType::King, game.activeColor()};
 
-		return game.allAvailableMoves().count(
+		return countMoves(
+				game.allAvailableMoves(),
 				PieceMove::regularMove(
 					king,
 					Square::fromRankAndFile(rank, 'e'),

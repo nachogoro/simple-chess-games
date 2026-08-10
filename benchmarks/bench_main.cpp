@@ -73,15 +73,13 @@ namespace
 
 		while (plies < maxPlies && game.gameState() == GameState::Playing)
 		{
-			const std::set<PieceMove>& moves = game.allAvailableMoves();
+			const std::vector<PieceMove>& moves = game.allAvailableMoves();
 			if (moves.empty())
 			{
 				break;
 			}
 
-			auto it = moves.begin();
-			std::advance(it, rng.below(moves.size()));
-			game = makeMove(game, *it);
+			game = makeMove(game, moves[rng.below(moves.size())]);
 			++plies;
 		}
 
