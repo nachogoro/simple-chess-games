@@ -22,7 +22,7 @@ static void test_regular_non_capture_move(const char* fen,
                                         uint8_t src_rank, char src_file,
                                         uint8_t dst_rank, char dst_file) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(fen,
-            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, NULL);
     ASSERT_GAME_NOT_NULL(game);
 
     // Verify the piece is at source position before move
@@ -30,7 +30,7 @@ static void test_regular_non_capture_move(const char* fen,
     EXPECT_TRUE(is_square_empty(current_stage(game).board, dst_rank, dst_file));
 
     simple_chess_piece_move_t move = create_move(piece_type, color, src_rank, src_file, dst_rank, dst_file);
-    simple_chess_game_t* after_move = simple_chess_make_move(game, move);
+    simple_chess_game_t* after_move = simple_chess_make_move(game, move, NULL);
     ASSERT_GAME_NOT_NULL(after_move);
 
     // Verify the piece moved to destination and source is empty
@@ -47,7 +47,7 @@ static void test_regular_capture_move(const char* fen,
                                     uint8_t src_rank, char src_file,
                                     uint8_t dst_rank, char dst_file) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(fen,
-            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, NULL);
     ASSERT_GAME_NOT_NULL(game);
 
     // Verify the piece is at source position before move
@@ -55,7 +55,7 @@ static void test_regular_capture_move(const char* fen,
     EXPECT_FALSE(is_square_empty(current_stage(game).board, dst_rank, dst_file));
 
     simple_chess_piece_move_t move = create_move(piece_type, color, src_rank, src_file, dst_rank, dst_file);
-    simple_chess_game_t* after_move = simple_chess_make_move(game, move);
+    simple_chess_game_t* after_move = simple_chess_make_move(game, move, NULL);
     ASSERT_GAME_NOT_NULL(after_move);
 
     // Verify the piece moved to destination and source is empty
@@ -87,7 +87,7 @@ TEST(CMovesOnBoardTest, PawnCapture) {
 TEST(CMovesOnBoardTest, WhitePawnEnPassant) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
         "rnbqkbnr/pppp1ppp/8/3Pp3/8/8/PPP1PPPP/RNBQKBNR w KQkq e6 0 1",
-            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, NULL);
     ASSERT_GAME_NOT_NULL(game);
 
     // Verify initial state: white pawn on d5, black pawn on e5
@@ -96,7 +96,7 @@ TEST(CMovesOnBoardTest, WhitePawnEnPassant) {
     EXPECT_TRUE(is_square_empty(current_stage(game).board, 6, 'e'));
 
     simple_chess_piece_move_t en_passant_move = create_move(SIMPLE_CHESS_PIECE_TYPE_PAWN, SIMPLE_CHESS_COLOR_WHITE, 5, 'd', 6, 'e');
-    simple_chess_game_t* after_move = simple_chess_make_move(game, en_passant_move);
+    simple_chess_game_t* after_move = simple_chess_make_move(game, en_passant_move, NULL);
     ASSERT_GAME_NOT_NULL(after_move);
 
     // Verify en passant capture: white pawn on e6, black pawn captured, d5 empty
@@ -111,7 +111,7 @@ TEST(CMovesOnBoardTest, WhitePawnEnPassant) {
 TEST(CMovesOnBoardTest, BlackPawnEnPassant) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
         "8/4k3/8/8/6pP/8/1K6/8 b - h3 0 1",
-            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, NULL);
     ASSERT_GAME_NOT_NULL(game);
 
     // Verify initial state: black pawn on g4, white pawn on h4
@@ -120,7 +120,7 @@ TEST(CMovesOnBoardTest, BlackPawnEnPassant) {
     EXPECT_TRUE(is_square_empty(current_stage(game).board, 3, 'h'));
 
     simple_chess_piece_move_t en_passant_move = create_move(SIMPLE_CHESS_PIECE_TYPE_PAWN, SIMPLE_CHESS_COLOR_BLACK, 4, 'g', 3, 'h');
-    simple_chess_game_t* after_move = simple_chess_make_move(game, en_passant_move);
+    simple_chess_game_t* after_move = simple_chess_make_move(game, en_passant_move, NULL);
     ASSERT_GAME_NOT_NULL(after_move);
 
     // Verify en passant capture: black pawn on h3, white pawn captured, g4 empty
@@ -135,7 +135,7 @@ TEST(CMovesOnBoardTest, BlackPawnEnPassant) {
 TEST(CMovesOnBoardTest, PawnPromotionNoCapture) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
         "8/4k3/8/2q5/7P/2RQ4/1K4p1/8 b - - 0 1",
-            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, NULL);
     ASSERT_GAME_NOT_NULL(game);
 
     // Verify initial state: black pawn on g2
@@ -143,7 +143,7 @@ TEST(CMovesOnBoardTest, PawnPromotionNoCapture) {
     EXPECT_TRUE(is_square_empty(current_stage(game).board, 1, 'g'));
 
     simple_chess_piece_move_t promotion_move = create_promotion_move(SIMPLE_CHESS_COLOR_BLACK, 2, 'g', 1, 'g', SIMPLE_CHESS_PIECE_TYPE_QUEEN);
-    simple_chess_game_t* after_move = simple_chess_make_move(game, promotion_move);
+    simple_chess_game_t* after_move = simple_chess_make_move(game, promotion_move, NULL);
     ASSERT_GAME_NOT_NULL(after_move);
 
     // Verify promotion: g2 empty, queen on g1
@@ -157,7 +157,7 @@ TEST(CMovesOnBoardTest, PawnPromotionNoCapture) {
 TEST(CMovesOnBoardTest, PawnPromotionCapture) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
         "2q5/1P2k3/8/8/8/2RQ4/1K4p1/8 w - - 0 1",
-            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, NULL);
     ASSERT_GAME_NOT_NULL(game);
 
     // Verify initial state: white pawn on b7, black queen on c8
@@ -165,7 +165,7 @@ TEST(CMovesOnBoardTest, PawnPromotionCapture) {
     EXPECT_TRUE(is_piece_at_square(current_stage(game).board, 8, 'c', SIMPLE_CHESS_PIECE_TYPE_QUEEN, SIMPLE_CHESS_COLOR_BLACK));
 
     simple_chess_piece_move_t promotion_move = create_promotion_move(SIMPLE_CHESS_COLOR_WHITE, 7, 'b', 8, 'c', SIMPLE_CHESS_PIECE_TYPE_QUEEN);
-    simple_chess_game_t* after_move = simple_chess_make_move(game, promotion_move);
+    simple_chess_game_t* after_move = simple_chess_make_move(game, promotion_move, NULL);
     ASSERT_GAME_NOT_NULL(after_move);
 
     // Verify promotion with capture: b7 empty, white queen on c8
@@ -239,7 +239,7 @@ TEST(CMovesOnBoardTest, KingCapture) {
 TEST(CMovesOnBoardTest, KingsideCastlingWhite) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
         "r2qkbnr/ppp2ppp/2np4/1B2p3/6b1/4PN2/PPPP1PPP/RNBQK2R w KQkq - 0 1",
-            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, NULL);
     ASSERT_GAME_NOT_NULL(game);
 
     // Verify initial state: king on e1, rook on h1
@@ -249,7 +249,7 @@ TEST(CMovesOnBoardTest, KingsideCastlingWhite) {
     EXPECT_TRUE(is_square_empty(current_stage(game).board, 1, 'g'));
 
     simple_chess_piece_move_t castle_move = create_move(SIMPLE_CHESS_PIECE_TYPE_KING, SIMPLE_CHESS_COLOR_WHITE, 1, 'e', 1, 'g');
-    simple_chess_game_t* after_move = simple_chess_make_move(game, castle_move);
+    simple_chess_game_t* after_move = simple_chess_make_move(game, castle_move, NULL);
     ASSERT_GAME_NOT_NULL(after_move);
 
     // Verify castling: king on g1, rook on f1, e1 and h1 empty
@@ -265,7 +265,7 @@ TEST(CMovesOnBoardTest, KingsideCastlingWhite) {
 TEST(CMovesOnBoardTest, QueensideCastlingWhite) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
         "r2qkbnr/ppp2ppp/2np4/4p3/6b1/2NPP3/PPPBQPPP/R3KBNR w KQkq - 0 1",
-            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, NULL);
     ASSERT_GAME_NOT_NULL(game);
 
     // Verify initial state: king on e1, rook on a1
@@ -275,7 +275,7 @@ TEST(CMovesOnBoardTest, QueensideCastlingWhite) {
     EXPECT_TRUE(is_square_empty(current_stage(game).board, 1, 'd'));
 
     simple_chess_piece_move_t castle_move = create_move(SIMPLE_CHESS_PIECE_TYPE_KING, SIMPLE_CHESS_COLOR_WHITE, 1, 'e', 1, 'c');
-    simple_chess_game_t* after_move = simple_chess_make_move(game, castle_move);
+    simple_chess_game_t* after_move = simple_chess_make_move(game, castle_move, NULL);
     ASSERT_GAME_NOT_NULL(after_move);
 
     // Verify castling: king on c1, rook on d1, e1 and a1 empty

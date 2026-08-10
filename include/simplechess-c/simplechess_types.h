@@ -421,6 +421,43 @@ extern "C" {
 	} simple_chess_draw_enforcement_t;
 
 	/**
+	 * \brief Why a call which returns a game returned NULL instead.
+	 *
+	 * Every function which can fail takes a trailing, nullable pointer to
+	 * one of these. There is no global error state to read afterwards.
+	 */
+	typedef enum simple_chess_error {
+		/** \brief The call succeeded. */
+		SIMPLE_CHESS_OK = 0,
+
+		/** \brief A pointer argument which may not be NULL was NULL. */
+		SIMPLE_CHESS_ERROR_NULL_ARGUMENT,
+
+		/** \brief The string given does not describe a position. */
+		SIMPLE_CHESS_ERROR_INVALID_FEN,
+
+		/**
+		 * \brief The move is not one the player to move may play in this
+		 * position.
+		 */
+		SIMPLE_CHESS_ERROR_ILLEGAL_MOVE,
+
+		/**
+		 * \brief The game has already finished, so it cannot be played on,
+		 * drawn or resigned.
+		 */
+		SIMPLE_CHESS_ERROR_GAME_OVER,
+
+		/**
+		 * \brief No draw can be claimed in this position.
+		 */
+		SIMPLE_CHESS_ERROR_DRAW_NOT_CLAIMABLE,
+
+		/** \brief There was not enough memory for the new game. */
+		SIMPLE_CHESS_ERROR_OUT_OF_MEMORY
+	} simple_chess_error_t;
+
+	/**
 	 * \brief A game of chess.
 	 *
 	 * The type is opaque: a game is created by one of the factory

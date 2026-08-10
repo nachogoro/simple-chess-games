@@ -3,11 +3,11 @@
 TEST(CFenGenerationTest, BlackMoveNoCapture) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
         "rnbqkbnr/ppp2ppp/8/3pp1B1/4P3/3P4/PPP2PPP/RN1QKBNR b KQkq - 3 5",
-            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, NULL);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_QUEEN, SIMPLE_CHESS_COLOR_BLACK, 8, 'd', 6, 'f');
-    simple_chess_game_t* updated_game = simple_chess_make_move(game, move);
+    simple_chess_game_t* updated_game = simple_chess_make_move(game, move, NULL);
     ASSERT_GAME_NOT_NULL(updated_game);
 
     EXPECT_STREQ(current_stage(updated_game).fen,
@@ -20,11 +20,11 @@ TEST(CFenGenerationTest, BlackMoveNoCapture) {
 TEST(CFenGenerationTest, BlackMoveWithCapture) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
         "8/pB1K4/7N/8/1RnP1P1q/4P3/4k3/8 b - - 15 26",
-            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, NULL);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_QUEEN, SIMPLE_CHESS_COLOR_BLACK, 4, 'h', 6, 'h');
-    simple_chess_game_t* updated_game = simple_chess_make_move(game, move);
+    simple_chess_game_t* updated_game = simple_chess_make_move(game, move, NULL);
     ASSERT_GAME_NOT_NULL(updated_game);
 
     EXPECT_STREQ(current_stage(updated_game).fen,
@@ -37,11 +37,11 @@ TEST(CFenGenerationTest, BlackMoveWithCapture) {
 TEST(CFenGenerationTest, BlackPawnMove) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
         "8/1B1K4/7N/8/1RnP1P1q/4P3/p3k3/8 b - - 15 26",
-            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, NULL);
     ASSERT_GAME_NOT_NULL(game);
 
     simple_chess_piece_move_t move = create_promotion_move(SIMPLE_CHESS_COLOR_BLACK, 2, 'a', 1, 'a', SIMPLE_CHESS_PIECE_TYPE_QUEEN);
-    simple_chess_game_t* updated_game = simple_chess_make_move(game, move);
+    simple_chess_game_t* updated_game = simple_chess_make_move(game, move, NULL);
     ASSERT_GAME_NOT_NULL(updated_game);
 
     EXPECT_STREQ(current_stage(updated_game).fen,

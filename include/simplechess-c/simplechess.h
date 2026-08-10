@@ -17,6 +17,20 @@ extern "C" {
 #endif
 
 /**
+ * \brief A human-readable description of \p error.
+ *
+ * Provided so that a caller passing errors on - a language binding
+ * building an exception message, say - does not have to carry its own copy
+ * of the enumeration.
+ *
+ * \param error The error to describe.
+ *
+ * \return A static string, never NULL, valid for the lifetime of the
+ *         program.
+ */
+const char* simple_chess_error_string(simple_chess_error_t error);
+
+/**
  * \brief Factory function to create a new game from the standard starting position.
  *
  * Creates a new chess game in the initial starting position with all pieces
@@ -27,11 +41,15 @@ extern "C" {
  *
  * \return Pointer to new game object, or NULL on memory allocation failure.
  *
+ * \param error If not NULL, set to SIMPLE_CHESS_OK on success or to the
+ *        reason for the failure otherwise.
+ *
  * \note The caller is responsible for freeing the returned game object
  *       using simple_chess_destroy_game().
  */
 simple_chess_game_t* simple_chess_create_new_game(
-		simple_chess_draw_enforcement_t draw_enforcement);
+		simple_chess_draw_enforcement_t draw_enforcement,
+		simple_chess_error_t* error);
 
 /**
  * \brief Factory function to create a new game from a given board position.
@@ -52,12 +70,16 @@ simple_chess_game_t* simple_chess_create_new_game(
  * \return Pointer to new game object, or NULL if the FEN string is invalid
  *         or memory allocation fails.
  *
+ * \param error If not NULL, set to SIMPLE_CHESS_OK on success or to the
+ *        reason for the failure otherwise.
+ *
  * \note The caller is responsible for freeing the returned game object
  *       using simple_chess_destroy_game().
  */
 simple_chess_game_t* simple_chess_create_game_from_fen(
 		const char* fen,
-		simple_chess_draw_enforcement_t draw_enforcement);
+		simple_chess_draw_enforcement_t draw_enforcement,
+		simple_chess_error_t* error);
 
 /**
  * \brief Make a move for the player whose turn it is to play.
@@ -74,10 +96,16 @@ simple_chess_game_t* simple_chess_create_game_from_fen(
  *         - The move is not valid for the current player
  *         - Memory allocation failure
  *
+ * \param error If not NULL, set to SIMPLE_CHESS_OK on success or to the
+ *        reason for the failure otherwise.
+ *
  * \note The caller is responsible for freeing the returned game object
  *       using simple_chess_destroy_game().
  */
-simple_chess_game_t* simple_chess_make_move(const simple_chess_game_t* game, simple_chess_piece_move_t move);
+simple_chess_game_t* simple_chess_make_move(
+		const simple_chess_game_t* game,
+		simple_chess_piece_move_t move,
+		simple_chess_error_t* error);
 
 /**
  * \brief Make a move and optionally offer a draw.
@@ -95,10 +123,17 @@ simple_chess_game_t* simple_chess_make_move(const simple_chess_game_t* game, sim
  *         - The move is not valid for the current player
  *         - Memory allocation failure
  *
+ * \param error If not NULL, set to SIMPLE_CHESS_OK on success or to the
+ *        reason for the failure otherwise.
+ *
  * \note The caller is responsible for freeing the returned game object
  *       using simple_chess_destroy_game().
  */
-simple_chess_game_t* simple_chess_make_move_with_draw_offer(const simple_chess_game_t* game, simple_chess_piece_move_t move, bool offer_draw);
+simple_chess_game_t* simple_chess_make_move_with_draw_offer(
+		const simple_chess_game_t* game,
+		simple_chess_piece_move_t move,
+		bool offer_draw,
+		simple_chess_error_t* error);
 
 /**
  * \brief Claim a draw if one is available.
@@ -114,10 +149,15 @@ simple_chess_game_t* simple_chess_make_move_with_draw_offer(const simple_chess_g
  *         - The game has already concluded
  *         - Memory allocation failure
  *
+ * \param error If not NULL, set to SIMPLE_CHESS_OK on success or to the
+ *        reason for the failure otherwise.
+ *
  * \note The caller is responsible for freeing the returned game object
  *       using simple_chess_destroy_game().
  */
-simple_chess_game_t* simple_chess_claim_draw(const simple_chess_game_t* game);
+simple_chess_game_t* simple_chess_claim_draw(
+		const simple_chess_game_t* game,
+		simple_chess_error_t* error);
 
 /**
  * \brief Resign the game for the specified player.
@@ -132,10 +172,16 @@ simple_chess_game_t* simple_chess_claim_draw(const simple_chess_game_t* game);
  *         - The game has already concluded
  *         - Memory allocation failure
  *
+ * \param error If not NULL, set to SIMPLE_CHESS_OK on success or to the
+ *        reason for the failure otherwise.
+ *
  * \note The caller is responsible for freeing the returned game object
  *       using simple_chess_destroy_game().
  */
-simple_chess_game_t* simple_chess_resign(const simple_chess_game_t* game, simple_chess_color_t resigner);
+simple_chess_game_t* simple_chess_resign(
+		const simple_chess_game_t* game,
+		simple_chess_color_t resigner,
+		simple_chess_error_t* error);
 
 /**
  * \brief The overall state of the game.
@@ -281,10 +327,15 @@ bool simple_chess_game_available_move(
  *
  * \return Pointer to a game equal to \p game, or NULL on failure.
  *
+ * \param error If not NULL, set to SIMPLE_CHESS_OK on success or to the
+ *        reason for the failure otherwise.
+ *
  * \note The caller is responsible for freeing the returned game object
  *       using simple_chess_destroy_game().
  */
-simple_chess_game_t* simple_chess_copy_game(const simple_chess_game_t* game);
+simple_chess_game_t* simple_chess_copy_game(
+		const simple_chess_game_t* game,
+		simple_chess_error_t* error);
 
 /**
  * \brief Unpacks what stands on a square into a piece.

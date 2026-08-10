@@ -131,7 +131,7 @@ namespace
 	{
 		Lcg rng(seed);
 		simple_chess_game_t* game = simple_chess_create_new_game(
-				SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
+				SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, NULL);
 		unsigned plies = 0;
 
 		while (game != nullptr
@@ -149,7 +149,7 @@ namespace
 				break;
 			}
 
-			simple_chess_game_t* next = simple_chess_make_move(game, move);
+			simple_chess_game_t* next = simple_chess_make_move(game, move, NULL);
 
 			if (next == nullptr)
 			{

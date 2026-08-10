@@ -65,17 +65,17 @@ int simple_chess_c_header_compile_check(void)
 	(void) simple_chess_square_content_piece(g_square_content, &g_piece);
 	(void) simple_chess_index_from_square(g_square);
 
-	game = simple_chess_create_new_game(g_draw_enforcement);
+	game = simple_chess_create_new_game(g_draw_enforcement, NULL);
 	if (game == NULL)
 	{
 		return 1;
 	}
 
 	next = simple_chess_create_game_from_fen(
-			"8/8/8/8/8/8/8/K6k w - - 0 1", g_draw_enforcement);
+			"8/8/8/8/8/8/8/K6k w - - 0 1", g_draw_enforcement, NULL);
 	simple_chess_destroy_game(next);
 
-	next = simple_chess_copy_game(game);
+	next = simple_chess_copy_game(game, NULL);
 	simple_chess_destroy_game(next);
 
 	g_game_state = simple_chess_game_state(game);
@@ -92,17 +92,17 @@ int simple_chess_c_header_compile_check(void)
 	count = simple_chess_game_available_move_count(game);
 	if (count > 0 && simple_chess_game_available_move(game, 0, &g_piece_move))
 	{
-		next = simple_chess_make_move(game, g_piece_move);
+		next = simple_chess_make_move(game, g_piece_move, NULL);
 		simple_chess_destroy_game(next);
 
-		next = simple_chess_make_move_with_draw_offer(game, g_piece_move, true);
+		next = simple_chess_make_move_with_draw_offer(game, g_piece_move, true, NULL);
 		simple_chess_destroy_game(next);
 	}
 
-	next = simple_chess_claim_draw(game);
+	next = simple_chess_claim_draw(game, NULL);
 	simple_chess_destroy_game(next);
 
-	next = simple_chess_resign(game, SIMPLE_CHESS_COLOR_WHITE);
+	next = simple_chess_resign(game, SIMPLE_CHESS_COLOR_WHITE, NULL);
 	simple_chess_destroy_game(next);
 
 	simple_chess_destroy_game(game);

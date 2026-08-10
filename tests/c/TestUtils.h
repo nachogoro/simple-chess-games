@@ -4,6 +4,8 @@
 #include <simplechess-c/simplechess.h>
 #include <gtest/gtest.h>
 
+#include <cstring>
+
 // Helper functions for C interface tests
 
 // Helper function to create a move
