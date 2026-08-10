@@ -54,7 +54,7 @@ const std::string& GameStage::fen() const
 	return mFen;
 }
 
-std::optional<Square> GameStage::enPassantTarget() const
+const std::optional<Square>& GameStage::enPassantTarget() const
 {
 	return mEnPassantTarget;
 }

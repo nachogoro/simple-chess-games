@@ -205,7 +205,7 @@ namespace simplechess
 			 * in the board.
 			 *
 			 * If the square is empty or does not contain a piece of the player
-			 * whose turn it is to play, an empty set is returned.
+			 * whose turn it is to play, an empty vector is returned.
 			 *
 			 * \note Castling is considered a King's move, so it's only listed
 			 * as such.

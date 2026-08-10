@@ -83,8 +83,8 @@ namespace simplechess
 			/**
 			 * \brief Whether the player offers a draw with this move.
 			 *
-			 * If a draw is offered, the oponent is allowed to make an
-			 * ACCEPT_DRAW move in the immediately next turn.
+			 * If a draw is offered, the opponent may accept it on their
+			 * immediately next turn by calling \ref claimDraw().
 			 *
 			 * \return \c true if a draw is being offered, \c false otherwise.
 			 */

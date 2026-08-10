@@ -87,10 +87,10 @@ namespace simplechess
 	 * \throws IllegalStateException in the following circumstances:
 	 * - The Game has already concluded (its state is not
 	 *   Playing).
-	 * - The \p pieceMove is not a valid move for the current player.
+	 * - The \p move is not a valid move for the current player.
 	 *
-	 * \param game Game in which to move is to be made.
-	 * \param pieceMove The desired piece move.
+	 * \param game Game in which the move is to be made.
+	 * \param move The desired piece move.
 	 * \param offerDraw \c true if the move is accompanied by an offer
 	 * to draw to the opponent, \c false otherwise.
 	 *

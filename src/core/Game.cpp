@@ -1,18 +1,6 @@
 #include <simplechess/Game.h>
 #include <simplechess/Exceptions.h>
 
-#include "details/BoardAnalyzer.h"
-#include "details/DrawEvaluator.h"
-#include "details/MoveValidator.h"
-#include "details/fen/FenParser.h"
-#include "details/fen/FenUtils.h"
-
-#include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/join.hpp>
-#include <boost/tuple/tuple.hpp>
-
-#include <algorithm>
-
 using namespace simplechess;
 
 Game::Game(

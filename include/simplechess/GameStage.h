@@ -7,6 +7,7 @@
 #include <simplechess/PlayedMove.h>
 #include <simplechess/Square.h>
 
+#include <cstdint>
 #include <optional>
 
 #include <string>
@@ -19,7 +20,7 @@ namespace simplechess
 	 * \brief The castling rights available for each side at one stage of the
 	 * game.
 	 */
-	enum CastlingRight
+	enum CastlingRight : uint8_t
 	{
 		/**
 		 * \brief White side can castle kingside.
@@ -87,10 +88,9 @@ namespace simplechess
 			 */
 			uint16_t halfMovesSinceLastCaptureOrPawnAdvance() const;
 
-			/** \brief Returns the number of half-moves since the last capture
-			 * or pawn advance.
-			 * \return The number of half-moves since the last capture or pawn
-			 * advance.
+			/** \brief Returns the number of the full move, starting at 1 and
+			 * incremented after black's move.
+			 * \return The number of the full move.
 			 */
 			uint16_t fullMoveCounter() const;
 
@@ -110,7 +110,7 @@ namespace simplechess
 			 *
 			 * \return The en passant target square, or empty if none.
 			 */
-			std::optional<Square> enPassantTarget() const;
+			const std::optional<Square>& enPassantTarget() const;
 
 			/**
 			 * \brief Returns the check status for the active player.
@@ -146,7 +146,6 @@ namespace simplechess
 					const std::optional<Square>& enPassantTarget,
 					CheckType checkStatus);
 
-		private:
 			Board mBoard;
 			Color mActiveColor;
 			uint8_t mCastlingRights;

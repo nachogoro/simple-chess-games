@@ -12,6 +12,12 @@ namespace simplechess
 		Black
 	};
 
+	/**
+	 * \brief Returns the color of the other side.
+	 *
+	 * \param c The \ref Color whose opposite is wanted.
+	 * \return \ref Color::Black for \ref Color::White and vice versa.
+	 */
 	Color oppositeColor(Color c);
 }
 
