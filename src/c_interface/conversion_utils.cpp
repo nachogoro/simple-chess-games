@@ -226,9 +226,9 @@ game_t* conversion_utils::c_game(const simplechess::Game& game) {
 		result->history = new game_history_entry_t[result->history_size];
 
 	for (uint16_t i = 0; i < result->history_size; ++i) {
-		strncpy(result->history[i].fen, game.history()[i].first.fen().c_str(), sizeof(result->history[i].fen) - 1);
+		strncpy(result->history[i].fen, game.history()[i].stage.fen().c_str(), sizeof(result->history[i].fen) - 1);
 		result->history[i].fen[sizeof(result->history[i].fen) - 1] = '\0';
-		result->history[i].played_move = c_played_move(game.history()[i].second);
+		result->history[i].played_move = c_played_move(game.history()[i].move);
 	}
 
 	result->available_move_count = static_cast<uint16_t>(game.allAvailableMoves().size());
@@ -455,14 +455,14 @@ namespace {
 	 * moves from the history.
 	 */
 	std::map<std::string, uint8_t> repetitionsFromHistory(
-			const std::vector<std::pair<simplechess::GameStage, simplechess::PlayedMove>>& history)
+			const std::vector<simplechess::HistoryEntry>& history)
 	{
 		std::map<std::string, uint8_t> result;
 
 		for (const auto& entry : history)
 		{
 			++result[simplechess::details::FenUtils::fenForRepetitions(
-					entry.first.fen())];
+					entry.stage.fen())];
 		}
 
 		return result;
@@ -485,7 +485,7 @@ simplechess::Game conversion_utils::cpp_game(const game_t& game) {
 	// check the move leading into it delivered, and that is recorded on the
 	// preceding entry. Only the very first position has no preceding move, so
 	// only that one is analysed.
-	std::vector<std::pair<simplechess::GameStage, simplechess::PlayedMove>> history;
+	std::vector<simplechess::HistoryEntry> history;
 	history.reserve(game.history_size);
 	for (uint16_t index = 0; index < game.history_size; ++index) {
 		const char* fen = game.history[index].fen;

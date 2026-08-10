@@ -130,6 +130,24 @@ namespace simplechess
 	class GameBuilder;
 
 	/**
+	 * \brief One position in the history of a game, together with the move
+	 * which was played from it.
+	 */
+	struct HistoryEntry
+	{
+		/**
+		 * \brief The position the move was played from.
+		 */
+		GameStage stage;
+
+		/**
+		 * \brief The move played from \ref stage, which leads to the
+		 * position of the next entry.
+		 */
+		PlayedMove move;
+	};
+
+	/**
 	 * \brief A representation of a game of chess at a given point.
 	 *
 	 * The class is immutable, so all methods which would change its state
@@ -157,16 +175,16 @@ namespace simplechess
 			DrawReason drawReason() const;
 
 			/**
-			 * \brief Returns the history of the game as pairs of position and move.
+			 * \brief Returns the history of the game.
 			 *
-			 * Each pair contains the GameStage (position) and the PlayedMove made
-			 * FROM that position, which transitions to the next position. The vector
-			 * excludes the current stage of the game (as no move has been played yet
-			 * from the current position).
+			 * Each \ref HistoryEntry holds a position and the move made FROM
+			 * that position, which transitions to the next one. The vector
+			 * excludes the current stage of the game (as no move has been
+			 * played yet from the current position).
 			 *
-			 * \return The history of the game as position-move pairs.
+			 * \return The history of the game.
 			 */
-			const std::vector<std::pair<GameStage, PlayedMove>>& history() const;
+			const std::vector<HistoryEntry>& history() const;
 
 			/**
 			 * \brief Returns the latest stage of the game.
@@ -260,7 +278,7 @@ namespace simplechess
 			Game(
 					GameState gameState,
 					const std::optional<DrawReason>& drawReason,
-					std::vector<std::pair<GameStage, PlayedMove>> history,
+					std::vector<HistoryEntry> history,
 					GameStage currentStage,
 					std::vector<PieceMove> allAvailableMoves,
 					const std::optional<DrawReason>& reasonToClaimDraw,
@@ -281,7 +299,7 @@ namespace simplechess
 
 			GameState mGameState;
 			std::optional<DrawReason> mReasonGameWasDrawn;
-			std::vector<std::pair<GameStage, PlayedMove>> mHistory;
+			std::vector<HistoryEntry> mHistory;
 			GameStage mCurrentStage;
 			std::vector<PieceMove> mAllAvailableMoves;
 			std::optional<DrawReason> mReasonToClaimDraw;

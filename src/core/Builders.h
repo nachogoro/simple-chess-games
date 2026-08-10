@@ -67,7 +67,7 @@ namespace simplechess
 			static Game build(
 					GameState gameState,
 					const std::optional<DrawReason>& drawReason,
-					std::vector<std::pair<GameStage, PlayedMove>> history,
+					std::vector<HistoryEntry> history,
 					GameStage currentStage,
 					std::vector<PieceMove> allAvailableMoves,
 					const std::optional<DrawReason>& reasonToClaimDraw,

@@ -286,12 +286,12 @@ namespace
 		std::cout << "history=" << game.history().size() << "\n";
 		for (const auto& entry : game.history())
 		{
-			dumpStage(entry.first);
-			std::cout << "  played=" << entry.second.inAlgebraicNotation()
-				<< " check=" << static_cast<int>(entry.second.checkType())
+			dumpStage(entry.stage);
+			std::cout << "  played=" << entry.move.inAlgebraicNotation()
+				<< " check=" << static_cast<int>(entry.move.checkType())
 				<< " captured="
-				<< (entry.second.capturedPiece()
-						? std::to_string(static_cast<int>(entry.second.capturedPiece()->type()))
+				<< (entry.move.capturedPiece()
+						? std::to_string(static_cast<int>(entry.move.capturedPiece()->type()))
 						: "-")
 				<< "\n";
 		}

@@ -17,7 +17,7 @@ using namespace simplechess;
 Game::Game(
 		const GameState gameState,
 		const std::optional<DrawReason>& drawReason,
-		std::vector<std::pair<GameStage, PlayedMove>> history,
+		std::vector<HistoryEntry> history,
 		GameStage currentStage,
 		std::vector<PieceMove> allAvailableMoves,
 		const std::optional<DrawReason>& reasonToClaimDraw,
@@ -67,7 +67,7 @@ DrawReason Game::drawReason() const
 	return *mReasonGameWasDrawn;
 }
 
-const std::vector<std::pair<GameStage, PlayedMove>>& Game::history() const
+const std::vector<HistoryEntry>& Game::history() const
 {
 	return mHistory;
 }

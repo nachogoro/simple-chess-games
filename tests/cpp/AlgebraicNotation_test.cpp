@@ -15,7 +15,7 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckNoAmbiguity) {
 				Square::fromRankAndFile(3, 'c'),
 				Square::fromRankAndFile(5, 'b')));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "Nb5");
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "Nb5");
 }
 
 TEST(AlgebraicNotationTest, PieceMoveCaptureNoCheckNoAmbiguity) {
@@ -29,7 +29,7 @@ TEST(AlgebraicNotationTest, PieceMoveCaptureNoCheckNoAmbiguity) {
 				Square::fromRankAndFile(1, 'f'),
 				Square::fromRankAndFile(4, 'c')));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "Bxc4");
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "Bxc4");
 }
 
 TEST(AlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguity) {
@@ -43,7 +43,7 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguity) {
 				Square::fromRankAndFile(8, 'c'),
 				Square::fromRankAndFile(3, 'h')));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "Qh3+");
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "Qh3+");
 }
 
 TEST(AlgebraicNotationTest, PieceMoveCaptureCheckNoAmbiguity) {
@@ -57,7 +57,7 @@ TEST(AlgebraicNotationTest, PieceMoveCaptureCheckNoAmbiguity) {
 				Square::fromRankAndFile(4, 'h'),
 				Square::fromRankAndFile(4, 'e')));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "Qxe4+");
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "Qxe4+");
 }
 
 TEST(AlgebraicNotationTest, PieceMoveNoCaptureCheckMateNoAmbiguity) {
@@ -71,7 +71,7 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureCheckMateNoAmbiguity) {
 				Square::fromRankAndFile(7, 'h'),
 				Square::fromRankAndFile(8, 'h')));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "Rh8#");
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "Rh8#");
 }
 
 TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankAmbiguity) {
@@ -85,7 +85,7 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankAmbiguity) {
 				Square::fromRankAndFile(1, 'h'),
 				Square::fromRankAndFile(1, 'd')));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "Rhd1");
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "Rhd1");
 }
 
 TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankNoAmbiguity) {
@@ -99,7 +99,7 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckSameRankNoAmbiguity) {
 				Square::fromRankAndFile(1, 'h'),
 				Square::fromRankAndFile(2, 'h')));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "Rh2");
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "Rh2");
 }
 
 TEST(AlgebraicNotationTest, PieceMoveCaptureNoCheckSameFileAmbiguity) {
@@ -113,7 +113,7 @@ TEST(AlgebraicNotationTest, PieceMoveCaptureNoCheckSameFileAmbiguity) {
 				Square::fromRankAndFile(8, 'a'),
 				Square::fromRankAndFile(6, 'c')));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "B8xc6");
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "B8xc6");
 }
 
 TEST(AlgebraicNotationTest, PieceMoveCaptureCheckSameFileSameRankAmbiguity) {
@@ -127,7 +127,7 @@ TEST(AlgebraicNotationTest, PieceMoveCaptureCheckSameFileSameRankAmbiguity) {
 				Square::fromRankAndFile(8, 'a'),
 				Square::fromRankAndFile(6, 'c')));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "Ba8xc6+");
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "Ba8xc6+");
 }
 
 TEST(AlgebraicNotationTest, PawnPromotionNoCaptureNoCheck) {
@@ -142,7 +142,7 @@ TEST(AlgebraicNotationTest, PawnPromotionNoCaptureNoCheck) {
 				Square::fromRankAndFile(8, 'b'),
 				PieceType::Queen));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "b8=Q");
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "b8=Q");
 }
 
 TEST(AlgebraicNotationTest, PawnPromotionCaptureCheck) {
@@ -157,7 +157,7 @@ TEST(AlgebraicNotationTest, PawnPromotionCaptureCheck) {
 				Square::fromRankAndFile(8, 'c'),
 				PieceType::Rook));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "bxc8=R+");
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "bxc8=R+");
 }
 
 TEST(AlgebraicNotationTest, PawnRegularMoveCaptureAmbiguityNoCheck) {
@@ -171,7 +171,7 @@ TEST(AlgebraicNotationTest, PawnRegularMoveCaptureAmbiguityNoCheck) {
 				Square::fromRankAndFile(5, 'd'),
 				Square::fromRankAndFile(4, 'e')));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "dxe4");
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "dxe4");
 }
 
 TEST(AlgebraicNotationTest, PawnRegularMoveCaptureNoAmbiguityNoCheck) {
@@ -185,7 +185,7 @@ TEST(AlgebraicNotationTest, PawnRegularMoveCaptureNoAmbiguityNoCheck) {
 				Square::fromRankAndFile(5, 'g'),
 				Square::fromRankAndFile(4, 'h')));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "gxh4");
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "gxh4");
 }
 
 TEST(AlgebraicNotationTest, PawnEnPassantCaptureNoAmbiguityNoCheck) {
@@ -199,7 +199,7 @@ TEST(AlgebraicNotationTest, PawnEnPassantCaptureNoAmbiguityNoCheck) {
 				Square::fromRankAndFile(5, 'a'),
 				Square::fromRankAndFile(6, 'b')));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "axb6");
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "axb6");
 }
 
 TEST(AlgebraicNotationTest, PawnEnPassantCaptureAmbiguityNoCheck) {
@@ -213,7 +213,7 @@ TEST(AlgebraicNotationTest, PawnEnPassantCaptureAmbiguityNoCheck) {
 				Square::fromRankAndFile(5, 'a'),
 				Square::fromRankAndFile(6, 'b')));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "axb6");
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "axb6");
 }
 
 TEST(AlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguityDrawOffer) {
@@ -227,7 +227,7 @@ TEST(AlgebraicNotationTest, PieceMoveNoCaptureCheckNoAmbiguityDrawOffer) {
 				Square::fromRankAndFile(4, 'a'),
 				Square::fromRankAndFile(4, 'b')), true);
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "Qb4+(=)");
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "Qb4+(=)");
 }
 
 TEST(AlgebraicNotationTest, CastlingKingsideNoCheck) {
@@ -241,7 +241,7 @@ TEST(AlgebraicNotationTest, CastlingKingsideNoCheck) {
 				Square::fromRankAndFile(1, 'e'),
 				Square::fromRankAndFile(1, 'g')));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "O-O");
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "O-O");
 }
 
 TEST(AlgebraicNotationTest, CastlingQueensideCheckmate) {
@@ -255,5 +255,5 @@ TEST(AlgebraicNotationTest, CastlingQueensideCheckmate) {
 				Square::fromRankAndFile(8, 'e'),
 				Square::fromRankAndFile(8, 'c')));
 
-	EXPECT_EQ(updatedGame.history().back().second.inAlgebraicNotation(), "O-O-O#");
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "O-O-O#");
 }
