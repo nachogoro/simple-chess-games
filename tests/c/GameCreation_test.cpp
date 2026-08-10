@@ -1,10 +1,10 @@
 #include "TestUtils.h"
 
 // Helper function to check piece at specific board position
-bool check_piece_at(const simple_chess_board_t* board, uint8_t rank, char file, simple_chess_piece_type_t expected_type, simple_chess_color_t expected_color) {
+bool check_piece_at(const simple_chess_board_t& board, uint8_t rank, char file, simple_chess_piece_type_t expected_type, simple_chess_color_t expected_color) {
     uint8_t index = simple_chess_index_from_square({rank, file});
     simple_chess_piece_t piece;
-    if (!simple_chess_square_content_piece(board->squares[index], &piece))
+    if (!simple_chess_square_content_piece(board.squares[index], &piece))
         return false;
     return piece.type == expected_type && piece.color == expected_color;
 }
@@ -14,13 +14,13 @@ TEST(CGameCreationTest, RegularGameCreation) {
             SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
-    EXPECT_EQ(game->state, SIMPLE_CHESS_GAME_STATE_PLAYING);
-    EXPECT_EQ(game->history_size, 0);
-    EXPECT_EQ(game->current_stage.active_color, SIMPLE_CHESS_COLOR_WHITE);
-    EXPECT_FALSE(game->is_draw_claimable);
+    EXPECT_EQ(simple_chess_game_state(game), SIMPLE_CHESS_GAME_STATE_PLAYING);
+    EXPECT_EQ(simple_chess_game_history_size(game), 0);
+    EXPECT_EQ(current_stage(game).active_color, SIMPLE_CHESS_COLOR_WHITE);
+    EXPECT_FALSE(is_draw_claimable(game));
 
     // Validate piece positions - check a few key pieces
-    const simple_chess_board_t* board = &game->current_stage.board;
+    const simple_chess_board_t board = current_stage(game).board;
 
     // Black pieces on rank 8
     EXPECT_TRUE(check_piece_at(board, 8, 'a', SIMPLE_CHESS_PIECE_TYPE_ROOK, SIMPLE_CHESS_COLOR_BLACK));
@@ -56,7 +56,7 @@ TEST(CGameCreationTest, RegularGameCreation) {
     for (uint8_t rank = 3; rank <= 6; rank++) {
         for (char file = 'a'; file <= 'h'; file++) {
             uint8_t index = simple_chess_index_from_square({rank, file});
-            EXPECT_EQ(board->squares[index], SIMPLE_CHESS_SQUARE_EMPTY)
+            EXPECT_EQ(board.squares[index], SIMPLE_CHESS_SQUARE_EMPTY)
                 << "Square " << file << rank << " should be empty";
         }
     }
@@ -70,13 +70,13 @@ TEST(CGameCreationTest, GameCreationFromPosition1) {
             SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
-    EXPECT_EQ(game->state, SIMPLE_CHESS_GAME_STATE_PLAYING);
-    EXPECT_EQ(game->history_size, 0);
-    EXPECT_EQ(game->current_stage.active_color, SIMPLE_CHESS_COLOR_BLACK);
-    EXPECT_FALSE(game->is_draw_claimable);
+    EXPECT_EQ(simple_chess_game_state(game), SIMPLE_CHESS_GAME_STATE_PLAYING);
+    EXPECT_EQ(simple_chess_game_history_size(game), 0);
+    EXPECT_EQ(current_stage(game).active_color, SIMPLE_CHESS_COLOR_BLACK);
+    EXPECT_FALSE(is_draw_claimable(game));
 
     // Validate piece positions
-    const simple_chess_board_t* board = &game->current_stage.board;
+    const simple_chess_board_t board = current_stage(game).board;
     EXPECT_TRUE(check_piece_at(board, 8, 'f', SIMPLE_CHESS_PIECE_TYPE_ROOK, SIMPLE_CHESS_COLOR_BLACK));
     EXPECT_TRUE(check_piece_at(board, 8, 'g', SIMPLE_CHESS_PIECE_TYPE_KING, SIMPLE_CHESS_COLOR_BLACK));
     EXPECT_TRUE(check_piece_at(board, 7, 'd', SIMPLE_CHESS_PIECE_TYPE_QUEEN, SIMPLE_CHESS_COLOR_WHITE));
@@ -95,7 +95,7 @@ TEST(CGameCreationTest, GameCreationFromPositionInCheckmate) {
             SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
-    EXPECT_EQ(game->state, SIMPLE_CHESS_GAME_STATE_WHITE_WON);
+    EXPECT_EQ(simple_chess_game_state(game), SIMPLE_CHESS_GAME_STATE_WHITE_WON);
 
     simple_chess_destroy_game(game);
 }
@@ -106,8 +106,8 @@ TEST(CGameCreationTest, GameCreationFromPositionInStalemate) {
             SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
-    EXPECT_EQ(game->state, SIMPLE_CHESS_GAME_STATE_DRAWN);
-    EXPECT_EQ(game->draw_reason, SIMPLE_CHESS_DRAW_REASON_STALEMATE);
+    EXPECT_EQ(simple_chess_game_state(game), SIMPLE_CHESS_GAME_STATE_DRAWN);
+    EXPECT_EQ(draw_reason(game), SIMPLE_CHESS_DRAW_REASON_STALEMATE);
 
     simple_chess_destroy_game(game);
 }

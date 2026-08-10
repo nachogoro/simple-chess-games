@@ -20,7 +20,6 @@ namespace conversion_utils {
 	simple_chess_game_stage_t     c_game_stage(const simplechess::GameStage& stage);
 	simple_chess_game_state_t     c_game_state(simplechess::GameState state);
 	simple_chess_draw_reason_t    c_draw_reason(simplechess::DrawReason reason);
-	simple_chess_game_t*          c_game(const simplechess::Game& game);
 
 	// C to C++ conversions
 	simplechess::Color         cpp_color(simple_chess_color_t color);
@@ -38,7 +37,6 @@ namespace conversion_utils {
 	simplechess::DrawReason    cpp_draw_reason(simple_chess_draw_reason_t reason);
 	simplechess::DrawEnforcement cpp_draw_enforcement(simple_chess_draw_enforcement_t enforcement);
 	simple_chess_draw_enforcement_t         c_draw_enforcement(simplechess::DrawEnforcement enforcement);
-	simplechess::Game          cpp_game(const simple_chess_game_t& game);
 } // namespace conversion_utils
 
 #endif

@@ -45,10 +45,10 @@ TEST(CDrawDetectionTest, OfferDraw) {
     simple_chess_game_t* updated_game = simple_chess_make_move_with_draw_offer(starting_game, knight_move, true);
     ASSERT_GAME_NOT_NULL(updated_game);
 
-    EXPECT_FALSE(starting_game->is_draw_claimable);
-    EXPECT_EQ(updated_game->state, SIMPLE_CHESS_GAME_STATE_PLAYING);
-    EXPECT_TRUE(updated_game->is_draw_claimable);
-    EXPECT_EQ(updated_game->reason_to_claim_draw, SIMPLE_CHESS_DRAW_REASON_OFFERED_AND_ACCEPTED);
+    EXPECT_FALSE(is_draw_claimable(starting_game));
+    EXPECT_EQ(simple_chess_game_state(updated_game), SIMPLE_CHESS_GAME_STATE_PLAYING);
+    EXPECT_TRUE(is_draw_claimable(updated_game));
+    EXPECT_EQ(reason_to_claim_draw(updated_game), SIMPLE_CHESS_DRAW_REASON_OFFERED_AND_ACCEPTED);
 
     simple_chess_destroy_game(starting_game);
     simple_chess_destroy_game(updated_game);
@@ -69,8 +69,8 @@ TEST(CDrawDetectionTest, OfferDrawAndAccept) {
     simple_chess_game_t* drawn_game = simple_chess_claim_draw(updated_game);
     ASSERT_GAME_NOT_NULL(drawn_game);
 
-    EXPECT_EQ(drawn_game->state, SIMPLE_CHESS_GAME_STATE_DRAWN);
-    EXPECT_EQ(drawn_game->draw_reason, SIMPLE_CHESS_DRAW_REASON_OFFERED_AND_ACCEPTED);
+    EXPECT_EQ(simple_chess_game_state(drawn_game), SIMPLE_CHESS_GAME_STATE_DRAWN);
+    EXPECT_EQ(draw_reason(drawn_game), SIMPLE_CHESS_DRAW_REASON_OFFERED_AND_ACCEPTED);
 
     simple_chess_destroy_game(starting_game);
     simple_chess_destroy_game(updated_game);
@@ -93,8 +93,8 @@ TEST(CDrawDetectionTest, OfferDrawAndReject) {
     simple_chess_game_t* continued_game = simple_chess_make_move(updated_game, pawn_move);
     ASSERT_GAME_NOT_NULL(continued_game);
 
-    EXPECT_EQ(continued_game->state, SIMPLE_CHESS_GAME_STATE_PLAYING);
-    EXPECT_FALSE(continued_game->is_draw_claimable);
+    EXPECT_EQ(simple_chess_game_state(continued_game), SIMPLE_CHESS_GAME_STATE_PLAYING);
+    EXPECT_FALSE(is_draw_claimable(continued_game));
 
     simple_chess_destroy_game(starting_game);
     simple_chess_destroy_game(updated_game);
@@ -124,14 +124,14 @@ TEST(CDrawDetectionTest, OpponentInsufficientMaterialClaimable) {
             SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
-    EXPECT_EQ(game->state, SIMPLE_CHESS_GAME_STATE_PLAYING);
-    EXPECT_TRUE(game->is_draw_claimable);
-    EXPECT_EQ(game->reason_to_claim_draw, SIMPLE_CHESS_DRAW_REASON_OPPONENT_INSUFFICIENT_MATERIAL);
+    EXPECT_EQ(simple_chess_game_state(game), SIMPLE_CHESS_GAME_STATE_PLAYING);
+    EXPECT_TRUE(is_draw_claimable(game));
+    EXPECT_EQ(reason_to_claim_draw(game), SIMPLE_CHESS_DRAW_REASON_OPPONENT_INSUFFICIENT_MATERIAL);
 
     simple_chess_game_t* drawn = simple_chess_claim_draw(game);
     ASSERT_GAME_NOT_NULL(drawn);
-    EXPECT_EQ(drawn->state, SIMPLE_CHESS_GAME_STATE_DRAWN);
-    EXPECT_EQ(drawn->draw_reason, SIMPLE_CHESS_DRAW_REASON_OPPONENT_INSUFFICIENT_MATERIAL);
+    EXPECT_EQ(simple_chess_game_state(drawn), SIMPLE_CHESS_GAME_STATE_DRAWN);
+    EXPECT_EQ(draw_reason(drawn), SIMPLE_CHESS_DRAW_REASON_OPPONENT_INSUFFICIENT_MATERIAL);
 
     simple_chess_destroy_game(game);
     simple_chess_destroy_game(drawn);
@@ -144,8 +144,8 @@ TEST(CDrawDetectionTest, OpponentInsufficientMaterialNotClaimableWhenOpponentHas
             SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
-    EXPECT_EQ(game->state, SIMPLE_CHESS_GAME_STATE_PLAYING);
-    EXPECT_FALSE(game->is_draw_claimable);
+    EXPECT_EQ(simple_chess_game_state(game), SIMPLE_CHESS_GAME_STATE_PLAYING);
+    EXPECT_FALSE(is_draw_claimable(game));
 
     simple_chess_destroy_game(game);
 }
@@ -157,9 +157,9 @@ TEST(CDrawDetectionTest, OpponentInsufficientMaterialNeverAutomatic) {
             SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
 
-    EXPECT_EQ(game->state, SIMPLE_CHESS_GAME_STATE_PLAYING);
-    EXPECT_TRUE(game->is_draw_claimable);
-    EXPECT_EQ(game->reason_to_claim_draw, SIMPLE_CHESS_DRAW_REASON_OPPONENT_INSUFFICIENT_MATERIAL);
+    EXPECT_EQ(simple_chess_game_state(game), SIMPLE_CHESS_GAME_STATE_PLAYING);
+    EXPECT_TRUE(is_draw_claimable(game));
+    EXPECT_EQ(reason_to_claim_draw(game), SIMPLE_CHESS_DRAW_REASON_OPPONENT_INSUFFICIENT_MATERIAL);
 
     simple_chess_destroy_game(game);
 }
@@ -172,22 +172,22 @@ TEST(CDrawDetectionTest, ClaimOnlyInsufficientMaterialNotAutoDrawn) {
             SIMPLE_CHESS_DRAW_ENFORCEMENT_CLAIM_ONLY);
     ASSERT_GAME_NOT_NULL(game);
 
-    EXPECT_EQ(game->state, SIMPLE_CHESS_GAME_STATE_PLAYING);
+    EXPECT_EQ(simple_chess_game_state(game), SIMPLE_CHESS_GAME_STATE_PLAYING);
 
     simple_chess_piece_move_t pawn_capture = create_move(SIMPLE_CHESS_PIECE_TYPE_KING, SIMPLE_CHESS_COLOR_WHITE, 4, 'd', 5, 'e');
     simple_chess_game_t* no_material = simple_chess_make_move(game, pawn_capture);
     ASSERT_GAME_NOT_NULL(no_material);
 
     // With ClaimOnly, should NOT auto-draw
-    EXPECT_EQ(no_material->state, SIMPLE_CHESS_GAME_STATE_PLAYING);
-    EXPECT_TRUE(no_material->is_draw_claimable);
-    EXPECT_EQ(no_material->reason_to_claim_draw, SIMPLE_CHESS_DRAW_REASON_INSUFFICIENT_MATERIAL);
+    EXPECT_EQ(simple_chess_game_state(no_material), SIMPLE_CHESS_GAME_STATE_PLAYING);
+    EXPECT_TRUE(is_draw_claimable(no_material));
+    EXPECT_EQ(reason_to_claim_draw(no_material), SIMPLE_CHESS_DRAW_REASON_INSUFFICIENT_MATERIAL);
 
     // But it should still be claimable
     simple_chess_game_t* drawn = simple_chess_claim_draw(no_material);
     ASSERT_GAME_NOT_NULL(drawn);
-    EXPECT_EQ(drawn->state, SIMPLE_CHESS_GAME_STATE_DRAWN);
-    EXPECT_EQ(drawn->draw_reason, SIMPLE_CHESS_DRAW_REASON_INSUFFICIENT_MATERIAL);
+    EXPECT_EQ(simple_chess_game_state(drawn), SIMPLE_CHESS_GAME_STATE_DRAWN);
+    EXPECT_EQ(draw_reason(drawn), SIMPLE_CHESS_DRAW_REASON_INSUFFICIENT_MATERIAL);
 
     simple_chess_destroy_game(game);
     simple_chess_destroy_game(no_material);
@@ -205,15 +205,15 @@ TEST(CDrawDetectionTest, ClaimOnlySeventyFiveMoveRuleNotAutoDrawn) {
     ASSERT_GAME_NOT_NULL(after_move);
 
     // With ClaimOnly, should NOT auto-draw
-    EXPECT_EQ(after_move->state, SIMPLE_CHESS_GAME_STATE_PLAYING);
-    EXPECT_TRUE(after_move->is_draw_claimable);
-    EXPECT_EQ(after_move->reason_to_claim_draw, SIMPLE_CHESS_DRAW_REASON_SEVENTY_FIVE_MOVE_RULE);
+    EXPECT_EQ(simple_chess_game_state(after_move), SIMPLE_CHESS_GAME_STATE_PLAYING);
+    EXPECT_TRUE(is_draw_claimable(after_move));
+    EXPECT_EQ(reason_to_claim_draw(after_move), SIMPLE_CHESS_DRAW_REASON_SEVENTY_FIVE_MOVE_RULE);
 
     // But it should still be claimable
     simple_chess_game_t* drawn = simple_chess_claim_draw(after_move);
     ASSERT_GAME_NOT_NULL(drawn);
-    EXPECT_EQ(drawn->state, SIMPLE_CHESS_GAME_STATE_DRAWN);
-    EXPECT_EQ(drawn->draw_reason, SIMPLE_CHESS_DRAW_REASON_SEVENTY_FIVE_MOVE_RULE);
+    EXPECT_EQ(simple_chess_game_state(drawn), SIMPLE_CHESS_GAME_STATE_DRAWN);
+    EXPECT_EQ(draw_reason(drawn), SIMPLE_CHESS_DRAW_REASON_SEVENTY_FIVE_MOVE_RULE);
 
     simple_chess_destroy_game(game);
     simple_chess_destroy_game(after_move);
@@ -229,15 +229,15 @@ TEST(CDrawDetectionTest, ClaimOnlyFiveFoldRepetitionNotAutoDrawn) {
     ASSERT_GAME_NOT_NULL(five_fold);
 
     // With ClaimOnly, fivefold repetition should NOT auto-draw
-    EXPECT_EQ(five_fold->state, SIMPLE_CHESS_GAME_STATE_PLAYING);
-    EXPECT_TRUE(five_fold->is_draw_claimable);
-    EXPECT_EQ(five_fold->reason_to_claim_draw, SIMPLE_CHESS_DRAW_REASON_FIVEFOLD_REPETITION);
+    EXPECT_EQ(simple_chess_game_state(five_fold), SIMPLE_CHESS_GAME_STATE_PLAYING);
+    EXPECT_TRUE(is_draw_claimable(five_fold));
+    EXPECT_EQ(reason_to_claim_draw(five_fold), SIMPLE_CHESS_DRAW_REASON_FIVEFOLD_REPETITION);
 
     // But it should still be claimable
     simple_chess_game_t* drawn = simple_chess_claim_draw(five_fold);
     ASSERT_GAME_NOT_NULL(drawn);
-    EXPECT_EQ(drawn->state, SIMPLE_CHESS_GAME_STATE_DRAWN);
-    EXPECT_EQ(drawn->draw_reason, SIMPLE_CHESS_DRAW_REASON_FIVEFOLD_REPETITION);
+    EXPECT_EQ(simple_chess_game_state(drawn), SIMPLE_CHESS_GAME_STATE_DRAWN);
+    EXPECT_EQ(draw_reason(drawn), SIMPLE_CHESS_DRAW_REASON_FIVEFOLD_REPETITION);
 
     simple_chess_destroy_game(game);
     simple_chess_destroy_game(five_fold);
@@ -255,8 +255,8 @@ TEST(CDrawDetectionTest, ClaimOnlyStalemateStillAutoDrawn) {
     ASSERT_GAME_NOT_NULL(after_move);
 
     // Stalemate should ALWAYS be enforced, even in ClaimOnly mode
-    EXPECT_EQ(after_move->state, SIMPLE_CHESS_GAME_STATE_DRAWN);
-    EXPECT_EQ(after_move->draw_reason, SIMPLE_CHESS_DRAW_REASON_STALEMATE);
+    EXPECT_EQ(simple_chess_game_state(after_move), SIMPLE_CHESS_GAME_STATE_DRAWN);
+    EXPECT_EQ(draw_reason(after_move), SIMPLE_CHESS_DRAW_REASON_STALEMATE);
 
     simple_chess_destroy_game(game);
     simple_chess_destroy_game(after_move);
@@ -273,7 +273,7 @@ TEST(CDrawDetectionTest, ClaimOnlyCheckmateStillEnforced) {
     ASSERT_GAME_NOT_NULL(after_move);
 
     // Checkmate is always enforced
-    EXPECT_EQ(after_move->state, SIMPLE_CHESS_GAME_STATE_BLACK_WON);
+    EXPECT_EQ(simple_chess_game_state(after_move), SIMPLE_CHESS_GAME_STATE_BLACK_WON);
 
     simple_chess_destroy_game(game);
     simple_chess_destroy_game(after_move);
@@ -282,12 +282,12 @@ TEST(CDrawDetectionTest, ClaimOnlyCheckmateStillEnforced) {
 TEST(CDrawDetectionTest, DrawEnforcementPreservedAcrossMoves) {
     simple_chess_game_t* game = simple_chess_create_new_game(SIMPLE_CHESS_DRAW_ENFORCEMENT_CLAIM_ONLY);
     ASSERT_GAME_NOT_NULL(game);
-    EXPECT_EQ(game->draw_enforcement, SIMPLE_CHESS_DRAW_ENFORCEMENT_CLAIM_ONLY);
+    EXPECT_EQ(simple_chess_game_draw_enforcement(game), SIMPLE_CHESS_DRAW_ENFORCEMENT_CLAIM_ONLY);
 
     simple_chess_piece_move_t knight_move = create_move(SIMPLE_CHESS_PIECE_TYPE_KNIGHT, SIMPLE_CHESS_COLOR_WHITE, 1, 'g', 3, 'f');
     simple_chess_game_t* after_move = simple_chess_make_move(game, knight_move);
     ASSERT_GAME_NOT_NULL(after_move);
-    EXPECT_EQ(after_move->draw_enforcement, SIMPLE_CHESS_DRAW_ENFORCEMENT_CLAIM_ONLY);
+    EXPECT_EQ(simple_chess_game_draw_enforcement(after_move), SIMPLE_CHESS_DRAW_ENFORCEMENT_CLAIM_ONLY);
 
     simple_chess_destroy_game(game);
     simple_chess_destroy_game(after_move);
@@ -297,7 +297,29 @@ TEST(CDrawDetectionTest, DefaultDrawEnforcementIsAutomatic) {
     simple_chess_game_t* game = simple_chess_create_new_game(
             SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
     ASSERT_GAME_NOT_NULL(game);
-    EXPECT_EQ(game->draw_enforcement, SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
+    EXPECT_EQ(simple_chess_game_draw_enforcement(game), SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
 
     simple_chess_destroy_game(game);
+}
+
+TEST(CDrawDetectionTest, FinishedGamesReportNoDrawToClaim) {
+    // Stalemate: drawn, with nothing left to claim.
+    simple_chess_game_t* stalemated = simple_chess_create_game_from_fen(
+            "7k/5Q2/6K1/8/8/8/8/8 b - - 0 1",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
+    ASSERT_GAME_NOT_NULL(stalemated);
+    EXPECT_EQ(simple_chess_game_state(stalemated), SIMPLE_CHESS_GAME_STATE_DRAWN);
+    EXPECT_FALSE(is_draw_claimable(stalemated));
+
+    // Checkmate delivered on the hundredth halfmove, when the fifty-move
+    // rule was available right up until the game ended.
+    simple_chess_game_t* won = simple_chess_create_game_from_fen(
+            "7k/5KQ1/8/8/8/8/8/8 b - - 100 100",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
+    ASSERT_GAME_NOT_NULL(won);
+    EXPECT_EQ(simple_chess_game_state(won), SIMPLE_CHESS_GAME_STATE_WHITE_WON);
+    EXPECT_FALSE(is_draw_claimable(won));
+
+    simple_chess_destroy_game(stalemated);
+    simple_chess_destroy_game(won);
 }

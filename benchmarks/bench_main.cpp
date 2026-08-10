@@ -124,23 +124,30 @@ namespace
 
 	/**
 	 * The same deterministic game as \ref playRandomGame, driven through the
-	 * C API so that the cost of converting a game to and from its C
-	 * representation is included.
+	 * C API, so that whatever the C boundary costs on top of playing the
+	 * game shows up here.
 	 */
 	unsigned playRandomGameThroughC(const uint64_t seed, const unsigned maxPlies)
 	{
 		Lcg rng(seed);
 		simple_chess_game_t* game = simple_chess_create_new_game(
-            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
+				SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC);
 		unsigned plies = 0;
 
 		while (game != nullptr
 				&& plies < maxPlies
-				&& game->state == SIMPLE_CHESS_GAME_STATE_PLAYING
-				&& game->available_move_count > 0)
+				&& simple_chess_game_state(game) == SIMPLE_CHESS_GAME_STATE_PLAYING
+				&& simple_chess_game_available_move_count(game) > 0)
 		{
-			const simple_chess_piece_move_t move
-				= game->available_moves[rng.below(game->available_move_count)];
+			simple_chess_piece_move_t move;
+			if (!simple_chess_game_available_move(
+						game,
+						static_cast<uint16_t>(rng.below(
+							simple_chess_game_available_move_count(game))),
+						&move))
+			{
+				break;
+			}
 
 			simple_chess_game_t* next = simple_chess_make_move(game, move);
 

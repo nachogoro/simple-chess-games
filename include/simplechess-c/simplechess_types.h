@@ -404,25 +404,6 @@ extern "C" {
 	} simple_chess_draw_reason_t;
 
 	/**
-	 * \brief Represents one entry in the game history.
-	 *
-	 * Each entry contains the position before a move was played
-	 * and the move that was played.
-	 */
-	typedef struct simple_chess_game_history_entry {
-		/**
-		 * \brief FEN representation before this move
-		 */
-		char fen[SIMPLE_CHESS_FEN_MAX];
-
-		/**
-		 *
-		 * \brief The move that was played
-		 */
-		simple_chess_played_move_t played_move;
-	} simple_chess_game_history_entry_t;
-
-	/**
 	 * \brief Controls whether mandatory draw rules are automatically
 	 * enforced or only claimable.
 	 */
@@ -440,64 +421,20 @@ extern "C" {
 	} simple_chess_draw_enforcement_t;
 
 	/**
-	 * \brief Represents a complete chess game with all state information.
+	 * \brief A game of chess.
 	 *
-	 * This is the main structure for interacting with chess games.
-	 * It contains the current position, game history, available moves,
-	 * and game status information.
+	 * The type is opaque: a game is created by one of the factory
+	 * functions, read through the simple_chess_game_* accessors, and
+	 * released with simple_chess_destroy_game(). Playing a move does not
+	 * change a game, it returns a new one.
+	 *
+	 * Keeping the contents private is what lets a handle hold the position
+	 * in the form the engine works with. When the game was a struct of
+	 * plain fields, every call had to rebuild that form from the fields
+	 * first, which made a move cost more the longer the game had been
+	 * going.
 	 */
-	typedef struct simple_chess_game {
-		/**
-		 * \brief Current game state
-		 */
-		simple_chess_game_state_t state;
-
-		/**
-		 * \brief Reason for draw (if state is SIMPLE_CHESS_GAME_STATE_DRAWN)
-		 */
-		simple_chess_draw_reason_t draw_reason;
-
-		/**
-		 * \brief Array of all moves played in the game
-		 */
-		simple_chess_game_history_entry_t* history;
-
-		/**
-		 * \brief Number of moves in history
-		 */
-		uint16_t history_size;
-
-		/**
-		 * \brief Array of all legal moves in current position
-		 */
-		simple_chess_piece_move_t* available_moves;
-
-		/**
-		 * \brief Number of available moves
-		 */
-		uint16_t available_move_count;
-
-		/**
-		 * \brief Current position and game state
-		 */
-		simple_chess_game_stage_t current_stage;
-
-		/**
-		 * \brief Whether a draw can be claimed by the current player
-		 */
-		bool is_draw_claimable;
-
-		/**
-		 *
-		 * \brief Reason a draw can be claimed (if is_draw_claimable is true)
-		 */
-		simple_chess_draw_reason_t reason_to_claim_draw;
-
-		/**
-		 * \brief The draw enforcement mode of this game.
-		 */
-		simple_chess_draw_enforcement_t draw_enforcement;
-	} simple_chess_game_t;
+	typedef struct simple_chess_game simple_chess_game_t;
 
 #ifdef __cplusplus
 }

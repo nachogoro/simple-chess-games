@@ -138,6 +138,155 @@ simple_chess_game_t* simple_chess_claim_draw(const simple_chess_game_t* game);
 simple_chess_game_t* simple_chess_resign(const simple_chess_game_t* game, simple_chess_color_t resigner);
 
 /**
+ * \brief The overall state of the game.
+ *
+ * \param game Game to query. Must not be NULL.
+ *
+ * \return Whether the game is still being played, drawn, or won.
+ */
+simple_chess_game_state_t simple_chess_game_state(const simple_chess_game_t* game);
+
+/**
+ * \brief The color whose turn it is to play.
+ *
+ * \param game Game to query. Must not be NULL.
+ *
+ * \return The color to move next.
+ */
+simple_chess_color_t simple_chess_game_active_color(const simple_chess_game_t* game);
+
+/**
+ * \brief The draw enforcement mode the game was created with.
+ *
+ * \param game Game to query. Must not be NULL.
+ *
+ * \return The draw enforcement mode.
+ */
+simple_chess_draw_enforcement_t simple_chess_game_draw_enforcement(
+		const simple_chess_game_t* game);
+
+/**
+ * \brief Why the game ended in a draw.
+ *
+ * \param game Game to query.
+ * \param out Filled with the reason. Untouched if the game is not drawn.
+ *
+ * \return true if the game ended in a draw, false otherwise.
+ */
+bool simple_chess_game_draw_reason(
+		const simple_chess_game_t* game,
+		simple_chess_draw_reason_t* out);
+
+/**
+ * \brief Why the current player may claim a draw.
+ *
+ * \param game Game to query.
+ * \param out Filled with the reason. Untouched if no draw can be claimed.
+ *
+ * \return true if the current player may claim a draw, false otherwise.
+ */
+bool simple_chess_game_reason_to_claim_draw(
+		const simple_chess_game_t* game,
+		simple_chess_draw_reason_t* out);
+
+/**
+ * \brief The position the game currently stands in.
+ *
+ * \param game Game to query.
+ * \param out Filled with the current position.
+ *
+ * \return true on success, false if either argument is NULL.
+ */
+bool simple_chess_game_current_stage(
+		const simple_chess_game_t* game,
+		simple_chess_game_stage_t* out);
+
+/**
+ * \brief How many moves have been played.
+ *
+ * \param game Game to query. Must not be NULL.
+ *
+ * \return The number of entries in the history.
+ */
+uint16_t simple_chess_game_history_size(const simple_chess_game_t* game);
+
+/**
+ * \brief The position the \p index-th move of the game was played from.
+ *
+ * Unlike the FEN string the history used to carry, this is a full
+ * position, so a past state of the game can be shown without parsing
+ * anything.
+ *
+ * \param game Game to query.
+ * \param index Which move, from 0 to simple_chess_game_history_size() - 1.
+ * \param out Filled with the position.
+ *
+ * \return true on success, false if \p index is out of range or either
+ *         pointer is NULL.
+ */
+bool simple_chess_game_history_stage(
+		const simple_chess_game_t* game,
+		uint16_t index,
+		simple_chess_game_stage_t* out);
+
+/**
+ * \brief The \p index-th move played in the game.
+ *
+ * \param game Game to query.
+ * \param index Which move, from 0 to simple_chess_game_history_size() - 1.
+ * \param out Filled with the move.
+ *
+ * \return true on success, false if \p index is out of range or either
+ *         pointer is NULL.
+ */
+bool simple_chess_game_history_move(
+		const simple_chess_game_t* game,
+		uint16_t index,
+		simple_chess_played_move_t* out);
+
+/**
+ * \brief How many moves the current player may play.
+ *
+ * \param game Game to query. Must not be NULL.
+ *
+ * \return The number of legal moves in the current position.
+ */
+uint16_t simple_chess_game_available_move_count(const simple_chess_game_t* game);
+
+/**
+ * \brief The \p index-th legal move of the current player.
+ *
+ * The moves are in a stable order which does not depend on how they were
+ * generated.
+ *
+ * \param game Game to query.
+ * \param index Which move, from 0 to
+ *        simple_chess_game_available_move_count() - 1.
+ * \param out Filled with the move.
+ *
+ * \return true on success, false if \p index is out of range or either
+ *         pointer is NULL.
+ */
+bool simple_chess_game_available_move(
+		const simple_chess_game_t* game,
+		uint16_t index,
+		simple_chess_piece_move_t* out);
+
+/**
+ * \brief Duplicate a game.
+ *
+ * A game is opaque, so it cannot be copied by assigning one to another.
+ *
+ * \param game Game to copy. Must not be NULL.
+ *
+ * \return Pointer to a game equal to \p game, or NULL on failure.
+ *
+ * \note The caller is responsible for freeing the returned game object
+ *       using simple_chess_destroy_game().
+ */
+simple_chess_game_t* simple_chess_copy_game(const simple_chess_game_t* game);
+
+/**
  * \brief Unpacks what stands on a square into a piece.
  *
  * \param content What the board reports for the square.

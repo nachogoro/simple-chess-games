@@ -3,11 +3,38 @@
 
 #include "conversion_utils.h"
 
+#include <new>
+#include <utility>
+
 using namespace conversion_utils;
+
+/**
+ * A game handle holds the C++ game itself, rather than a description of it
+ * which every call would have to turn back into one.
+ */
+struct simple_chess_game {
+	explicit simple_chess_game(simplechess::Game g)
+		: game(std::move(g))
+	{
+	}
+
+	simplechess::Game game;
+};
+
+namespace {
+	/**
+	 * Wraps a game in a handle, or returns NULL if there is no memory for
+	 * one. Every factory ends here.
+	 */
+	simple_chess_game_t* handle(simplechess::Game game) {
+		return new (std::nothrow) simple_chess_game(std::move(game));
+	}
+}
 
 simple_chess_game_t* simple_chess_create_new_game(simple_chess_draw_enforcement_t draw_enforcement) {
 	try {
-		return c_game(simplechess::createNewGame(cpp_draw_enforcement(draw_enforcement)));
+		return handle(simplechess::createNewGame(
+					cpp_draw_enforcement(draw_enforcement)));
 	} catch (...) {
 		return nullptr;
 	}
@@ -17,7 +44,8 @@ simple_chess_game_t* simple_chess_create_game_from_fen(const char* fen, simple_c
 	if (!fen) return nullptr;
 
 	try {
-		return c_game(simplechess::createGameFromFen(fen, cpp_draw_enforcement(draw_enforcement)));
+		return handle(simplechess::createGameFromFen(
+					fen, cpp_draw_enforcement(draw_enforcement)));
 	} catch (...) {
 		return nullptr;
 	}
@@ -26,20 +54,15 @@ simple_chess_game_t* simple_chess_create_game_from_fen(const char* fen, simple_c
 simple_chess_game_t* simple_chess_make_move(const simple_chess_game_t* game, simple_chess_piece_move_t move) {
 	if (!game) return nullptr;
 
-	try {
-		return simple_chess_make_move_with_draw_offer(game, move, false);
-	} catch (...) {
-		return nullptr;
-	}
+	return simple_chess_make_move_with_draw_offer(game, move, false);
 }
 
 simple_chess_game_t* simple_chess_make_move_with_draw_offer(const simple_chess_game_t* game, simple_chess_piece_move_t move, bool offer_draw) {
 	if (!game) return nullptr;
 
 	try {
-		const simplechess::Game cppGame = cpp_game(*game);
-		const simplechess::Game updatedGame = simplechess::makeMove(cppGame, cpp_piece_move(move), offer_draw);
-		return c_game(updatedGame);
+		return handle(simplechess::makeMove(
+					game->game, cpp_piece_move(move), offer_draw));
 	} catch (...) {
 		return nullptr;
 	}
@@ -49,9 +72,7 @@ simple_chess_game_t* simple_chess_claim_draw(const simple_chess_game_t* game) {
 	if (!game) return nullptr;
 
 	try {
-		const simplechess::Game cppGame = cpp_game(*game);
-		const simplechess::Game updatedGame = simplechess::claimDraw(cppGame);
-		return c_game(updatedGame);
+		return handle(simplechess::claimDraw(game->game));
 	} catch (...) {
 		return nullptr;
 	}
@@ -61,12 +82,106 @@ simple_chess_game_t* simple_chess_resign(const simple_chess_game_t* game, simple
 	if (!game) return nullptr;
 
 	try {
-		const simplechess::Game cppGame = cpp_game(*game);
-		const simplechess::Game updatedGame = simplechess::resign(cppGame, cpp_color(resigner));
-		return c_game(updatedGame);
+		return handle(simplechess::resign(game->game, cpp_color(resigner)));
 	} catch (...) {
 		return nullptr;
 	}
+}
+
+simple_chess_game_t* simple_chess_copy_game(const simple_chess_game_t* game) {
+	if (!game) return nullptr;
+
+	try {
+		return handle(game->game);
+	} catch (...) {
+		return nullptr;
+	}
+}
+
+simple_chess_game_state_t simple_chess_game_state(const simple_chess_game_t* game) {
+	return c_game_state(game->game.gameState());
+}
+
+simple_chess_color_t simple_chess_game_active_color(const simple_chess_game_t* game) {
+	return c_color(game->game.activeColor());
+}
+
+simple_chess_draw_enforcement_t simple_chess_game_draw_enforcement(
+		const simple_chess_game_t* game) {
+	return c_draw_enforcement(game->game.drawEnforcement());
+}
+
+bool simple_chess_game_draw_reason(
+		const simple_chess_game_t* game,
+		simple_chess_draw_reason_t* const out) {
+	if (!game || !out) return false;
+
+	const std::optional<simplechess::DrawReason>& reason = game->game.drawReason();
+	if (!reason) return false;
+
+	*out = c_draw_reason(*reason);
+	return true;
+}
+
+bool simple_chess_game_reason_to_claim_draw(
+		const simple_chess_game_t* game,
+		simple_chess_draw_reason_t* const out) {
+	if (!game || !out) return false;
+
+	const std::optional<simplechess::DrawReason>& reason
+		= game->game.reasonToClaimDraw();
+	if (!reason) return false;
+
+	*out = c_draw_reason(*reason);
+	return true;
+}
+
+bool simple_chess_game_current_stage(
+		const simple_chess_game_t* game,
+		simple_chess_game_stage_t* const out) {
+	if (!game || !out) return false;
+
+	*out = c_game_stage(game->game.currentStage());
+	return true;
+}
+
+uint16_t simple_chess_game_history_size(const simple_chess_game_t* game) {
+	return static_cast<uint16_t>(game->game.history().size());
+}
+
+bool simple_chess_game_history_stage(
+		const simple_chess_game_t* game,
+		const uint16_t index,
+		simple_chess_game_stage_t* const out) {
+	if (!game || !out || index >= game->game.history().size()) return false;
+
+	*out = c_game_stage(game->game.history()[index].stage);
+	return true;
+}
+
+bool simple_chess_game_history_move(
+		const simple_chess_game_t* game,
+		const uint16_t index,
+		simple_chess_played_move_t* const out) {
+	if (!game || !out || index >= game->game.history().size()) return false;
+
+	*out = c_played_move(game->game.history()[index].move);
+	return true;
+}
+
+uint16_t simple_chess_game_available_move_count(const simple_chess_game_t* game) {
+	return static_cast<uint16_t>(game->game.allAvailableMoves().size());
+}
+
+bool simple_chess_game_available_move(
+		const simple_chess_game_t* game,
+		const uint16_t index,
+		simple_chess_piece_move_t* const out) {
+	if (!game || !out || index >= game->game.allAvailableMoves().size())
+		return false;
+
+	*out = c_piece_move(game->game.allAvailableMoves()[index]);
+	return true;
 }
 
 bool simple_chess_square_content_piece(
@@ -107,10 +222,6 @@ uint8_t simple_chess_index_from_square(simple_chess_square_t square) {
 }
 
 void simple_chess_destroy_game(simple_chess_game_t* game) {
-	if (!game) return;
-
-	delete[] game->history;
-	delete[] game->available_moves;
 	delete game;
 }
 

@@ -2,8 +2,8 @@
 
 // Helper function to check if a move is in the available moves array
 static bool is_move_available(const simple_chess_game_t* game, const simple_chess_piece_move_t& move) {
-    for (uint16_t i = 0; i < game->available_move_count; i++) {
-        const simple_chess_piece_move_t& available = game->available_moves[i];
+    for (uint16_t i = 0; i < simple_chess_game_available_move_count(game); i++) {
+        const simple_chess_piece_move_t& available = available_move(game, i);
         if (available.piece.type == move.piece.type &&
             available.piece.color == move.piece.color &&
             available.src.rank == move.src.rank &&
@@ -25,7 +25,7 @@ TEST(CMoveAvailabilityTest, RegularGameMoves) {
     ASSERT_GAME_NOT_NULL(game);
 
     // New game should have 20 possible moves (16 pawn moves + 4 knight moves)
-    EXPECT_EQ(game->available_move_count, 20);
+    EXPECT_EQ(simple_chess_game_available_move_count(game), 20);
 
     // Check that specific starting moves are available
     simple_chess_piece_move_t pawn_e2_e4 = create_move(SIMPLE_CHESS_PIECE_TYPE_PAWN, SIMPLE_CHESS_COLOR_WHITE, 2, 'e', 4, 'e');
@@ -50,7 +50,7 @@ TEST(CMoveAvailabilityTest, KnightMovesUnobstructed) {
     ASSERT_GAME_NOT_NULL(game);
 
     // Knight on d4 should have 8 possible moves + king moves (3)
-    EXPECT_EQ(game->available_move_count, 11);
+    EXPECT_EQ(simple_chess_game_available_move_count(game), 11);
 
     // Check some specific knight moves
     simple_chess_piece_move_t knight_d4_c6 = create_move(SIMPLE_CHESS_PIECE_TYPE_KNIGHT, SIMPLE_CHESS_COLOR_WHITE, 4, 'd', 6, 'c');
@@ -77,7 +77,7 @@ TEST(CMoveAvailabilityTest, KnightMovesObstructedAttempt) {
     ASSERT_GAME_NOT_NULL(game);
 
     // Knight on d4 should still have 8 possible moves + king moves (3)
-    EXPECT_EQ(game->available_move_count, 11);
+    EXPECT_EQ(simple_chess_game_available_move_count(game), 11);
 
     // Check some specific knight moves are still available despite obstruction
     simple_chess_piece_move_t knight_d4_c6 = create_move(SIMPLE_CHESS_PIECE_TYPE_KNIGHT, SIMPLE_CHESS_COLOR_WHITE, 4, 'd', 6, 'c');
@@ -96,7 +96,7 @@ TEST(CMoveAvailabilityTest, RookMovesUnobstructed) {
     ASSERT_GAME_NOT_NULL(game);
 
     // Rook on d5 should have 14 moves + king moves (5) = 19 total
-    EXPECT_EQ(game->available_move_count, 19);
+    EXPECT_EQ(simple_chess_game_available_move_count(game), 19);
 
     // Check some specific rook moves
     simple_chess_piece_move_t rook_d5_d8 = create_move(SIMPLE_CHESS_PIECE_TYPE_ROOK, SIMPLE_CHESS_COLOR_WHITE, 5, 'd', 8, 'd');
@@ -121,7 +121,7 @@ TEST(CMoveAvailabilityTest, RookMovesObstructed) {
     ASSERT_GAME_NOT_NULL(game);
 
     // Rook on d4 with obstructions should have limited moves + king move (1) = 11 total
-    EXPECT_EQ(game->available_move_count, 11);
+    EXPECT_EQ(simple_chess_game_available_move_count(game), 11);
 
     // Check some specific available rook moves
     simple_chess_piece_move_t rook_d4_c4 = create_move(SIMPLE_CHESS_PIECE_TYPE_ROOK, SIMPLE_CHESS_COLOR_WHITE, 4, 'd', 4, 'c');
@@ -140,7 +140,7 @@ TEST(CMoveAvailabilityTest, WhiteCastlingUnobstructed) {
     ASSERT_GAME_NOT_NULL(game);
 
     // Should include both castling moves
-    EXPECT_GT(game->available_move_count, 20);
+    EXPECT_GT(simple_chess_game_available_move_count(game), 20);
 
     // Check that king-side castling is available
     simple_chess_piece_move_t king_side_castle = create_move(SIMPLE_CHESS_PIECE_TYPE_KING, SIMPLE_CHESS_COLOR_WHITE, 1, 'e', 1, 'g');
@@ -189,7 +189,7 @@ TEST(CMoveAvailabilityTest, PawnPromotion) {
     ASSERT_GAME_NOT_NULL(game);
 
     // Should have promotion moves (4 for straight, 4 for capture) + other moves
-    EXPECT_GT(game->available_move_count, 8);
+    EXPECT_GT(simple_chess_game_available_move_count(game), 8);
 
     // Check promotion to queen (straight move)
     simple_chess_piece_move_t promotion_queen = create_promotion_move(SIMPLE_CHESS_COLOR_WHITE, 7, 'f', 8, 'f', SIMPLE_CHESS_PIECE_TYPE_QUEEN);

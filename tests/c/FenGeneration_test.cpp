@@ -10,7 +10,7 @@ TEST(CFenGenerationTest, BlackMoveNoCapture) {
     simple_chess_game_t* updated_game = simple_chess_make_move(game, move);
     ASSERT_GAME_NOT_NULL(updated_game);
 
-    EXPECT_STREQ(updated_game->current_stage.fen,
+    EXPECT_STREQ(current_stage(updated_game).fen,
         "rnb1kbnr/ppp2ppp/5q2/3pp1B1/4P3/3P4/PPP2PPP/RN1QKBNR w KQkq - 4 6");
 
     simple_chess_destroy_game(game);
@@ -27,7 +27,7 @@ TEST(CFenGenerationTest, BlackMoveWithCapture) {
     simple_chess_game_t* updated_game = simple_chess_make_move(game, move);
     ASSERT_GAME_NOT_NULL(updated_game);
 
-    EXPECT_STREQ(updated_game->current_stage.fen,
+    EXPECT_STREQ(current_stage(updated_game).fen,
         "8/pB1K4/7q/8/1RnP1P2/4P3/4k3/8 w - - 0 27");
 
     simple_chess_destroy_game(game);
@@ -44,7 +44,7 @@ TEST(CFenGenerationTest, BlackPawnMove) {
     simple_chess_game_t* updated_game = simple_chess_make_move(game, move);
     ASSERT_GAME_NOT_NULL(updated_game);
 
-    EXPECT_STREQ(updated_game->current_stage.fen,
+    EXPECT_STREQ(current_stage(updated_game).fen,
         "8/1B1K4/7N/8/1RnP1P1q/4P3/4k3/q7 w - - 0 27");
 
     simple_chess_destroy_game(game);
