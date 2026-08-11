@@ -484,3 +484,59 @@ TEST(DrawDetectionTest, DefaultDrawEnforcementIsAutomatic) {
 	const Game game = createNewGame();
 	EXPECT_EQ(game.drawEnforcement(), DrawEnforcement::Automatic);
 }
+
+// A game which has ended has nothing left to claim. The reason to claim a
+// draw is worked out from the position on its own, which cannot tell that
+// the game has just finished, so these check that the two are reconciled
+// before they reach a Game.
+//
+// This reaches into the detector directly because a Game refuses to be built
+// with both at once, which is what makes the rule hold, but also means the
+// mistake cannot be observed from the outside.
+#include "details/GameStateDetector.h"
+#include "details/fen/FenUtils.h"
+
+namespace
+{
+	std::optional<DrawReason> claimableIn(const std::string& fen)
+	{
+		return details::GameStateDetector::detect(
+				details::FenUtils::fromFenString(fen),
+				false,
+				{},
+				DrawEnforcement::Automatic).reasonToClaimDraw;
+	}
+
+	GameState stateOf(const std::string& fen)
+	{
+		return details::GameStateDetector::detect(
+				details::FenUtils::fromFenString(fen),
+				false,
+				{},
+				DrawEnforcement::Automatic).gameState;
+	}
+}
+
+TEST(DrawDetectionTest, NoDrawToClaimInAStalematedGame) {
+	const std::string stalemate = "7k/5Q2/6K1/8/8/8/8/8 b - - 0 1";
+
+	EXPECT_EQ(stateOf(stalemate), GameState::Drawn);
+	EXPECT_EQ(claimableIn(stalemate), std::optional<DrawReason>());
+}
+
+TEST(DrawDetectionTest, NoDrawToClaimWithInsufficientMaterial) {
+	const std::string loneKings = "7k/8/6K1/8/8/8/8/8 w - - 0 1";
+
+	EXPECT_EQ(stateOf(loneKings), GameState::Drawn);
+	EXPECT_EQ(claimableIn(loneKings), std::optional<DrawReason>());
+}
+
+TEST(DrawDetectionTest, NoDrawToClaimInAGameSomebodyWon) {
+	// Checkmate delivered on the hundredth halfmove since the last capture
+	// or pawn move, so the fifty-move rule was available right up until the
+	// game ended. The win takes precedence and leaves nothing to claim.
+	const std::string mateOnTheFiftiethMove = "7k/5KQ1/8/8/8/8/8/8 b - - 100 100";
+
+	EXPECT_EQ(stateOf(mateOnTheFiftiethMove), GameState::WhiteWon);
+	EXPECT_EQ(claimableIn(mateOnTheFiftiethMove), std::optional<DrawReason>());
+}

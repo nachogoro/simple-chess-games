@@ -38,6 +38,12 @@ Game::Game(
 		throw std::invalid_argument(
 				"Inconsistent arguments related to draw reason");
 	}
+
+	if (gameState != GameState::Playing && reasonToClaimDraw)
+	{
+		throw std::invalid_argument(
+				"A finished game cannot have a reason to claim a draw");
+	}
 }
 
 const GameStage& Game::currentStage() const

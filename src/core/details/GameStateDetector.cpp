@@ -99,11 +99,20 @@ GameStateInformation GameStateDetector::detect(
 			reasonToClaimDraw,
 			drawEnforcement);
 
+	// A draw can only be claimed while there is still a game to claim it in.
+	// The reason is worked out from the position alone, which says nothing
+	// about whether the game has just ended, so a checkmate delivered on the
+	// hundredth halfmove would otherwise report the fifty-move rule as
+	// claimable in a game somebody has already won.
+	const bool stillBeingPlayed = gameState.get<0>() == GameState::Playing;
+
 	return {
 		gameState.get<0>(),
 			analysis.checkType,
 			analysis.legalMoves,
 			gameState.get<1>(),
-			reasonToClaimDraw };
+			stillBeingPlayed
+				? reasonToClaimDraw
+				: std::optional<DrawReason>() };
 
 }
