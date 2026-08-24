@@ -162,6 +162,22 @@ TEST(CAlgebraicNotationTest, PieceMoveNoCaptureNoCheckDifferentRankAndFileAmbigu
     simple_chess_destroy_game(updated_game);
 }
 
+TEST(CAlgebraicNotationTest, PieceMoveNoCaptureNoCheckDifferentRankAndFileAmbiguityOtherPiece) {
+    simple_chess_game_t* game = simple_chess_create_game_from_fen(
+        "rn2kb1r/p3qppp/5n2/1B2p1B1/4P3/1Q6/PPP2PPP/R3K2R b KQkq - 0 11",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, NULL);
+    ASSERT_GAME_NOT_NULL(game);
+
+    simple_chess_piece_move_t move = create_move(SIMPLE_CHESS_PIECE_TYPE_KNIGHT, SIMPLE_CHESS_COLOR_BLACK, 6, 'f', 7, 'd');
+    simple_chess_game_t* updated_game = simple_chess_make_move(game, move, NULL);
+    ASSERT_GAME_NOT_NULL(updated_game);
+
+    EXPECT_LAST_MOVE_NOTATION(updated_game, "Nfd7");
+
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(updated_game);
+}
+
 TEST(CAlgebraicNotationTest, PawnPromotionNoCaptureNoCheck) {
     simple_chess_game_t* game = simple_chess_create_game_from_fen(
         "2rk4/1P6/8/5K2/8/8/8/8 w - - 0 1",
