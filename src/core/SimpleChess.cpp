@@ -70,32 +70,32 @@ namespace internal
 		const Piece blackRook = {PieceType::Rook, Color::Black};
 
 		if ((castlingRights & static_cast<uint8_t>(CastlingRight::WhiteKingSide))
-				&& (*board.pieceAt(Square::fromString("e1")) != whiteKing
-					|| *board.pieceAt(Square::fromString("h1")) != whiteRook))
+				&& (board.pieceAt(Square::fromString("e1")) != whiteKing
+					|| board.pieceAt(Square::fromString("h1")) != whiteRook))
 		{
 			throw simplechess::InvalidArgumentException(
 					"Kingside castling right for white is inconsistent with board state");
 		}
 
 		if ((castlingRights & static_cast<uint8_t>(CastlingRight::WhiteQueenSide))
-				&& (*board.pieceAt(Square::fromString("e1")) != whiteKing
-					|| *board.pieceAt(Square::fromString("a1")) != whiteRook))
+				&& (board.pieceAt(Square::fromString("e1")) != whiteKing
+					|| board.pieceAt(Square::fromString("a1")) != whiteRook))
 		{
 			throw simplechess::InvalidArgumentException(
 					"Queenside castling right for white is inconsistent with board state");
 		}
 
 		if ((castlingRights & static_cast<uint8_t>(CastlingRight::BlackKingSide))
-				&& (*board.pieceAt(Square::fromString("e8")) != blackKing
-					|| *board.pieceAt(Square::fromString("h8")) != blackRook))
+				&& (board.pieceAt(Square::fromString("e8")) != blackKing
+					|| board.pieceAt(Square::fromString("h8")) != blackRook))
 		{
 			throw simplechess::InvalidArgumentException(
 					"Kingside castling right for black is inconsistent with board state");
 		}
 
 		if ((castlingRights & static_cast<uint8_t>(CastlingRight::BlackQueenSide))
-				&& (*board.pieceAt(Square::fromString("e8")) != blackKing
-					|| *board.pieceAt(Square::fromString("a8")) != blackRook))
+				&& (board.pieceAt(Square::fromString("e8")) != blackKing
+					|| board.pieceAt(Square::fromString("a8")) != blackRook))
 		{
 			throw simplechess::InvalidArgumentException(
 					"Queenside castling right for black is inconsistent with board state");

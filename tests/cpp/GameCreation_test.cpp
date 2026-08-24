@@ -118,3 +118,12 @@ TEST(GameCreationTest, GameCreationActiveSideAlreadyChecking) {
 			createGameFromFen("k4n2/5n1K/8/8/8/8/8/6r1 b - - 0 1"),
 			std::invalid_argument);
 }
+
+TEST(GameCreationTest, GameCreationWithCastlingRightsAndNoKingAtHome) {
+	// The white king stands on h1, so e1 - the square the kingside castling
+	// right is checked against - is empty.
+	EXPECT_THROW_CUSTOM(
+			createGameFromFen(
+				"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQ1BNK w KQkq - 0 1"),
+			InvalidArgumentException);
+}
