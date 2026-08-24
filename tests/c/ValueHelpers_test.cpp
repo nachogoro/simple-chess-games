@@ -120,6 +120,11 @@ TEST(CValueHelpersTest, FindMoveBySourceAndDestination) {
                 game, {2, 'e'}, {5, 'e'},
                 false, SIMPLE_CHESS_PIECE_TYPE_PAWN, &move));
 
+    // Nor is a move of a piece belonging to the player who is not to play.
+    EXPECT_FALSE(simple_chess_find_move(
+                game, {7, 'e'}, {5, 'e'},
+                false, SIMPLE_CHESS_PIECE_TYPE_PAWN, &move));
+
     // Nor is a square off the board accepted.
     EXPECT_FALSE(simple_chess_find_move(
                 game, {9, 'e'}, {5, 'e'},
