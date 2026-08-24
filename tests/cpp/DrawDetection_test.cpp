@@ -568,3 +568,60 @@ TEST(DrawDetectionTest, FinishedGamesReportNoDrawToClaim) {
 	ASSERT_EQ(resigned.gameState(), GameState::BlackWon);
 	EXPECT_EQ(resigned.reasonToClaimDraw(), std::optional<DrawReason>());
 }
+
+// Combinations where how many minor pieces there are, and which colour of
+// square the bishops stand on, is the whole answer.
+
+namespace
+{
+	GameState stateOfUnder(
+			const std::string& fen, const DrawEnforcement enforcement)
+	{
+		return details::GameStateDetector::detect(
+				details::FenUtils::fromFenString(fen),
+				false,
+				{},
+				enforcement).gameState;
+	}
+}
+
+TEST(DrawDetectionTest, TwoBishopsOnOppositeColorsCanStillMate) {
+	// White has bishops on c1 (dark) and f1 (light) against a lone king,
+	// which is a forced mate, not a dead position.
+	const std::string bishopPair = "3k4/8/8/8/8/8/8/2B2BK1 w - - 0 1";
+
+	EXPECT_EQ(stateOfUnder(bishopPair, DrawEnforcement::Automatic),
+			GameState::Playing);
+}
+
+TEST(DrawDetectionTest, BishopColorsAreComparedWithinASide) {
+	// The same bishop pair, with a black bishop on a1 sharing a square
+	// colour with the white bishop on c1.
+	const std::string bishopPairAgainstBishop
+		= "3k4/8/8/8/8/8/8/b1B2BK1 w - - 0 1";
+
+	EXPECT_EQ(stateOfUnder(bishopPairAgainstBishop, DrawEnforcement::Automatic),
+			GameState::Playing);
+}
+
+TEST(DrawDetectionTest, TwoBishopsOnTheSameColorStillCannotMate) {
+	// Two bishops are only a mating force when they cover both colours of
+	// square. On one colour they are worth no more than a single bishop.
+	const std::string sameColoredPair = "3k4/8/8/8/8/8/8/2B1B1K1 w - - 0 1";
+
+	EXPECT_EQ(stateOfUnder(sameColoredPair, DrawEnforcement::Automatic),
+			GameState::Drawn);
+}
+
+TEST(DrawDetectionTest, TwoKnightsAreNotADeadPosition) {
+	// Two knights cannot force mate, but they can deliver one against a
+	// cooperating defence, so the position is not dead and play continues.
+	// A lone knight, which cannot mate at all, still draws immediately.
+	const std::string twoKnights = "3k4/8/8/8/8/8/8/1N2N1K1 w - - 0 1";
+	const std::string oneKnight = "3k4/8/8/8/8/8/8/4N1K1 w - - 0 1";
+
+	EXPECT_EQ(stateOfUnder(twoKnights, DrawEnforcement::Automatic),
+			GameState::Playing);
+	EXPECT_EQ(stateOfUnder(oneKnight, DrawEnforcement::Automatic),
+			GameState::Drawn);
+}

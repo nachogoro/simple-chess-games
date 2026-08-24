@@ -36,31 +36,19 @@ namespace internal
 
 	bool enoughMatingMaterial(const Board& board)
 	{
-		// Only the following combinations are considered insufficient
-		// material:
-		//   - King vs King
-		//   - King + Bishop vs King
-		//   - King + Knight vs King
-		//   - King + Bishop vs King + Bishop (same coloured bishops)
-
-		// Which piece types each side has on the board, one bit per type.
-		// Only the distinct types matter here, never how many of each, so a
-		// bit mask per side answers every question below without allocating
-		// anything.
-		uint8_t typesPresent[2] = {0, 0};
-
-		const auto typeCount = [](const uint8_t mask) {
-			uint8_t count = 0;
-			for (uint8_t bit = 0; bit < 8; ++bit)
-			{
-				count = static_cast<uint8_t>(count + ((mask >> bit) & 1));
-			}
-			return count;
-		};
-
-		const auto has = [](const uint8_t mask, const PieceType type) {
-			return (mask & (1 << static_cast<uint8_t>(type))) != 0;
-		};
+		// Checkmate is impossible, by any series of legal moves, only when
+		// what is left on the board is:
+		//   - the two kings alone
+		//   - a single bishop or knight besides them, on either side
+		//   - bishops which all stand on squares of one colour
+		//
+		// The last of those holds however many bishops there are and
+		// whoever owns them, so it covers one each as well as two on one
+		// side. A pair covering both colours is not among them: it mates.
+		uint8_t knights = 0;
+		uint8_t bishops = 0;
+		std::optional<Color> bishopSquareColor;
+		bool bishopsOnBothColors = false;
 
 		const std::array<uint8_t, 64>& squares = BoardAccess::squares(board);
 
@@ -73,96 +61,47 @@ namespace internal
 				continue;
 			}
 
-			const size_t side
-				= BoardAccess::isColor(code, Color::White) ? 0 : 1;
+			switch (BoardAccess::typeOf(code))
+			{
+				case PieceType::King:
+					break;
 
-			typesPresent[side] = static_cast<uint8_t>(
-					typesPresent[side]
-					| (1 << static_cast<uint8_t>(BoardAccess::typeOf(code))));
+				case PieceType::Knight:
+					++knights;
+					break;
+
+				case PieceType::Bishop:
+				{
+					++bishops;
+
+					const Color squareColor
+						= BoardAccess::squareOf(index).color();
+
+					if (!bishopSquareColor)
+					{
+						bishopSquareColor = {squareColor};
+					}
+					else if (*bishopSquareColor != squareColor)
+					{
+						bishopsOnBothColors = true;
+					}
+
+					break;
+				}
+
+				default:
+					// A pawn, a rook or a queen is always enough for
+					// somebody to be mated
+					return true;
+			}
 		}
 
-		const uint8_t whiteTypes = typeCount(typesPresent[0]);
-		const uint8_t blackTypes = typeCount(typesPresent[1]);
-
-		if (whiteTypes == 1 && blackTypes == 1)
+		if (knights + bishops <= 1)
 		{
-			// King vs king
 			return false;
 		}
 
-		if (whiteTypes > 2 || blackTypes > 2)
-		{
-			// At least one side has more than 2 pieces, this is always enough
-			// to theoretically mate.
-			return true;
-		}
-
-		if (whiteTypes == 2 && blackTypes == 2)
-		{
-			if (!(has(typesPresent[0], PieceType::Bishop)
-					&& has(typesPresent[1], PieceType::Bishop)))
-			{
-				// If both sides do not have King + Bishop but have two pieces,
-				// mate is theoretically possible
-				return true;
-			}
-
-			// Both sides have King + Bishop, we need to figure out if they are
-			// of the same color
-			std::optional<Color> bishopColor;
-			for (uint8_t index = 0; index < 64; ++index)
-			{
-				const uint8_t code = squares[index];
-
-				if (code == 0)
-				{
-					continue;
-				}
-
-				const Square sq = BoardAccess::squareOf(index);
-
-				if (BoardAccess::typeOf(code) == PieceType::Bishop)
-				{
-					if (!bishopColor)
-					{
-						// First bishop we encounter
-						bishopColor = {sq.color()};
-					}
-					else
-					{
-						if (sq.color() != *bishopColor)
-						{
-							// Bishop of different colors, mate is possible
-							return true;
-						}
-						else
-						{
-							// Same-colored bishops, no mate is possible
-							return false;
-						}
-					}
-				}
-			}
-
-			// Should be unreachable
-			throw std::runtime_error(
-					"Inconsistency when evaluating whether material "
-					"is sufficient (bishops)");
-		}
-
-		// One side has only the King and the other has King + some other piece
-		const uint8_t relevantSideTypes
-			= (whiteTypes > 1) ? typesPresent[0] : typesPresent[1];
-
-		const uint8_t drawingTypes
-			= static_cast<uint8_t>(
-					(1 << static_cast<uint8_t>(PieceType::King))
-					| (1 << static_cast<uint8_t>(PieceType::Knight))
-					| (1 << static_cast<uint8_t>(PieceType::Bishop)));
-
-		// A piece which is neither King, Bishop nor Knight means mate is
-		// theoretically possible.
-		return (relevantSideTypes & ~drawingTypes) != 0;
+		return knights != 0 || bishopsOnBothColors;
 	}
 
 }
