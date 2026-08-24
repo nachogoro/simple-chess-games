@@ -136,6 +136,14 @@ std::optional<DrawReason> DrawEvaluator::reasonToDraw(
 		const std::map<std::string, uint8_t>& previouslyReachedPositions,
 		bool drawOffered)
 {
+	// The reasons below are ones a game may be drawn on. Stalemate is not
+	// among them: it has already ended the game, so it is answered first
+	// whatever else the position also satisfies.
+	if (allPossibleMoves.size() == 0 && !isInCheck)
+	{
+		return { DrawReason::StaleMate };
+	}
+
 	if (stage.halfMovesSinceLastCaptureOrPawnAdvance() >= 150)
 	{
 		return { DrawReason::SeventyFiveMoveRule };
@@ -153,11 +161,6 @@ std::optional<DrawReason> DrawEvaluator::reasonToDraw(
 	if (timesPositionAppearedPreviously >= 4)
 	{
 		return { DrawReason::FiveFoldRepetition };
-	}
-
-	if (allPossibleMoves.size() == 0 && !isInCheck)
-	{
-		return { DrawReason::StaleMate };
 	}
 
 	if (!internal::enoughMatingMaterial(stage.board()))

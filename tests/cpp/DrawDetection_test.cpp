@@ -625,3 +625,15 @@ TEST(DrawDetectionTest, TwoKnightsAreNotADeadPosition) {
 	EXPECT_EQ(stateOfUnder(oneKnight, DrawEnforcement::Automatic),
 			GameState::Drawn);
 }
+TEST(DrawDetectionTest, StalemateIsEnforcedWhateverElseIsClaimable) {
+	// Stalemate with the halfmove clock already past the seventy-five move
+	// rule. Whichever reason is reported, a player with no legal move is not
+	// still playing.
+	const std::string stalemateAtSeventyFive
+		= "7k/5Q2/6K1/8/8/8/8/8 b - - 150 100";
+
+	EXPECT_EQ(stateOfUnder(stalemateAtSeventyFive, DrawEnforcement::Automatic),
+			GameState::Drawn);
+	EXPECT_EQ(stateOfUnder(stalemateAtSeventyFive, DrawEnforcement::ClaimOnly),
+			GameState::Drawn);
+}
