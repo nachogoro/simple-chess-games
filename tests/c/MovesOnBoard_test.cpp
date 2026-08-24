@@ -66,6 +66,61 @@ static void test_regular_capture_move(const char* fen,
     simple_chess_destroy_game(after_move);
 }
 
+// Helper function for testing castling, which moves two pieces at once
+static void test_castling(const char* fen, simple_chess_color_t color,
+                          char king_src_file, char king_dst_file,
+                          char rook_src_file, char rook_dst_file) {
+    const uint8_t rank = (color == SIMPLE_CHESS_COLOR_WHITE) ? 1 : 8;
+
+    simple_chess_game_t* game = simple_chess_create_game_from_fen(fen,
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, NULL);
+    ASSERT_GAME_NOT_NULL(game);
+
+    // Verify initial state: king and rook on their original squares, the
+    // squares they move to vacant
+    EXPECT_TRUE(is_piece_at_square(current_stage(game).board, rank, king_src_file, SIMPLE_CHESS_PIECE_TYPE_KING, color));
+    EXPECT_TRUE(is_piece_at_square(current_stage(game).board, rank, rook_src_file, SIMPLE_CHESS_PIECE_TYPE_ROOK, color));
+    EXPECT_TRUE(is_square_empty(current_stage(game).board, rank, king_dst_file));
+    EXPECT_TRUE(is_square_empty(current_stage(game).board, rank, rook_dst_file));
+
+    // Castling is given as the king's move alone
+    simple_chess_piece_move_t castle_move = create_move(SIMPLE_CHESS_PIECE_TYPE_KING, color, rank, king_src_file, rank, king_dst_file);
+    simple_chess_game_t* after_move = simple_chess_make_move(game, castle_move, NULL);
+    ASSERT_GAME_NOT_NULL(after_move);
+
+    // Verify castling: both pieces moved, both original squares empty
+    EXPECT_TRUE(is_square_empty(current_stage(after_move).board, rank, king_src_file));
+    EXPECT_TRUE(is_square_empty(current_stage(after_move).board, rank, rook_src_file));
+    EXPECT_TRUE(is_piece_at_square(current_stage(after_move).board, rank, king_dst_file, SIMPLE_CHESS_PIECE_TYPE_KING, color));
+    EXPECT_TRUE(is_piece_at_square(current_stage(after_move).board, rank, rook_dst_file, SIMPLE_CHESS_PIECE_TYPE_ROOK, color));
+
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(after_move);
+}
+
+// Helper reporting whether the side to move may castle to the side its king
+// lands on, which is a question about the move list rather than the board
+static bool can_castle(const char* fen, char king_dst_file) {
+    simple_chess_game_t* game = simple_chess_create_game_from_fen(fen,
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, NULL);
+    EXPECT_GAME_NOT_NULL(game);
+
+    const uint8_t rank =
+        (simple_chess_game_active_color(game) == SIMPLE_CHESS_COLOR_WHITE) ? 1 : 8;
+
+    simple_chess_piece_move_t move = {};
+    const bool available = simple_chess_find_move(
+            game,
+            {rank, 'e'},
+            {rank, king_dst_file},
+            false,
+            SIMPLE_CHESS_PIECE_TYPE_PAWN,
+            &move);
+
+    simple_chess_destroy_game(game);
+    return available;
+}
+
 TEST(CMovesOnBoardTest, PawnOnceForward) {
     test_regular_non_capture_move(
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
@@ -237,53 +292,57 @@ TEST(CMovesOnBoardTest, KingCapture) {
 }
 
 TEST(CMovesOnBoardTest, KingsideCastlingWhite) {
-    simple_chess_game_t* game = simple_chess_create_game_from_fen(
+    test_castling(
         "r2qkbnr/ppp2ppp/2np4/1B2p3/6b1/4PN2/PPPP1PPP/RNBQK2R w KQkq - 0 1",
-            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, NULL);
-    ASSERT_GAME_NOT_NULL(game);
-
-    // Verify initial state: king on e1, rook on h1
-    EXPECT_TRUE(is_piece_at_square(current_stage(game).board, 1, 'e', SIMPLE_CHESS_PIECE_TYPE_KING, SIMPLE_CHESS_COLOR_WHITE));
-    EXPECT_TRUE(is_piece_at_square(current_stage(game).board, 1, 'h', SIMPLE_CHESS_PIECE_TYPE_ROOK, SIMPLE_CHESS_COLOR_WHITE));
-    EXPECT_TRUE(is_square_empty(current_stage(game).board, 1, 'f'));
-    EXPECT_TRUE(is_square_empty(current_stage(game).board, 1, 'g'));
-
-    simple_chess_piece_move_t castle_move = create_move(SIMPLE_CHESS_PIECE_TYPE_KING, SIMPLE_CHESS_COLOR_WHITE, 1, 'e', 1, 'g');
-    simple_chess_game_t* after_move = simple_chess_make_move(game, castle_move, NULL);
-    ASSERT_GAME_NOT_NULL(after_move);
-
-    // Verify castling: king on g1, rook on f1, e1 and h1 empty
-    EXPECT_TRUE(is_square_empty(current_stage(after_move).board, 1, 'e'));
-    EXPECT_TRUE(is_square_empty(current_stage(after_move).board, 1, 'h'));
-    EXPECT_TRUE(is_piece_at_square(current_stage(after_move).board, 1, 'g', SIMPLE_CHESS_PIECE_TYPE_KING, SIMPLE_CHESS_COLOR_WHITE));
-    EXPECT_TRUE(is_piece_at_square(current_stage(after_move).board, 1, 'f', SIMPLE_CHESS_PIECE_TYPE_ROOK, SIMPLE_CHESS_COLOR_WHITE));
-
-    simple_chess_destroy_game(game);
-    simple_chess_destroy_game(after_move);
+        SIMPLE_CHESS_COLOR_WHITE, 'e', 'g', 'h', 'f');
 }
 
 TEST(CMovesOnBoardTest, QueensideCastlingWhite) {
-    simple_chess_game_t* game = simple_chess_create_game_from_fen(
+    test_castling(
         "r2qkbnr/ppp2ppp/2np4/4p3/6b1/2NPP3/PPPBQPPP/R3KBNR w KQkq - 0 1",
-            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, NULL);
-    ASSERT_GAME_NOT_NULL(game);
+        SIMPLE_CHESS_COLOR_WHITE, 'e', 'c', 'a', 'd');
+}
 
-    // Verify initial state: king on e1, rook on a1
-    EXPECT_TRUE(is_piece_at_square(current_stage(game).board, 1, 'e', SIMPLE_CHESS_PIECE_TYPE_KING, SIMPLE_CHESS_COLOR_WHITE));
-    EXPECT_TRUE(is_piece_at_square(current_stage(game).board, 1, 'a', SIMPLE_CHESS_PIECE_TYPE_ROOK, SIMPLE_CHESS_COLOR_WHITE));
-    EXPECT_TRUE(is_square_empty(current_stage(game).board, 1, 'c'));
-    EXPECT_TRUE(is_square_empty(current_stage(game).board, 1, 'd'));
+TEST(CMovesOnBoardTest, KingsideCastlingBlack) {
+    test_castling(
+        "rn1qk2r/ppp2ppp/3p1n2/4p3/6b1/2NPP3/PPPBQPPP/R3KBNR b KQkq - 0 1",
+        SIMPLE_CHESS_COLOR_BLACK, 'e', 'g', 'h', 'f');
+}
 
-    simple_chess_piece_move_t castle_move = create_move(SIMPLE_CHESS_PIECE_TYPE_KING, SIMPLE_CHESS_COLOR_WHITE, 1, 'e', 1, 'c');
-    simple_chess_game_t* after_move = simple_chess_make_move(game, castle_move, NULL);
-    ASSERT_GAME_NOT_NULL(after_move);
+TEST(CMovesOnBoardTest, QueensideCastlingBlack) {
+    test_castling(
+        "r3kbnr/ppp2ppp/2np4/4p1q1/6b1/2NPP3/PPPBQPPP/R3KBNR b KQkq - 0 1",
+        SIMPLE_CHESS_COLOR_BLACK, 'e', 'c', 'a', 'd');
+}
 
-    // Verify castling: king on c1, rook on d1, e1 and a1 empty
-    EXPECT_TRUE(is_square_empty(current_stage(after_move).board, 1, 'e'));
-    EXPECT_TRUE(is_square_empty(current_stage(after_move).board, 1, 'a'));
-    EXPECT_TRUE(is_piece_at_square(current_stage(after_move).board, 1, 'c', SIMPLE_CHESS_PIECE_TYPE_KING, SIMPLE_CHESS_COLOR_WHITE));
-    EXPECT_TRUE(is_piece_at_square(current_stage(after_move).board, 1, 'd', SIMPLE_CHESS_PIECE_TYPE_ROOK, SIMPLE_CHESS_COLOR_WHITE));
+// The knight's square is between the king and the rook, so it has to be
+// vacant for the rook to pass over it, even though the king never lands on
+// it and it may be under attack.
+TEST(CMovesOnBoardTest, QueensideCastlingBlockedByKnightOnBFile) {
+    EXPECT_FALSE(can_castle("r3k2r/8/8/8/8/8/8/RN2K2R w KQkq - 0 1", 'c'));
+    EXPECT_FALSE(can_castle("rn2k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1", 'c'));
 
-    simple_chess_destroy_game(game);
-    simple_chess_destroy_game(after_move);
+    // With the b-file clear it is available again, which confirms nothing
+    // else in these positions is preventing it.
+    EXPECT_TRUE(can_castle("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", 'c'));
+    EXPECT_TRUE(can_castle("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1", 'c'));
+}
+
+// A pawn guards the squares it captures towards, whether or not there is
+// anything on them to capture. The squares a castling king crosses are empty
+// by definition, so this is exactly the case where a pawn's threat has to be
+// noticed.
+TEST(CMovesOnBoardTest, CastlingThroughSquareAttackedByPawn) {
+    // The black pawn on e2 attacks d1 and f1, so the king may cross neither.
+    EXPECT_FALSE(can_castle("4k3/8/8/8/8/8/4p3/R3K2R w KQ - 0 1", 'g'));
+    EXPECT_FALSE(can_castle("4k3/8/8/8/8/8/4p3/R3K2R w KQ - 0 1", 'c'));
+
+    // Likewise the white pawn on e7 against black.
+    EXPECT_FALSE(can_castle("r3k2r/4P3/8/8/8/8/8/4K3 b kq - 0 1", 'g'));
+    EXPECT_FALSE(can_castle("r3k2r/4P3/8/8/8/8/8/4K3 b kq - 0 1", 'c'));
+
+    // Without the pawns both castlings are available, which confirms nothing
+    // else in these positions is preventing them.
+    EXPECT_TRUE(can_castle("4k3/8/8/8/8/8/8/R3K2R w KQ - 0 1", 'g'));
+    EXPECT_TRUE(can_castle("4k3/8/8/8/8/8/8/R3K2R w KQ - 0 1", 'c'));
 }
