@@ -89,10 +89,19 @@ namespace
 
 	enum AlgebraicAmbiguity
 	{
-		SameRank = 0x01,
-		SameFile = 0x10,
+		NeedsFile = 0x01,
+		NeedsRank = 0x10,
 	};
 
+	/**
+	 * Returns which parts of the origin square must be spelled out to tell the
+	 * move apart from any other move of a piece of the same type to the same
+	 * square.
+	 *
+	 * The file alone identifies the piece unless a candidate stands on that
+	 * same file, in which case the rank does. The whole square is needed only
+	 * when one candidate shares the file and a different one shares the rank.
+	 */
 	uint8_t getAmbiguityMask(
 			const Board& board,
 			const PieceMove& move)
@@ -103,6 +112,14 @@ namespace
 			return 0;
 		}
 
+		if (move.piece().type() == PieceType::Pawn)
+		{
+			// Pawns are never disambiguated this way: two pawns of the same
+			// colour can only reach a common square by capturing from different
+			// files, and a capture by a pawn already spells out its file.
+			return 0;
+		}
+
 		const std::vector<PieceMove> allPossibleMoves
 			= details::MoveValidator::allAvailableMoves(
 					board,
@@ -110,29 +127,44 @@ namespace
 					0, // Not castling, so irrelevant for ambiguity
 					move.piece().color());
 
-		uint8_t ambiguityMask = 0;
+		bool isAmbiguous = false;
+		bool candidateSharesFile = false;
+		bool candidateSharesRank = false;
 
 		for (const auto& otherMove : allPossibleMoves)
 		{
-			if (otherMove.piece().type() == move.piece().type()
-					&& otherMove.dst() == move.dst()
-					&& otherMove.src() != move.src())
+			if (otherMove.piece().type() != move.piece().type()
+					|| otherMove.dst() != move.dst()
+					|| otherMove.src() == move.src())
 			{
-				// If another piece of the same type could move to the same
-				// square, the move is ambiguous
-				if (otherMove.src().rank() == move.src().rank())
-				{
-					ambiguityMask |= AlgebraicAmbiguity::SameRank;
-				}
-
-				if (otherMove.src().file() == move.src().file())
-				{
-					ambiguityMask |= AlgebraicAmbiguity::SameFile;
-				}
+				continue;
 			}
+
+			// Another piece of the same type could move to the same square
+			isAmbiguous = true;
+
+			candidateSharesFile = candidateSharesFile
+				|| otherMove.src().file() == move.src().file();
+			candidateSharesRank = candidateSharesRank
+				|| otherMove.src().rank() == move.src().rank();
 		}
 
-		return ambiguityMask;
+		if (!isAmbiguous)
+		{
+			return 0;
+		}
+
+		if (!candidateSharesFile)
+		{
+			return AlgebraicAmbiguity::NeedsFile;
+		}
+
+		if (!candidateSharesRank)
+		{
+			return AlgebraicAmbiguity::NeedsRank;
+		}
+
+		return AlgebraicAmbiguity::NeedsFile | AlgebraicAmbiguity::NeedsRank;
 	}
 }
 
@@ -176,28 +208,23 @@ std::string AlgebraicNotationGenerator::toAlgebraicNotation(
 	// 2. Add the disambiguation characters if needed
 	if (ambiguityMask != 0)
 	{
-		if ((ambiguityMask & AlgebraicAmbiguity::SameRank) != 0)
+		if ((ambiguityMask & AlgebraicAmbiguity::NeedsFile) != 0)
 		{
-			// It shares rank with another piece causing ambiguity, the
-			// file is needed
 			ss << move.src().file();
 		}
 
-		if ((ambiguityMask & AlgebraicAmbiguity::SameFile) != 0)
+		if ((ambiguityMask & AlgebraicAmbiguity::NeedsRank) != 0)
 		{
-			// It shares file with another piece causing ambiguity, the
-			// rank is needed
 			ss << static_cast<int>(move.src().rank());
 		}
 	}
 
 	// 3. Add the capture symbol if appropriate
 	if (isCapture) {
-		if ((move.piece().type() == PieceType::Pawn) && (ss.tellp() == 0)) {
-			// It is a capture by a pawn. All captures by a pawn must include
-			// its original file even if it is not ambiguous.
-			// It may have already been added by the ambiguity resolution, so
-			// only add it if not already there
+		if (move.piece().type() == PieceType::Pawn) {
+			// All captures by a pawn include the original file even if it is
+			// not ambiguous. Nothing has been written yet in this case, since
+			// pawns carry no piece letter and are never disambiguated.
 			ss << move.src().file();
 		}
 		ss << "x";

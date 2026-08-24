@@ -130,6 +130,36 @@ TEST(AlgebraicNotationTest, PieceMoveCaptureCheckSameFileSameRankAmbiguity) {
 	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "Ba8xc6+");
 }
 
+TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckDifferentRankAndFileAmbiguity) {
+	// Position after 11. Bxb5+ in Morphy's Opera Game: either black knight can
+	// block on d7, and they share neither rank nor file.
+	const Game game = createGameFromFen(
+			"rn2kb1r/p3qppp/5n2/1B2p1B1/4P3/1Q6/PPP2PPP/R3K2R b KQkq - 0 11");
+
+	const auto updatedGame = makeMove(
+			game,
+			PieceMove::regularMove(
+				{PieceType::Knight, Color::Black},
+				Square::fromRankAndFile(8, 'b'),
+				Square::fromRankAndFile(7, 'd')));
+
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "Nbd7");
+}
+
+TEST(AlgebraicNotationTest, PieceMoveNoCaptureNoCheckDifferentRankAndFileAmbiguityOtherPiece) {
+	const Game game = createGameFromFen(
+			"rn2kb1r/p3qppp/5n2/1B2p1B1/4P3/1Q6/PPP2PPP/R3K2R b KQkq - 0 11");
+
+	const auto updatedGame = makeMove(
+			game,
+			PieceMove::regularMove(
+				{PieceType::Knight, Color::Black},
+				Square::fromRankAndFile(6, 'f'),
+				Square::fromRankAndFile(7, 'd')));
+
+	EXPECT_EQ(updatedGame.history().back().move.inAlgebraicNotation(), "Nfd7");
+}
+
 TEST(AlgebraicNotationTest, PawnPromotionNoCaptureNoCheck) {
 	const Game game = createGameFromFen(
 			"2rk4/1P6/8/5K2/8/8/8/8 w - - 0 1");
