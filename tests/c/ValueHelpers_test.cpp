@@ -1,5 +1,7 @@
 #include "TestUtils.h"
 
+#include <set>
+
 TEST(CValueHelpersTest, SquareIndexRoundTrip) {
     for (uint8_t index = 0; index < 64; ++index) {
         simple_chess_square_t square;
@@ -158,6 +160,86 @@ TEST(CValueHelpersTest, FindMoveDistinguishesPromotions) {
     EXPECT_FALSE(simple_chess_find_move(
                 game, {7, 'f'}, {8, 'f'},
                 false, SIMPLE_CHESS_PIECE_TYPE_PAWN, &plain));
+
+    simple_chess_destroy_game(game);
+}
+
+TEST(CValueHelpersTest, SquareContentRoundTrip) {
+    const simple_chess_piece_type_t types[] = {
+        SIMPLE_CHESS_PIECE_TYPE_PAWN,
+        SIMPLE_CHESS_PIECE_TYPE_ROOK,
+        SIMPLE_CHESS_PIECE_TYPE_KNIGHT,
+        SIMPLE_CHESS_PIECE_TYPE_BISHOP,
+        SIMPLE_CHESS_PIECE_TYPE_QUEEN,
+        SIMPLE_CHESS_PIECE_TYPE_KING,
+    };
+    const simple_chess_color_t colors[] = {
+        SIMPLE_CHESS_COLOR_WHITE, SIMPLE_CHESS_COLOR_BLACK
+    };
+
+    std::set<simple_chess_square_content_t> contents;
+
+    for (const simple_chess_color_t color : colors) {
+        for (const simple_chess_piece_type_t type : types) {
+            const simple_chess_piece_t piece = {type, color};
+            const simple_chess_square_content_t content
+                = simple_chess_square_content_from_piece(piece);
+
+            // An occupied square never reports itself empty, which is what
+            // makes the one value answer both questions at once.
+            EXPECT_NE(content, SIMPLE_CHESS_SQUARE_EMPTY);
+            contents.insert(content);
+
+            simple_chess_piece_t back = {};
+            ASSERT_TRUE(simple_chess_square_content_piece(content, &back));
+            EXPECT_EQ(back.type, type);
+            EXPECT_EQ(back.color, color);
+        }
+    }
+
+    // Twelve pieces, twelve values: no two share one
+    EXPECT_EQ(contents.size(), 12u);
+}
+
+TEST(CValueHelpersTest, SquareContentIsWhatTheBoardReports) {
+    // The helper is only useful if it agrees with the board, which is filled
+    // in by the conversion layer rather than by the helper.
+    simple_chess_game_t* game = simple_chess_create_new_game(
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, nullptr);
+    ASSERT_GAME_NOT_NULL(game);
+
+    const simple_chess_board_t board = current_stage(game).board;
+
+    const struct {
+        const char* square;
+        simple_chess_piece_t piece;
+    } expected[] = {
+        {"a1", {SIMPLE_CHESS_PIECE_TYPE_ROOK,   SIMPLE_CHESS_COLOR_WHITE}},
+        {"e1", {SIMPLE_CHESS_PIECE_TYPE_KING,   SIMPLE_CHESS_COLOR_WHITE}},
+        {"e2", {SIMPLE_CHESS_PIECE_TYPE_PAWN,   SIMPLE_CHESS_COLOR_WHITE}},
+        {"d8", {SIMPLE_CHESS_PIECE_TYPE_QUEEN,  SIMPLE_CHESS_COLOR_BLACK}},
+        {"g8", {SIMPLE_CHESS_PIECE_TYPE_KNIGHT, SIMPLE_CHESS_COLOR_BLACK}},
+    };
+
+    for (const auto& entry : expected) {
+        simple_chess_square_t square = {};
+        ASSERT_TRUE(simple_chess_square_from_string(entry.square, &square));
+
+        uint8_t index = 0;
+        ASSERT_TRUE(simple_chess_index_from_square(square, &index));
+
+        EXPECT_EQ(
+                board.squares[index],
+                simple_chess_square_content_from_piece(entry.piece))
+            << "on " << entry.square;
+    }
+
+    // And an empty square is not any piece's content
+    simple_chess_square_t e4 = {};
+    ASSERT_TRUE(simple_chess_square_from_string("e4", &e4));
+    uint8_t e4Index = 0;
+    ASSERT_TRUE(simple_chess_index_from_square(e4, &e4Index));
+    EXPECT_EQ(board.squares[e4Index], SIMPLE_CHESS_SQUARE_EMPTY);
 
     simple_chess_destroy_game(game);
 }
