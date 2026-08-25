@@ -148,3 +148,67 @@ TEST(CGameCreationTest, GameCreationWithNullFen) {
     // C interface should return null when passed null FEN
     EXPECT_EQ(game, nullptr);
 }
+TEST(CGameCreationTest, CopyMatchesTheGameItWasMadeFrom) {
+    simple_chess_game_t* game = simple_chess_create_game_from_fen(
+            "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_CLAIM_ONLY, NULL);
+    ASSERT_GAME_NOT_NULL(game);
+
+    // With a move played, so the history is something to copy rather than
+    // empty either way
+    simple_chess_game_t* played = simple_chess_make_move(
+            game,
+            create_move(SIMPLE_CHESS_PIECE_TYPE_KNIGHT, SIMPLE_CHESS_COLOR_WHITE, 1, 'g', 3, 'f'),
+            NULL);
+    ASSERT_GAME_NOT_NULL(played);
+
+    simple_chess_error_t error = SIMPLE_CHESS_ERROR_OUT_OF_MEMORY;
+    simple_chess_game_t* copy = simple_chess_copy_game(played, &error);
+    ASSERT_GAME_NOT_NULL(copy);
+    EXPECT_EQ(error, SIMPLE_CHESS_OK);
+
+    EXPECT_STREQ(current_stage(copy).fen, current_stage(played).fen);
+    EXPECT_EQ(simple_chess_game_state(copy), simple_chess_game_state(played));
+    EXPECT_EQ(simple_chess_game_active_color(copy),
+            simple_chess_game_active_color(played));
+    EXPECT_EQ(simple_chess_game_history_size(copy),
+            simple_chess_game_history_size(played));
+    EXPECT_EQ(simple_chess_game_available_move_count(copy),
+            simple_chess_game_available_move_count(played));
+
+    // The enforcement mode is chosen when the game is created and cannot be
+    // read back off the board, so a copy which lost it would look identical
+    EXPECT_EQ(simple_chess_game_draw_enforcement(copy),
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_CLAIM_ONLY);
+
+    simple_chess_destroy_game(game);
+    simple_chess_destroy_game(played);
+    simple_chess_destroy_game(copy);
+}
+
+TEST(CGameCreationTest, CopyOutlivesTheGameItWasMadeFrom) {
+    // Nothing may be shared between the two handles: destroying either one
+    // has to leave the other whole.
+    simple_chess_game_t* game = simple_chess_create_new_game(
+            SIMPLE_CHESS_DRAW_ENFORCEMENT_AUTOMATIC, NULL);
+    ASSERT_GAME_NOT_NULL(game);
+
+    simple_chess_game_t* copy = simple_chess_copy_game(game, NULL);
+    ASSERT_GAME_NOT_NULL(copy);
+
+    simple_chess_destroy_game(game);
+
+    EXPECT_EQ(simple_chess_game_available_move_count(copy), 20);
+    EXPECT_EQ(simple_chess_game_state(copy), SIMPLE_CHESS_GAME_STATE_PLAYING);
+
+    // And it is still a game which can be played on
+    simple_chess_game_t* afterMove = simple_chess_make_move(
+            copy,
+            create_move(SIMPLE_CHESS_PIECE_TYPE_PAWN, SIMPLE_CHESS_COLOR_WHITE, 2, 'e', 4, 'e'),
+            NULL);
+    ASSERT_GAME_NOT_NULL(afterMove);
+    EXPECT_EQ(simple_chess_game_history_size(afterMove), 1);
+
+    simple_chess_destroy_game(copy);
+    simple_chess_destroy_game(afterMove);
+}
