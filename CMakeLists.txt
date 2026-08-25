@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(simple-chess-games VERSION 2.0.0 DESCRIPTION "Simple library to play chess games")
+project(simple-chess-games VERSION 2.1.0 DESCRIPTION "Simple library to play chess games")
 
 # Core chess engine sources
 set(core_sources
