@@ -21,7 +21,8 @@ jobs:
           cmake -S . -B build \
             -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_TESTS=ON \
-            -DBUILD_BENCHMARKS=ON
+            -DBUILD_BENCHMARKS=ON \
+            -DCMAKE_CXX_FLAGS="-D_GLIBCXX_ASSERTIONS"
           cmake --build build --parallel $(nproc)
 
       - name: C++ tests
