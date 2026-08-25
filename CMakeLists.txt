@@ -246,6 +246,7 @@ if(BUILD_TESTS)
         tests/cpp/DrawDetection_test.cpp
         tests/cpp/FenGeneration_test.cpp
         tests/cpp/GameCreation_test.cpp
+        tests/cpp/History_test.cpp
         tests/cpp/MoveAvailability_test.cpp
         tests/cpp/MoveCounter_test.cpp
         tests/cpp/MovesOnBoard_test.cpp
